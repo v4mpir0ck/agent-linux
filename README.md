@@ -43,24 +43,57 @@ graph TD
 
 ## Instalación y uso
 
-1. Clona el repositorio en tu máquina Linux:
-   ```bash
-   git clone <URL-del-repo>
-   cd agente
-   pip install -r requirements.txt
-   ```
-2. Ejecuta el agente:
-   ```bash
-   python agent.py
-   ```
-3. Escribe instrucciones naturales, por ejemplo:
-   - "Ver la memoria RAM"
-   - "Estado de la red"
-   - "Mostrar usuarios conectados"
+### 1. Clona el repositorio
+```bash
+git clone <URL-del-repo>
+cd agente
+```
 
-## Seguridad
+
+### 2. Instalación de dependencias (offline/online)
+
+**Opción rápida (Linux/WSL):**
+```bash
+./instalar_agente.sh
+```
+
+**Opción multiplataforma (Windows/Linux):**
+```bash
+python instalar_agente.py
+# o
+python install_requirements.py
+```
+
+Esto instalará automáticamente las dependencias desde PyPI si hay Internet, o desde la carpeta `wheels/` si estás offline.
+
+> **Para preparar la carpeta wheels/ (solo la primera vez, en un entorno con Internet):**
+> ```bash
+> pip download -r requirements.txt -d wheels
+> ```
+
+### 3. Configura el token seguro de Azure OpenAI (solo si usas LLM Azure)
+
+Ejecuta:
+```bash
+python encrypt_token.py
+```
+Sigue las instrucciones para encriptar tu token y protegerlo con passphrase. El archivo `azure_openai_token.enc` se usará automáticamente.
+
+### 4. Ejecuta el agente
+```bash
+python agent.py
+```
+
+### 5. Escribe instrucciones naturales, por ejemplo:
+- "Ver la memoria RAM"
+- "Estado de la red"
+- "Mostrar usuarios conectados"
+
+## Seguridad y portabilidad
 - El agente detecta comandos peligrosos y solicita confirmación antes de ejecutarlos.
 - El output se muestra siempre en formato profesional y legible.
+- El token de Azure OpenAI se almacena encriptado y solo se desencripta en memoria.
+- Instalación 100% offline posible si tienes la carpeta `wheels/` poblada.
 
 ## Diagrama de arquitectura
 
@@ -73,6 +106,14 @@ flowchart LR
     Linux -->|Output| Agent
     Agent -->|Visualiza| User
 ```
+
+## Scripts clave
+
+- `instalar_agente.py`: Instalador universal (offline/online) de dependencias.
+- `install_requirements.py`: Alternativa de instalador (offline/online).
+- `encrypt_token.py`: Encriptador de token Azure OpenAI.
+- `llm_client.py`: Cliente seguro para LLM Azure OpenAI.
+- `agent.py`: Agente principal, CLI interactivo.
 
 ## Autor
 - DXC / MAPFRE

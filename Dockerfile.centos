@@ -1,0 +1,23 @@
+# Dockerfile para probar la instalación offline/online del agente IA en CentOS
+FROM centos:8
+
+WORKDIR /agente
+
+# Instalar utilidades básicas y sudo
+RUN yum install -y sudo which tar gzip
+
+# Copiar scripts y dependencias
+COPY requirements.txt ./
+COPY wheels/ ./wheels/
+COPY instalar_agente.py ./
+COPY instalar_agente.sh ./
+COPY install_requirements.py ./
+COPY agent.py ./
+COPY llm_client.py ./
+COPY encrypt_token.py ./
+
+# Permisos para el instalador shell
+RUN chmod +x instalar_agente.sh
+
+# Por defecto, solo muestra ayuda de instalación
+CMD ["/bin/bash"]
