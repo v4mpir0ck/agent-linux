@@ -31,10 +31,20 @@ if [ -z "$PYTHON_BIN" ]; then
         echo "[INFO] Detectado sistema Fedora/CentOS/RHEL (dnf). Instalando con dnf..."
         sudo dnf install -y python3 python3-pip gcc python3-devel rust cargo
         $bin -m pip install --upgrade pip setuptools wheel setuptools-rust
+        # Crear enlace simbólico python -> python3 si no existe
+        if ! command -v python >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1; then
+            ln -sf $(command -v python3) /usr/local/bin/python
+            echo "[INFO] Enlace simbólico creado: python -> python3"
+        fi
         PYTHON_BIN=python3
     elif command -v yum >/dev/null 2>&1; then
         echo "[INFO] Detectado sistema CentOS/RHEL (yum). Instalando con yum..."
         sudo yum install -y python3 python3-pip
+        # Crear enlace simbólico python -> python3 si no existe
+        if ! command -v python >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1; then
+            ln -sf $(command -v python3) /usr/local/bin/python
+            echo "[INFO] Enlace simbólico creado: python -> python3"
+        fi
         PYTHON_BIN=python3
     else
         echo "[ERROR] No se pudo instalar Python automáticamente. Instálalo manualmente."
