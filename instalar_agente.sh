@@ -95,6 +95,7 @@ done
 
 
 
+
 # Comprobar wheels/ y descargar automáticamente la carpeta de Google Drive si no existe
 if [ ! -d "$SCRIPT_DIR/wheels" ]; then
   echo "[INFO] No se encontró la carpeta wheels. Intentando descargar la carpeta completa desde Google Drive..."
@@ -106,7 +107,13 @@ if [ ! -d "$SCRIPT_DIR/wheels" ]; then
   # Descargar la carpeta wheels desde Google Drive (ID de la carpeta)
   GDRIVE_FOLDER_ID="1u1ME2pREDk8i20nW2h7xq0282Ansf1JT"
   gdown --folder --id "$GDRIVE_FOLDER_ID" -O "$SCRIPT_DIR"
-  # Verificar que wheels/ existe tras la descarga
+  # Si wheels.zip existe, descomprimirlo
+  if [ -f "$SCRIPT_DIR/wheels.zip" ]; then
+    echo "[INFO] wheels.zip detectado. Descomprimiendo..."
+    unzip -o "$SCRIPT_DIR/wheels.zip" -d "$SCRIPT_DIR"
+    rm -f "$SCRIPT_DIR/wheels.zip"
+  fi
+  # Verificar que wheels/ existe tras la descarga/descompresión
   if [ ! -d "$SCRIPT_DIR/wheels" ]; then
     echo "[ERROR] La carpeta wheels no se creó correctamente tras descargar la carpeta de Google Drive."
     echo "Descárgala manualmente desde: https://drive.google.com/drive/folders/1u1ME2pREDk8i20nW2h7xq0282Ansf1JT?usp=sharing"
