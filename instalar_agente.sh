@@ -51,10 +51,20 @@ if ! $PYTHON_BIN -m pip --version >/dev/null 2>&1; then
         sudo apt-get update && sudo apt-get install -y python3-pip
     elif command -v dnf >/dev/null 2>&1; then
         echo "[INFO] Instalando pip con dnf..."
-        sudo dnf install -y python3-pip
+        sudo dnf install -y python3-pip || true
+        # Si aún no está, intentar con ensurepip
+        if ! $PYTHON_BIN -m pip --version >/dev/null 2>&1; then
+            echo "[INFO] Intentando instalar pip con ensurepip..."
+            $PYTHON_BIN -m ensurepip --upgrade || true
+        fi
     elif command -v yum >/dev/null 2>&1; then
         echo "[INFO] Instalando pip con yum..."
-        sudo yum install -y python3-pip
+        sudo yum install -y python3-pip || true
+        # Si aún no está, intentar con ensurepip
+        if ! $PYTHON_BIN -m pip --version >/dev/null 2>&1; then
+            echo "[INFO] Intentando instalar pip con ensurepip..."
+            $PYTHON_BIN -m ensurepip --upgrade || true
+        fi
     fi
     # Si aún no está, usar get-pip.py
     if ! $PYTHON_BIN -m pip --version >/dev/null 2>&1; then
