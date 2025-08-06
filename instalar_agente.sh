@@ -43,6 +43,7 @@ if [ -z "$PYTHON_BIN" ]; then
 
 fi
 
+PIP_BIN=""
 # Comprobar si pip está instalado, si no, instalarlo
 if ! $PYTHON_BIN -m pip --version >/dev/null 2>&1; then
     echo "[INFO] pip no está instalado. Intentando instalarlo..."
@@ -73,10 +74,27 @@ if ! $PYTHON_BIN -m pip --version >/dev/null 2>&1; then
         $PYTHON_BIN "$SCRIPT_DIR/get-pip.py"
         rm -f "$SCRIPT_DIR/get-pip.py"
     fi
+
     # Si sigue sin estar, error
     if ! $PYTHON_BIN -m pip --version >/dev/null 2>&1; then
         echo "[ERROR] No se pudo instalar pip automáticamente. Instálalo manualmente."
         exit 1
+    fi
+fi
+
+# Crear enlace simbólico para pip si no existe
+if ! command -v pip >/dev/null 2>&1; then
+    # Buscar pip3
+    if command -v pip3 >/dev/null 2>&1; then
+        ln -sf $(command -v pip3) /usr/local/bin/pip
+        echo "[INFO] Enlace simbólico creado: pip -> pip3"
+    else
+        # Buscar el binario de pip instalado por python3 -m pip
+        PIP_BIN=$($PYTHON_BIN -m pip -V 2>/dev/null | awk '{print $4}')
+        if [ -n "$PIP_BIN" ] && [ -f "$PIP_BIN" ]; then
+            ln -sf "$PIP_BIN" /usr/local/bin/pip
+            echo "[INFO] Enlace simbólico creado: pip -> $PIP_BIN"
+        fi
     fi
 fi
 
