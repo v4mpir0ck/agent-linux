@@ -29,7 +29,8 @@ if [ -z "$PYTHON_BIN" ]; then
         PYTHON_BIN=python3
     elif command -v dnf >/dev/null 2>&1; then
         echo "[INFO] Detectado sistema Fedora/CentOS/RHEL (dnf). Instalando con dnf..."
-        sudo dnf install -y python3 python3-pip
+        sudo dnf install -y python3 python3-pip gcc python3-devel rust cargo
+        $bin -m pip install --upgrade pip setuptools wheel setuptools-rust
         PYTHON_BIN=python3
     elif command -v yum >/dev/null 2>&1; then
         echo "[INFO] Detectado sistema CentOS/RHEL (yum). Instalando con yum..."
