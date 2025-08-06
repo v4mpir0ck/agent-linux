@@ -13,8 +13,8 @@ tqdm<4.62.0
 matplotlib<3.4.0
 sentence-transformers<2.2.0
 transformers<4.11.0
-langchain==0.0.208
+# langchain eliminado: solo disponible >=3.7
 tenacity<8.0.0
-httpx<0.24.0
+# httpx eliminado: solo disponible >=3.7
 rich<11.0.0
 gdown<4.5.0
