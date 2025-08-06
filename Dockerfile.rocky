@@ -6,6 +6,7 @@ WORKDIR /agente
 RUN dnf install -y sudo which tar gzip curl wget unzip
 
 # Descarga el instalador bash desde el repo público
-#RUN curl -O https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/instalar_agente.sh
+
+RUN curl -O https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/instalar_agente.sh && chmod +x instalar_agente.sh && ./instalar_agente.sh
 
 CMD ["/bin/bash"]
