@@ -30,7 +30,7 @@ if [ -z "$PYTHON_BIN" ]; then
     elif command -v dnf >/dev/null 2>&1; then
         echo "[INFO] Detectado sistema Fedora/CentOS/RHEL (dnf). Instalando con dnf..."
         sudo dnf install -y python3 python3-pip gcc python3-devel rust cargo
-        $bin -m pip install --upgrade pip setuptools wheel setuptools-rust
+        python3 -m pip install --upgrade pip setuptools wheel setuptools-rust
         # Crear enlace simbólico python -> python3 si no existe
         if ! command -v python >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1; then
             ln -sf $(command -v python3) /usr/local/bin/python
