@@ -102,7 +102,7 @@ class Agent:
             if confirm.strip().lower() not in ["si", "sí", "s", "yes", "y"]:
                 return "[LLM IA] Acción cancelada por el usuario."
         try:
-            output = subprocess.check_output(comando_llm, shell=True, stderr=subprocess.STDOUT, text=True, timeout=10)
+            output = subprocess.check_output(comando_llm, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=10)
         except Exception as e:
             output = f"[Error] {e}"
         cmd_box = f"\033[96m{marco}\033[0m\n" \
@@ -174,7 +174,7 @@ class Agent:
                         if any(p in comando_llm for p in ["restart", "rm -rf", "apt-get clean"]):
                             output = f"[Simulación] Comando '{comando_llm}' ejecutado (no real por seguridad)."
                         else:
-                            output = subprocess.check_output(comando_llm, shell=True, stderr=subprocess.STDOUT, text=True, timeout=10)
+                            output = subprocess.check_output(comando_llm, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=10)
                     except Exception as e:
                         output = f"[Error o Simulación] {e}"
                     print("\033[92m+{}+\033[0m".format('-'*60))

@@ -72,7 +72,7 @@ class Agent:
             resultado_top = "\033[92m🟩━━━━━━━━━━ RESULTADO DEL COMANDO ━━━━━━━━🟩\033[0m"
             resultado_bottom = "\033[92m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
             try:
-                resultado = subprocess.check_output(comando, shell=True, text=True)
+                resultado = subprocess.check_output(comando, shell=True, universal_newlines=True)
                 resumen = f"Resultado de '{comando}':\n{resultado.strip()}"
                 self.memoria_contexto.append(resumen)
                 self.pendiente_confirmacion = None
@@ -121,7 +121,7 @@ class Agent:
                         for linea in respuesta_llm.splitlines():
                             if linea.strip() and not linea.strip().startswith("#") and (" " in linea or linea.strip().startswith("/")):
                                 try:
-                                    output = subprocess.check_output(linea, shell=True, stderr=subprocess.STDOUT, text=True, timeout=10)
+                                    output = subprocess.check_output(linea, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=10)
                                 except Exception as e:
                                     output = f"[Error o Simulación] {e}"
                                 print("\033[92m+{}+\033[0m".format('-'*cuadro_ancho))
@@ -160,7 +160,7 @@ class Agent:
                             for linea in acciones_llm.splitlines():
                                 if linea.strip() and not linea.strip().startswith("#") and (" " in linea or linea.strip().startswith("/")):
                                     try:
-                                        output = subprocess.check_output(linea, shell=True, stderr=subprocess.STDOUT, text=True, timeout=10)
+                                        output = subprocess.check_output(linea, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=10)
                                     except Exception as e:
                                         output = f"[Error o Simulación] {e}"
                                     print("\033[92m+{}+\033[0m".format('-'*cuadro_ancho))
@@ -208,7 +208,7 @@ class Agent:
             comando = bloque.replace('```bash','').replace('```','').strip()
             import subprocess
             try:
-                output = subprocess.check_output(comando, shell=True, stderr=subprocess.STDOUT, text=True, timeout=15)
+                output = subprocess.check_output(comando, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=15)
                 resumen = f"Comando ejecutado: {comando}\nResultado:\n{output.strip()}"
             except Exception as e:
                 output = f"[Error o Simulación] {e}"

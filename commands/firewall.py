@@ -2,7 +2,7 @@ import subprocess
 
 def estado_firewall(return_data=False):
     try:
-        result = subprocess.run(["sudo", "ufw", "status"], capture_output=True, text=True)
+        result = subprocess.run(["sudo", "ufw", "status"], capture_output=True, universal_newlines=True)
         output = result.stdout
         if return_data:
             activo = 'active' in output.lower()
