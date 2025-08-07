@@ -183,12 +183,12 @@ class Agent:
             from llm_client import query_llm
         import re
         import subprocess
-        # Prompt extendido para el LLM
+        # Prompt extendido para el LLM (sin markdown)
         system_prompt = (
             "Eres un agente Python que puede ejecutar comandos en el sistema Linux del usuario. "
-            "Si el usuario pide una acción, responde con el comando bash necesario en un bloque de código, sin decir que no tienes acceso. "
-            "No expliques que eres una IA, solo responde con el comando y una breve explicación si es útil. "
-            "Ejemplo de formato: \nExplicación breve\n```bash\ncomando\n```"
+            "Si el usuario pide una acción, responde con el comando bash necesario en texto plano, sin usar markdown ni bloques de código. "
+            "Primero da una breve explicación, luego el comando en una línea aparte. "
+            "Ejemplo de formato: \nExplicación breve\ncomando"
         )
         # Inicializa memoria_contexto si no existe
         if not hasattr(self, 'memoria_contexto'):
@@ -201,11 +201,36 @@ class Agent:
         full_prompt = f"{system_prompt}\n\nUsuario: {prompt}"
 
         respuesta = query_llm(full_prompt)
-        match = re.search(r"```bash[\s\S]*?```", respuesta)
-        if match:
-            bloque = match.group(0)
-            # Extraer el comando bash del bloque
-            comando = bloque.replace('```bash','').replace('```','').strip()
+        # Procesar respuesta: buscar explicación y comando (sin markdown)
+        lineas = respuesta.strip().splitlines()
+        explicacion = ""
+        comando = ""
+        # Buscar la primera línea que parece comando (contiene espacio y no es explicación)
+        for idx, linea in enumerate(lineas):
+            if idx == 0:
+                explicacion = linea.strip()
+            elif linea.strip() and not linea.strip().startswith('#') and (" " in linea or linea.strip().startswith("/")):
+                comando = linea.strip()
+                break
+        # Si no se detecta comando, intentar buscar en el resto
+        if not comando:
+            for linea in lineas[1:]:
+                if linea.strip() and not linea.strip().startswith('#') and (" " in linea or linea.strip().startswith("/")):
+                    comando = linea.strip()
+                    break
+        # Mostrar explicación en caja
+        box_width = 60
+        def box(text, color=96):
+            from textwrap import wrap
+            lines = wrap(text, box_width-2)
+            out = f"\033[{color}m+{'-'*box_width}+\033[0m\n"
+            for l in lines:
+                out += f"\033[{color}m| {l.ljust(box_width-2)} |\033[0m\n"
+            out += f"\033[{color}m+{'-'*box_width}+\033[0m"
+            return out
+        output = ""
+        resumen = ""
+        if comando:
             import subprocess
             try:
                 output = subprocess.check_output(comando, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=15)
@@ -213,13 +238,18 @@ class Agent:
             except Exception as e:
                 output = f"[Error o Simulación] {e}"
                 resumen = f"Comando ejecutado: {comando}\nError:\n{e}"
-            # Guardar en contexto
             if not hasattr(self, 'memoria_contexto'):
                 self.memoria_contexto = []
             self.memoria_contexto.append(resumen)
-            return f"{respuesta}\n\033[92m+{'-'*60}+\033[0m\n\033[92m| Resultado ejecución: {' '*36}|\033[0m\n\033[92m+{'-'*60}+\033[0m\n\033[92m{output.strip()}\033[0m\n\033[92m+{'-'*60}+\033[0m"
+            return (
+                box(explicacion, 96) + "\n" +
+                box(f"Comando sugerido: {comando}", 95) + "\n" +
+                box("Resultado ejecución:", 92) + "\n" +
+                f"\033[92m{output.strip()}\033[0m\n" +
+                f"\033[92m+{'-'*box_width}+\033[0m"
+            )
         else:
-            return respuesta
+            return box(respuesta, 96)
 
     def _extraer_valor(self, tokens, claves):
         # Busca el valor después de una clave
