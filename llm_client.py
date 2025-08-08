@@ -50,10 +50,29 @@ def query_llm(prompt, temperature=0.2, max_tokens=256):
         "temperature": temperature,
         "max_tokens": max_tokens
     }
-    response = requests.post(url, headers=headers, json=data)
-    response.raise_for_status()
-    result = response.json()
-    return result["choices"][0]["message"]["content"]
+    import time
+    max_retries = 5
+    backoff = 5
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, headers=headers, json=data)
+            response.raise_for_status()
+            result = response.json()
+            return result["choices"][0]["message"]["content"]
+        except requests.exceptions.HTTPError as e:
+            if response.status_code == 429:
+                print(f"\033[93m[LLM] El servicio está saturado. Reintentando en {backoff} segundos...\033[0m")
+                time.sleep(backoff)
+                backoff *= 2
+                continue
+            else:
+                print(f"\033[91m[LLM] Error HTTP: {e}\033[0m")
+                return "[ERROR] El servicio LLM no está disponible. Intenta de nuevo en unos minutos."
+        except Exception as e:
+            print(f"\033[91m[LLM] Error: {e}\033[0m")
+            return "[ERROR] El servicio LLM no está disponible. Intenta de nuevo en unos minutos."
+    print("\033[91m[LLM] Se alcanzó el máximo de reintentos.\033[0m")
+    return "[ERROR] El servicio LLM está saturado o no disponible. Intenta de nuevo en unos minutos."
 
 def query_llm(prompt, temperature=0.2, max_tokens=256):
     url = f"{AZURE_OPENAI_ENDPOINT}openai/deployments/{AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=2024-02-15-preview"

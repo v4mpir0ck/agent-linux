@@ -32,8 +32,7 @@ def print_help():
         # "💡 ejemplo: 'crea un archivo de texto', 'muestra los usuarios conectados', 'reinicia el servicio sshd'"
     ]
     avanzadas = [
-        "🧭  wizard: Modo interactivo guiado para troubleshooting",
-        "🤖  auto-reparación: Ejecutar comandos seguros para resolver problemas comunes",
+        "🧭  wizard: Diagnóstico y auto-reparación guiada de problemas comunes",
         "📄  informe: Generar resumen de estado del sistema",
         "🚨  alertas: Sugerir acciones ante problemas detectados",
         "⚙️  configuración: Mostrar y comparar archivos clave",
@@ -85,8 +84,8 @@ class Agent:
         instr = instruccion.lower().strip()
         tokens = instr.split()
 
-        # --- AUTO-REPARACIÓN ---
-        if "auto-reparación" in instr or "autoreparación" in instr:
+        # --- WIZARD (Diagnóstico y auto-reparación guiada) ---
+        if "wizard" in instr or "auto-reparación" in instr or "autoreparación" in instr:
             import subprocess
             pasos = [
                 "Obtener contexto relevante del sistema (estado general, recursos, servicios, red, disco, logs recientes)",
