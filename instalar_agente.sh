@@ -157,11 +157,27 @@ if [ ! -d "$SCRIPT_DIR/wheels" ]; then
       find "$SCRIPT_DIR" -maxdepth 1 -type f -name '*.whl' -exec mv {} "$SCRIPT_DIR/wheels/" \;
       echo "[INFO] Archivos .whl movidos a wheels/"
     fi
+      # Comprobación extra: si wheels/ existe pero está vacía, buscar .whl en subcarpetas y moverlos
+      whl_count=$(find "$SCRIPT_DIR/wheels" -type f -name '*.whl' | wc -l)
+      if [ "$whl_count" -eq 0 ]; then
+        echo "[WARN] La carpeta wheels existe pero está vacía. Buscando archivos .whl en subcarpetas..."
+        find "$SCRIPT_DIR" -type f -name '*.whl' -exec mv {} "$SCRIPT_DIR/wheels/" \;
+        whl_count=$(find "$SCRIPT_DIR/wheels" -type f -name '*.whl' | wc -l)
+        if [ "$whl_count" -gt 0 ]; then
+          echo "[INFO] Archivos .whl encontrados y movidos a wheels/."
+        fi
+      fi
   fi
-  # Verificar que wheels/ existe tras la descarga/descompresión
+  # Verificar que wheels/ existe y tiene archivos .whl tras la descarga/descompresión
   if [ ! -d "$SCRIPT_DIR/wheels" ]; then
     echo "[ERROR] La carpeta wheels no se creó correctamente tras descargar la carpeta de Google Drive."
     echo "Descárgala manualmente desde: https://drive.google.com/drive/folders/1u1ME2pREDk8i20nW2h7xq0282Ansf1JT?usp=sharing"
+    exit 1
+  fi
+  whl_count=$(find "$SCRIPT_DIR/wheels" -type f -name '*.whl' | wc -l)
+  if [ "$whl_count" -eq 0 ]; then
+    echo "[ERROR] No se encontraron archivos .whl en wheels/ tras la descarga y comprobaciones."
+    echo "Descárgalos manualmente desde: https://drive.google.com/drive/folders/1u1ME2pREDk8i20nW2h7xq0282Ansf1JT?usp=sharing y colócalos en wheels/"
     exit 1
   fi
 fi
