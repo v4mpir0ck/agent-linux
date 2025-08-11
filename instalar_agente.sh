@@ -117,6 +117,8 @@ fi
 REPO_RAW_AGENTE="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/"
 REPO_RAW_ROOT="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/"
 
+
+# Descargar siempre todos los archivos necesarios en BASE_DIR
 NEEDED_FILES=(
   "instalar_agente.py"
   "install_requirements.py"
@@ -127,10 +129,8 @@ NEEDED_FILES=(
 )
 
 for f in "${NEEDED_FILES[@]}"; do
-  if [ ! -f "$SCRIPT_DIR/$f" ]; then
-    echo "[INFO] Descargando $f desde el repo..."
-    curl -o "$SCRIPT_DIR/$f" "$REPO_RAW_AGENTE$f"
-  fi
+  echo "[INFO] Descargando $f desde el repo..."
+  curl -sSLo "$BASE_DIR/$f" "$REPO_RAW_AGENTE$f"
 done
 
 
