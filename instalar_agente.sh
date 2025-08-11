@@ -148,14 +148,11 @@ if [ ! -d "$WHEELS_DIR" ]; then
   GDRIVE_FOLDER_ID="1u1ME2pREDk8i20nW2h7xq0282Ansf1JT"
   gdown --folder --id "$GDRIVE_FOLDER_ID" -O "$BASE_DIR"
   if [ -f "$BASE_DIR/wheels.zip" ]; then
-    echo "[INFO] wheels.zip detectado. Descomprimiendo..."
-    unzip -o "$BASE_DIR/wheels.zip" -d "$BASE_DIR"
+    echo "[INFO] wheels.zip detectado. Creando carpeta wheels y descomprimiendo..."
+    mkdir -p "$WHEELS_DIR"
+    unzip -o "$BASE_DIR/wheels.zip" -d "$WHEELS_DIR"
     rm -f "$BASE_DIR/wheels.zip"
-    if [ ! -d "$WHEELS_DIR" ]; then
-      mkdir -p "$WHEELS_DIR"
-      find "$BASE_DIR" -maxdepth 1 -type f -name '*.whl' -exec mv {} "$WHEELS_DIR/" \;
-      echo "[INFO] Archivos .whl movidos a wheels/"
-    fi
+    # Si no hay archivos .whl en wheels, buscar y mover desde el base
     whl_count=$(find "$WHEELS_DIR" -type f -name '*.whl' | wc -l)
     if [ "$whl_count" -eq 0 ]; then
       echo "[WARN] La carpeta wheels existe pero está vacía. Buscando archivos .whl en subcarpetas..."
