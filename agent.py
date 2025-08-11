@@ -63,117 +63,209 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 class Agent:
     def handle_instruction(self, instruccion):
-        # Soporte para confirmación de comandos delicados
-        if hasattr(self, 'pendiente_confirmacion') and self.pendiente_confirmacion and instruccion.strip().lower() == 'confirmar':
-            import subprocess
-            comando = self.pendiente_confirmacion['comando']
-            sugerencia = self.pendiente_confirmacion['sugerencia']
-            resultado_top = "\033[92m🟩━━━━━━━━━━ RESULTADO DEL COMANDO ━━━━━━━━🟩\033[0m"
-            resultado_bottom = "\033[92m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-            try:
-                resultado = subprocess.check_output(comando, shell=True, universal_newlines=True)
-                resumen = f"Resultado de '{comando}':\n{resultado.strip()}"
-                self.memoria_contexto.append(resumen)
-                self.pendiente_confirmacion = None
-                return f"{sugerencia}\n\n\n\n{resultado_top}\n\033[92m{resultado.strip()}\033[0m\n{resultado_bottom}"
-            except Exception as e:
-                self.pendiente_confirmacion = None
-                return f"{sugerencia}\n\n\n\n\033[91m🟥━━ ERROR AL EJECUTAR COMANDO ━━🟥\033[0m\n\033[91m{e}\033[0m\n\033[91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-
-
+        comando = None
         instr = instruccion.lower().strip()
         tokens = instr.split()
-
-        # --- WIZARD (Diagnóstico y auto-reparación guiada) ---
-        if "wizard" in instr or "auto-reparación" in instr or "autoreparación" in instr:
-            import subprocess
-            pasos = [
-                "Obtener contexto relevante del sistema (estado general, recursos, servicios, red, disco, logs recientes)",
-                "Identificar posibles problemas a partir del contexto obtenido",
-                "Sugerir acciones correctivas solo si se detectan problemas claros"
-            ]
-            acciones_ejecutadas = []
-            cuadro_ancho = 90
-            print("\n\033[96m+{}+\033[0m".format('-'*cuadro_ancho))
-            print("\033[96m|{:^88}|\033[0m".format('AUTO-REPARACIÓN IA: Diagnóstico y acciones'))
-            print("\033[96m+{}+\033[0m".format('-'*cuadro_ancho))
-            for idx, paso in enumerate(pasos):
+        # --- INTERCEPTACIÓN DE OPCIONES AVANZADAS ---
+        interceptores = [
+            {
+                "nombre": "informe",
+                "frases": [
+                    "generar informe", "informe del sistema", "informe completo", "resumen del sistema", "informe general", "genera un informe", "quiero un informe", "muestra un informe", "haz un informe", "informe sobre el sistema", "crear informe", "informe detallado", "informe linux", "informe máquina", "informe de estado", "informe de recursos", "informe de salud", "system report", "system summary", "system info report", "generate report", "show report", "create report", "full report", "health report", "status report", "linux report", "machine report"
+                ],
+                "modulo": "informe",
+                "funcion": "generar_informe",
+                "mensaje": "\033[95mInforme generado en:\033[0m {ruta}"
+            },
+            {
+                "nombre": "wizard",
+                "frases": [
+                    "diagnóstico guiado", "auto-reparación", "wizard", "diagnostico asistido", "diagnóstico asistido", "diagnóstico automático", "diagnóstico inteligente", "guided troubleshooting", "auto repair", "run wizard", "start wizard", "diagnostic wizard"
+                ],
+                "modulo": "wizard",
+                "funcion": "run_wizard",
+                "mensaje": "\033[95mDiagnóstico guiado ejecutado.\033[0m\n{resultado}"
+            },
+            {
+                "nombre": "alertas",
+                "frases": [
+                    "alertas", "alertas del sistema", "sugerir acciones", "problemas detectados", "mostrar alertas", "ver alertas", "system alerts", "show alerts", "suggest actions", "problem alerts"
+                ],
+                "modulo": "alertas",
+                "funcion": "mostrar_alertas",
+                "mensaje": "\033[95mAlertas del sistema:\033[0m\n{resultado}"
+            },
+            {
+                "nombre": "configuracion",
+                "frases": [
+                    "configuración", "archivos clave", "mostrar configuración", "comparar configuración", "ver configuración", "system config", "show config", "compare config", "key files"
+                ],
+                "modulo": "configuracion",
+                "funcion": "mostrar_configuracion",
+                "mensaje": "\033[95mConfiguración del sistema:\033[0m\n{resultado}"
+            },
+            {
+                "nombre": "herramientas",
+                "frases": [
+                    "herramientas", "ejecutar nmap", "ejecutar netstat", "ejecutar lsof", "ejecutar ss", "ejecutar tcpdump", "usar herramientas", "ver herramientas", "network tools", "run nmap", "run netstat", "run lsof", "run ss", "run tcpdump", "show tools"
+                ],
+                "modulo": "herramientas",
+                "funcion": "ejecutar_herramientas",
+                "mensaje": "\033[95mHerramientas ejecutadas:\033[0m\n{resultado}"
+            },
+            {
+                "nombre": "conectividad",
+                "frases": [
+                    "conectividad externa", "test de acceso", "test de endpoints", "test de apis", "probar conectividad", "diagnóstico de red", "test de velocidad", "external connectivity", "test endpoints", "test apis", "network diagnosis", "speed test", "run ping", "run traceroute"
+                ],
+                "modulo": "conectividad",
+                "funcion": "test_conectividad",
+                "mensaje": "\033[95mTest de conectividad externa:\033[0m\n{resultado}"
+            },
+            {
+                "nombre": "ping",
+                "frases": [
+                    "ping", "diagnóstico de red", "test de ping", "hacer ping", "probar ping", "network ping", "run ping", "ping test"
+                ],
+                "modulo": "conectividad",
+                "funcion": "test_ping",
+                "mensaje": "\033[95mTest de ping:\033[0m\n{resultado}"
+            }
+        ]
+        for interceptor in interceptores:
+            if any(frase in instr for frase in interceptor["frases"]):
+                # --- ALERTAS INTELIGENTES ---
+                if interceptor["nombre"] == "alertas":
+                    # 1. Pedir al LLM los comandos de diagnóstico recomendados
+                    try:
+                        from .llm_client import query_llm
+                    except ImportError:
+                        from llm_client import query_llm
+                    system_prompt = (
+                        "Eres un agente Python experto en Linux. Sugiere una lista de comandos de diagnóstico para detectar problemas en el sistema. "
+                        "Responde solo con la lista de comandos, uno por línea, sin explicación ni markdown. Ejemplo: df -h\ntop -b -n1\nntpq -p"
+                    )
+                    contexto = "\n".join([f"- {item}" for item in getattr(self, 'memoria_contexto', [])])
+                    prompt = f"[CONTEXT]\n{contexto}\n\n[INSTRUCCIÓN]\n{instruccion}" if contexto else instruccion
+                    full_prompt = f"{system_prompt}\n\nUsuario: {prompt}"
+                    respuesta = query_llm(full_prompt)
+                    comandos = [linea.strip() for linea in respuesta.strip().splitlines() if linea.strip() and not linea.startswith('#')]
+                    # 2. Ejecutar los comandos y recopilar resultados
+                    resultados = []
+                    import subprocess
+                    for cmd in comandos:
+                        try:
+                            salida = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=10)
+                        except Exception as e:
+                            salida = f"[Error] {e}"
+                        resultados.append({"comando": cmd, "salida": salida})
+                    # 3. Pasar resultados al módulo alertas para procesar
+                    try:
+                        import alertas
+                    except ImportError:
+                        import alertas
+                    if hasattr(alertas, "procesar_resultados"):
+                        alertas_generadas = alertas.procesar_resultados(resultados)
+                    else:
+                        # Fallback: usar mostrar_alertas si existe
+                        alertas_generadas = getattr(alertas, "mostrar_alertas", lambda: [])()
+                    self.ultimas_alertas = alertas_generadas
+                    # 4. Mostrar agrupadas y con colores
+                    niveles = {"critico": [], "warning": [], "info": []}
+                    for alerta in alertas_generadas:
+                        nivel = alerta.get("nivel", "info").lower()
+                        if nivel not in niveles:
+                            nivel = "info"
+                        niveles[nivel].append(alerta)
+                    def color_nivel(nivel):
+                        return {"critico": 91, "warning": 93, "info": 96}.get(nivel, 96)
+                    out = ""
+                    for nivel in ["critico", "warning", "info"]:
+                        if niveles[nivel]:
+                            out += f"\033[{color_nivel(nivel)}m{'='*60}\033[0m\n"
+                            out += f"\033[{color_nivel(nivel)}m{nivel.upper():^60}\033[0m\n"
+                            out += f"\033[{color_nivel(nivel)}m{'='*60}\033[0m\n"
+                            out += f"\033[{color_nivel(nivel)}m{'MENSAJE':<40}{'SUGERENCIA':<20}\033[0m\n"
+                            for alerta in niveles[nivel]:
+                                out += f"\033[{color_nivel(nivel)}m{alerta.get('mensaje','')[:39]:<40}{alerta.get('sugerencia','')[:19]:<20}\033[0m\n"
+                            out += f"\033[{color_nivel(nivel)}m{'-'*60}\033[0m\n"
+                    return out
+                # --- Otros módulos avanzados ---
                 try:
-                    from .llm_client import query_llm
+                    modulo = __import__(interceptor["modulo"])
                 except ImportError:
-                    from llm_client import query_llm
-                if idx == 0:
-                    prompt = (
-                        "Eres un asistente de troubleshooting Linux. "
-                        "Sugiere de forma concisa una secuencia de comandos shell (máximo 5) para obtener toda la información relevante del sistema (estado general, recursos, servicios, red, disco, logs recientes). "
-                        "No propongas acciones correctivas aún. Devuelve solo los comandos, uno por línea, y una breve explicación de cada uno."
-                    )
-                    respuesta_llm = query_llm(prompt)
-                    print("\033[96m|{:^88}|\033[0m".format("Comandos de diagnóstico sugeridos:"))
-                    print("\033[96m+{}+\033[0m".format('-'*cuadro_ancho))
-                    for linea in respuesta_llm.splitlines():
-                        print(f"\033[96m| {linea[:86].ljust(86)} |\033[0m")
-                    print("\033[96m+{}+\033[0m".format('-'*cuadro_ancho))
-                    confirm = input("¿Deseas ejecutar estos comandos de diagnóstico? (sí/no): ")
-                    if confirm.strip().lower() in ["si", "sí", "s", "yes", "y"]:
-                        # Ejecutar cada comando sugerido (solo líneas que parecen comandos)
-                        for linea in respuesta_llm.splitlines():
-                            if linea.strip() and not linea.strip().startswith("#") and (" " in linea or linea.strip().startswith("/")):
-                                try:
-                                    output = subprocess.check_output(linea, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=10)
-                                except Exception as e:
-                                    output = f"[Error o Simulación] {e}"
-                                print("\033[92m+{}+\033[0m".format('-'*cuadro_ancho))
-                                print(f"\033[92m| Comando: {linea[:70].ljust(70)} |\033[0m")
-                                print("\033[92m|{:^88}|\033[0m".format('RESULTADO'))
-                                for l in output.splitlines() or [output]:
-                                    print(f"\033[92m| {l[:86].ljust(86)} |\033[0m")
-                                print("\033[92m+{}+\033[0m\n".format('-'*cuadro_ancho))
-                        acciones_ejecutadas.append("Diagnóstico ejecutado")
-                elif idx == 1:
-                    prompt = (
-                        "A partir de la información obtenida en el paso anterior, sugiere de forma concisa posibles problemas detectados en el sistema. "
-                        "No propongas aún acciones correctivas. Devuelve solo el análisis de problemas, uno por línea."
-                    )
-                    analisis_llm = query_llm(prompt)
-                    print("\033[96m|{:^88}|\033[0m".format("Análisis de problemas sugerido por IA:"))
-                    print("\033[96m+{}+\033[0m".format('-'*cuadro_ancho))
-                    for linea in analisis_llm.splitlines():
-                        print(f"\033[96m| {linea[:86].ljust(86)} |\033[0m")
-                    print("\033[96m+{}+\033[0m".format('-'*cuadro_ancho))
-                    acciones_ejecutadas.append("Análisis de problemas realizado")
-                elif idx == 2:
-                    prompt = (
-                        "Si se detectaron problemas claros en el paso anterior, sugiere solo los comandos shell necesarios para corregirlos, uno por línea, con breve explicación. "
-                        "Si no hay problemas, responde: 'No se detectaron problemas que requieran acción.'"
-                    )
-                    acciones_llm = query_llm(prompt)
-                    print("\033[96m|{:^88}|\033[0m".format("Acciones correctivas sugeridas por IA:"))
-                    print("\033[96m+{}+\033[0m".format('-'*cuadro_ancho))
-                    for linea in acciones_llm.splitlines():
-                        print(f"\033[96m| {linea[:86].ljust(86)} |\033[0m")
-                    print("\033[96m+{}+\033[0m".format('-'*cuadro_ancho))
-                    if "No se detectaron problemas" not in acciones_llm:
-                        confirm = input("¿Deseas ejecutar estas acciones correctivas? (sí/no): ")
-                        if confirm.strip().lower() in ["si", "sí", "s", "yes", "y"]:
-                            for linea in acciones_llm.splitlines():
-                                if linea.strip() and not linea.strip().startswith("#") and (" " in linea or linea.strip().startswith("/")):
-                                    try:
-                                        output = subprocess.check_output(linea, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=10)
-                                    except Exception as e:
-                                        output = f"[Error o Simulación] {e}"
-                                    print("\033[92m+{}+\033[0m".format('-'*cuadro_ancho))
-                                    print(f"\033[92m| Comando: {linea[:70].ljust(70)} |\033[0m")
-                                    print("\033[92m|{:^88}|\033[0m".format('RESULTADO'))
-                                    for l in output.splitlines() or [output]:
-                                        print(f"\033[92m| {l[:86].ljust(86)} |\033[0m")
-                                    print("\033[92m+{}+\033[0m\n".format('-'*cuadro_ancho))
-                            acciones_ejecutadas.append("Acciones correctivas ejecutadas")
-            if acciones_ejecutadas:
-                resumen = '\n'.join(f"✔️ {a}" for a in acciones_ejecutadas)
-                return f"[Auto-reparación] Pasos realizados:\n{resumen}\nProceso completado."
-            else:
-                return "[Auto-reparación] No se ha realizado ninguna acción."
+                    modulo = __import__(interceptor["modulo"])
+                funcion = getattr(modulo, interceptor["funcion"], None)
+                if funcion:
+                    resultado = funcion()
+                    return interceptor["mensaje"].format(resultado=resultado)
+        # Si no coincide con ningún interceptor, usar LLM
+        # ...existing code...
+        try:
+            from .llm_client import query_llm
+        except ImportError:
+            from llm_client import query_llm
+        import re
+        import subprocess
+        system_prompt = (
+            "Eres un agente Python que puede ejecutar comandos en el sistema Linux del usuario. "
+            "Si el usuario pide una acción, responde con el comando bash necesario en texto plano, sin usar markdown ni bloques de código. "
+            "Primero da una breve explicación, luego el comando en una línea aparte. "
+            "Ejemplo de formato: \nExplicación breve\ncomando"
+        )
+        if not hasattr(self, 'memoria_contexto'):
+            self.memoria_contexto = []
+        contexto = "\n".join([f"- {item}" for item in self.memoria_contexto])
+        if contexto:
+            prompt = f"[CONTEXT]\n{contexto}\n\n[INSTRUCCIÓN]\n{instruccion}"
+        else:
+            prompt = instruccion
+        full_prompt = f"{system_prompt}\n\nUsuario: {prompt}"
+        respuesta = query_llm(full_prompt)
+        lineas = respuesta.strip().splitlines()
+        explicacion = ""
+        comando = None
+        for idx, linea in enumerate(lineas):
+            if idx == 0:
+                explicacion = linea.strip()
+            elif linea.strip() and not linea.strip().startswith('#') and (" " in linea or linea.strip().startswith("/")):
+                comando = linea.strip()
+                break
+        if not comando:
+            for linea in lineas[1:]:
+                if linea.strip() and not linea.strip().startswith('#') and (" " in linea or linea.strip().startswith("/")):
+                    comando = linea.strip()
+                    break
+        box_width = 60
+        def box(text, color=96):
+            from textwrap import wrap
+            lines = wrap(text, box_width-2)
+            out = f"\033[{color}m+{'-'*box_width}+\033[0m\n"
+            for l in lines:
+                out += f"\033[{color}m| {l.ljust(box_width-2)} |\033[0m\n"
+            out += f"\033[{color}m+{'-'*box_width}+\033[0m"
+            return out
+        output = ""
+        resumen = ""
+        if comando:
+            try:
+                output = subprocess.check_output(comando, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=15)
+                resumen = f"Comando ejecutado: {comando}\nResultado:\n{output.strip()}"
+            except Exception as e:
+                output = f"[Error o Simulación] {e}"
+                resumen = f"Comando ejecutado: {comando}\nError:\n{e}"
+            if not hasattr(self, 'memoria_contexto'):
+                self.memoria_contexto = []
+            self.memoria_contexto.append(resumen)
+            return (
+                box(explicacion, 96) + "\n" +
+                box(f"Comando sugerido: {comando}", 95) + "\n" +
+                box("Resultado ejecución:", 92) + "\n" +
+                f"\033[92m{output.strip()}\033[0m\n" +
+                f"\033[92m+{'-'*box_width}+\033[0m"
+            )
+        else:
+            return box(respuesta, 96)
 
         # ...resto de la función original...
         try:
@@ -203,7 +295,7 @@ class Agent:
         # Procesar respuesta: buscar explicación y comando (sin markdown)
         lineas = respuesta.strip().splitlines()
         explicacion = ""
-        comando = ""
+        comando = None
         # Buscar la primera línea que parece comando (contiene espacio y no es explicación)
         for idx, linea in enumerate(lineas):
             if idx == 0:
@@ -247,6 +339,37 @@ class Agent:
                 f"\033[92m{output.strip()}\033[0m\n" +
                 f"\033[92m+{'-'*box_width}+\033[0m"
             )
+        instr = instruccion.lower().strip()
+        tokens = instr.split()
+
+        # --- Exportar alertas ---
+        if instr.startswith("exportar alertas"):
+            if hasattr(self, "ultimas_alertas") and self.ultimas_alertas:
+                import csv
+                import datetime
+                filename = f"alertas_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+                try:
+                    with open(filename, "w", encoding="utf-8", newline='') as f:
+                        writer = csv.writer(f)
+                        writer.writerow(["nivel", "mensaje", "sugerencia"])
+                        for alerta in self.ultimas_alertas:
+                            writer.writerow([
+                                alerta.get("nivel", ""),
+                                alerta.get("mensaje", ""),
+                                alerta.get("sugerencia", "")
+                            ])
+                    return (
+                        f"\033[95mAlertas exportadas correctamente.\033[0m\n"
+                        f"\033[96mArchivo generado:\033[0m {filename}\n"
+                        f"\033[95mPuedes abrirlo con Excel, LibreOffice o similar.\033[0m"
+                    )
+                except Exception as e:
+                    return f"\033[91mError al exportar alertas:\033[0m {e}"
+            else:
+                return (
+                    "\033[91mNo hay alertas generadas para exportar.\033[0m\n"
+                    "\033[93mPrimero ejecuta 'alertas' para generar las alertas del sistema.\033[0m"
+                )
         else:
             return box(respuesta, 96)
 

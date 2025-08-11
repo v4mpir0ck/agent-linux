@@ -151,6 +151,12 @@ if [ ! -d "$SCRIPT_DIR/wheels" ]; then
     echo "[INFO] wheels.zip detectado. Descomprimiendo..."
     unzip -o "$SCRIPT_DIR/wheels.zip" -d "$SCRIPT_DIR"
     rm -f "$SCRIPT_DIR/wheels.zip"
+    # Si no existe la carpeta wheels pero hay archivos .whl, muévelos a wheels/
+    if [ ! -d "$SCRIPT_DIR/wheels" ]; then
+      mkdir -p "$SCRIPT_DIR/wheels"
+      find "$SCRIPT_DIR" -maxdepth 1 -type f -name '*.whl' -exec mv {} "$SCRIPT_DIR/wheels/" \;
+      echo "[INFO] Archivos .whl movidos a wheels/"
+    fi
   fi
   # Verificar que wheels/ existe tras la descarga/descompresión
   if [ ! -d "$SCRIPT_DIR/wheels" ]; then
@@ -160,6 +166,53 @@ if [ ! -d "$SCRIPT_DIR/wheels" ]; then
   fi
 fi
 
+
+# Ejecutar el instalador Python
+# --- Instalar herramientas de red si no existen ---
+BIN_DIR="$SCRIPT_DIR/bin"
+mkdir -p "$BIN_DIR"
+
+# URLs de binarios en tu repo (ajusta si cambian los nombres)
+REPO_BIN_BASE="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/bin/"
+
+declare -A BINARIES=(
+  [nmap]="nmap"
+  [busybox]="busybox"
+)
+
+# Función para instalar binario si no existe
+install_bin() {
+  local bin_name="$1"
+  local bin_path="$BIN_DIR/$bin_name"
+  if command -v "$bin_name" >/dev/null 2>&1; then
+    echo "[INFO] $bin_name ya está instalado en el sistema."
+  elif [ -x "$bin_path" ]; then
+    echo "[INFO] $bin_name ya existe en $bin_path."
+  else
+    echo "[INFO] Descargando $bin_name desde el repo..."
+    curl -L -o "$bin_path" "$REPO_BIN_BASE${BINARIES[$bin_name]}"
+    chmod +x "$bin_path"
+  fi
+}
+
+# Instalar nmap y busybox
+for bin in "nmap" "busybox"; do
+  install_bin "$bin"
+done
+
+# Crear enlaces simbólicos para nc y traceroute si no existen
+for link in nc traceroute; do
+  if [ ! -e "$BIN_DIR/$link" ]; then
+    ln -sf busybox "$BIN_DIR/$link"
+    echo "[INFO] Enlace simbólico creado: $link -> busybox"
+  fi
+done
+
+# Añadir bin a PATH si no está
+case ":$PATH:" in
+  *":$BIN_DIR:"*) ;;
+  *) export PATH="$BIN_DIR:$PATH" ;;
+esac
 
 # Ejecutar el instalador Python
 $PYTHON_BIN "$SCRIPT_DIR/instalar_agente.py"
