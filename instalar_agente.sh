@@ -231,4 +231,19 @@ case ":$PATH:" in
 esac
 
 # Ejecutar el instalador Python
+
+# --- Actualizar pip, setuptools y wheel antes de instalar dependencias ---
+echo "[INFO] Actualizando pip, setuptools y wheel..."
+$PYTHON_BIN -m pip install --upgrade pip setuptools wheel
+
+# --- Instalar dependencias desde wheels si existen ---
+if [ -d "$SCRIPT_DIR/wheels" ]; then
+  whl_count=$(find "$SCRIPT_DIR/wheels" -type f -name '*.whl' | wc -l)
+  if [ "$whl_count" -gt 0 ]; then
+    echo "[INFO] Instalando dependencias desde wheels locales..."
+    $PYTHON_BIN -m pip install --no-index --find-links="$SCRIPT_DIR/wheels" -r "$SCRIPT_DIR/requirements.txt" --upgrade || true
+  fi
+fi
+
+# --- Ejecutar el instalador Python principal ---
 $PYTHON_BIN "$SCRIPT_DIR/instalar_agente.py"
