@@ -5,18 +5,21 @@
 
 set -e
 
-# Obtener el directorio donde está este script
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Directorio base fijo para toda la instalación
+BASE_DIR="/tmp/agente"
+mkdir -p "$BASE_DIR"
+cd "$BASE_DIR"
 
 PYTHON_BIN=""
 for bin in python3 python; do
-    if command -v $bin >/dev/null 2>&1; then
-        ver=$($bin -c 'import sys; print(sys.version_info[0])')
-        if [ "$ver" = "3" ]; then
-            PYTHON_BIN=$bin
-            break
-        fi
+  if command -v $bin >/dev/null 2>&1; then
+    ver=$($bin -c 'import sys; print(sys.version_info[0])')
+    if [ "$ver" = "3" ]; then
+      PYTHON_BIN=$bin
+      break
     fi
+  fi
 done
 
 
@@ -135,46 +138,40 @@ done
 
 
 
-# Comprobar wheels/ y descargar automáticamente la carpeta de Google Drive si no existe
-if [ ! -d "$SCRIPT_DIR/wheels" ]; then
+WHEELS_DIR="$BASE_DIR/wheels"
+if [ ! -d "$WHEELS_DIR" ]; then
   echo "[INFO] No se encontró la carpeta wheels. Intentando descargar la carpeta completa desde Google Drive..."
-  # Instalar gdown si no está
   if ! command -v gdown >/dev/null 2>&1; then
     echo "[INFO] Instalando gdown para descargar desde Google Drive..."
     $PYTHON_BIN -m pip install --no-cache-dir gdown || sudo $PYTHON_BIN -m pip install --no-cache-dir gdown
   fi
-  # Descargar la carpeta wheels desde Google Drive (ID de la carpeta)
   GDRIVE_FOLDER_ID="1u1ME2pREDk8i20nW2h7xq0282Ansf1JT"
-  gdown --folder --id "$GDRIVE_FOLDER_ID" -O "$SCRIPT_DIR"
-  # Si wheels.zip existe, descomprimirlo
-  if [ -f "$SCRIPT_DIR/wheels.zip" ]; then
+  gdown --folder --id "$GDRIVE_FOLDER_ID" -O "$BASE_DIR"
+  if [ -f "$BASE_DIR/wheels.zip" ]; then
     echo "[INFO] wheels.zip detectado. Descomprimiendo..."
-    unzip -o "$SCRIPT_DIR/wheels.zip" -d "$SCRIPT_DIR"
-    rm -f "$SCRIPT_DIR/wheels.zip"
-    # Si no existe la carpeta wheels pero hay archivos .whl, muévelos a wheels/
-    if [ ! -d "$SCRIPT_DIR/wheels" ]; then
-      mkdir -p "$SCRIPT_DIR/wheels"
-      find "$SCRIPT_DIR" -maxdepth 1 -type f -name '*.whl' -exec mv {} "$SCRIPT_DIR/wheels/" \;
+    unzip -o "$BASE_DIR/wheels.zip" -d "$BASE_DIR"
+    rm -f "$BASE_DIR/wheels.zip"
+    if [ ! -d "$WHEELS_DIR" ]; then
+      mkdir -p "$WHEELS_DIR"
+      find "$BASE_DIR" -maxdepth 1 -type f -name '*.whl' -exec mv {} "$WHEELS_DIR/" \;
       echo "[INFO] Archivos .whl movidos a wheels/"
     fi
-      # Comprobación extra: si wheels/ existe pero está vacía, buscar .whl en subcarpetas y moverlos
-      whl_count=$(find "$SCRIPT_DIR/wheels" -type f -name '*.whl' | wc -l)
-      if [ "$whl_count" -eq 0 ]; then
-        echo "[WARN] La carpeta wheels existe pero está vacía. Buscando archivos .whl en subcarpetas..."
-        find "$SCRIPT_DIR" -type f -name '*.whl' -exec mv {} "$SCRIPT_DIR/wheels/" \;
-        whl_count=$(find "$SCRIPT_DIR/wheels" -type f -name '*.whl' | wc -l)
-        if [ "$whl_count" -gt 0 ]; then
-          echo "[INFO] Archivos .whl encontrados y movidos a wheels/."
-        fi
+    whl_count=$(find "$WHEELS_DIR" -type f -name '*.whl' | wc -l)
+    if [ "$whl_count" -eq 0 ]; then
+      echo "[WARN] La carpeta wheels existe pero está vacía. Buscando archivos .whl en subcarpetas..."
+      find "$BASE_DIR" -type f -name '*.whl' -exec mv {} "$WHEELS_DIR/" \;
+      whl_count=$(find "$WHEELS_DIR" -type f -name '*.whl' | wc -l)
+      if [ "$whl_count" -gt 0 ]; then
+        echo "[INFO] Archivos .whl encontrados y movidos a wheels/."
       fi
+    fi
   fi
-  # Verificar que wheels/ existe y tiene archivos .whl tras la descarga/descompresión
-  if [ ! -d "$SCRIPT_DIR/wheels" ]; then
+  if [ ! -d "$WHEELS_DIR" ]; then
     echo "[ERROR] La carpeta wheels no se creó correctamente tras descargar la carpeta de Google Drive."
     echo "Descárgala manualmente desde: https://drive.google.com/drive/folders/1u1ME2pREDk8i20nW2h7xq0282Ansf1JT?usp=sharing"
     exit 1
   fi
-  whl_count=$(find "$SCRIPT_DIR/wheels" -type f -name '*.whl' | wc -l)
+  whl_count=$(find "$WHEELS_DIR" -type f -name '*.whl' | wc -l)
   if [ "$whl_count" -eq 0 ]; then
     echo "[ERROR] No se encontraron archivos .whl en wheels/ tras la descarga y comprobaciones."
     echo "Descárgalos manualmente desde: https://drive.google.com/drive/folders/1u1ME2pREDk8i20nW2h7xq0282Ansf1JT?usp=sharing y colócalos en wheels/"
@@ -183,9 +180,7 @@ if [ ! -d "$SCRIPT_DIR/wheels" ]; then
 fi
 
 
-# Ejecutar el instalador Python
-# --- Instalar herramientas de red si no existen ---
-BIN_DIR="$SCRIPT_DIR/bin"
+BIN_DIR="$BASE_DIR/bin"
 mkdir -p "$BIN_DIR"
 
 # URLs de binarios en tu repo (ajusta si cambian los nombres)
@@ -211,12 +206,10 @@ install_bin() {
   fi
 }
 
-# Instalar nmap y busybox
 for bin in "nmap" "busybox"; do
   install_bin "$bin"
 done
 
-# Crear enlaces simbólicos para nc y traceroute si no existen
 for link in nc traceroute; do
   if [ ! -e "$BIN_DIR/$link" ]; then
     ln -sf busybox "$BIN_DIR/$link"
@@ -224,7 +217,6 @@ for link in nc traceroute; do
   fi
 done
 
-# Añadir bin a PATH si no está
 case ":$PATH:" in
   *":$BIN_DIR:"*) ;;
   *) export PATH="$BIN_DIR:$PATH" ;;
@@ -236,14 +228,13 @@ esac
 echo "[INFO] Actualizando pip, setuptools y wheel..."
 $PYTHON_BIN -m pip install --upgrade pip setuptools wheel
 
-# --- Instalar dependencias desde wheels si existen ---
-if [ -d "$SCRIPT_DIR/wheels" ]; then
-  whl_count=$(find "$SCRIPT_DIR/wheels" -type f -name '*.whl' | wc -l)
+if [ -d "$WHEELS_DIR" ]; then
+  whl_count=$(find "$WHEELS_DIR" -type f -name '*.whl' | wc -l)
   if [ "$whl_count" -gt 0 ]; then
     echo "[INFO] Instalando dependencias desde wheels locales..."
-    $PYTHON_BIN -m pip install --no-index --find-links="$SCRIPT_DIR/wheels" -r "$SCRIPT_DIR/requirements.txt" --upgrade || true
+    $PYTHON_BIN -m pip install --no-index --find-links="$WHEELS_DIR" -r "$BASE_DIR/requirements.txt" --upgrade || true
   fi
 fi
 
 # --- Ejecutar el instalador Python principal ---
-$PYTHON_BIN "$SCRIPT_DIR/instalar_agente.py"
+$PYTHON_BIN "$BASE_DIR/instalar_agente.py"
