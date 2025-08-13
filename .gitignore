@@ -3,3 +3,5 @@ wheels/
 # Excluir la carpeta y el zip de wheels del repo
 wheels/
 wheels.zip
+.env
+-env/

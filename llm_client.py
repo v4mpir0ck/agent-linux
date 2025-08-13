@@ -1,36 +1,86 @@
+from dotenv import load_dotenv
+import os
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 import requests
 import os
 import base64
 import hashlib
 from cryptography.fernet import Fernet
 
-# --- Token seguro: desencriptar si existe azure_openai_token.enc ---
-def _get_azure_openai_key():
+def interactive_llm_config():
     enc_path = os.path.join(os.path.dirname(__file__), "azure_openai_token.enc")
+    import getpass
+    print("\033[96m[LLM] ¿Quieres modificar la configuración del LLM (endpoint, key, modelo)?\033[0m")
+    resp = input("[LLM] Escribe 's' para editar o cualquier otra tecla para continuar: ").strip().lower()
+    # Cargar valores actuales si existen
+    current_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+    current_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+    current_api_version = os.getenv("AZURE_OPENAI_API_VERSION")
+    current_key = os.getenv("AZURE_OPENAI_KEY")
+    # Si existe el archivo encriptado, intentar leerlo para mostrar los valores actuales
     if os.path.exists(enc_path):
         import getpass
-        print("\033[93m[SEC] Token encriptado detectado.\033[0m")
-        for intento in range(3):
-            passphrase = getpass.getpass("Introduce la passphrase para el token Azure OpenAI: ")
-            key = hashlib.sha256(passphrase.encode()).digest()[:32]
-            fernet_key = base64.urlsafe_b64encode(key)
+        for intento in range(1):
+            passphrase = getpass.getpass("Introduce la passphrase para mostrar los valores actuales: ")
+            key_bytes = hashlib.sha256(passphrase.encode()).digest()[:32]
+            fernet_key = base64.urlsafe_b64encode(key_bytes)
             fernet = Fernet(fernet_key)
             try:
                 with open(enc_path, "rb") as f:
                     token_enc = f.read()
-                token = fernet.decrypt(token_enc).decode()
-                print("\033[92m[SEC] Token desencriptado correctamente.\033[0m")
-                return token
+                llm_data = fernet.decrypt(token_enc).decode()
+                llm_parts = llm_data.split('\n')
+                if len(llm_parts) == 4:
+                    current_endpoint, current_deployment, current_api_version, current_key = llm_parts
+            except Exception:
+                pass
+    if resp == "s":
+        endpoint = input(f"Nuevo endpoint [{current_endpoint}]: ").strip() or current_endpoint
+        deployment = input(f"Nombre del modelo/deployment [{current_deployment}]: ").strip() or current_deployment
+        api_version = input(f"API version [{current_api_version}]: ").strip() or current_api_version
+        import getpass
+        key = getpass.getpass(f"API Key/token [{current_key[:6]}...]: ").strip() or current_key
+        passphrase = getpass.getpass("Passphrase para encriptar: ").strip()
+        llm_data = f"{endpoint}\n{deployment}\n{api_version}\n{key}"
+        key_bytes = hashlib.sha256(passphrase.encode()).digest()[:32]
+        fernet_key = base64.urlsafe_b64encode(key_bytes)
+        fernet = Fernet(fernet_key)
+        with open(enc_path, "wb") as f:
+            f.write(fernet.encrypt(llm_data.encode()))
+        print("\033[92m[LLM] Configuración guardada y encriptada correctamente.\033[0m")
+        return endpoint, deployment, api_version, key
+    # Si existe el archivo, desencriptar como antes
+    if os.path.exists(enc_path):
+        for intento in range(3):
+            passphrase = getpass.getpass("Introduce la passphrase para el token Azure OpenAI: ")
+            key_bytes = hashlib.sha256(passphrase.encode()).digest()[:32]
+            fernet_key = base64.urlsafe_b64encode(key_bytes)
+            fernet = Fernet(fernet_key)
+            try:
+                with open(enc_path, "rb") as f:
+                    token_enc = f.read()
+                llm_data = fernet.decrypt(token_enc).decode()
+                llm_parts = llm_data.split('\n')
+                if len(llm_parts) == 4:
+                    endpoint, deployment, api_version, key = llm_parts
+                else:
+                    raise ValueError("Formato de datos LLM incorrecto. Esperado 4 líneas.")
+                print("\033[92m[LLM] Token desencriptado correctamente.\033[0m")
+                return endpoint, deployment, api_version, key
             except Exception as e:
-                print(f"\033[91m[SEC] Error de desencriptado: {e}\033[0m")
-        print("\033[91m[SEC] No se pudo desencriptar el token tras 3 intentos.\033[0m")
+                print(f"\033[91m[LLM] Error de desencriptado: {e}\033[0m")
+        print("\033[91m[LLM] No se pudo desencriptar el token tras 3 intentos.\033[0m")
         exit(1)
     # Fallback: variable de entorno o hardcoded
-    return os.getenv("AZURE_OPENAI_KEY", "8zKFs1zJ1el0qP7er2oHsKusPGieAZERSUiTHACifNQ844TfNX1oJQQJ99BHACYeBjFXJ3w3AAABACOGJckA")
+    endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+    deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+    api_version = os.getenv("AZURE_OPENAI_API_VERSION")
+    key = os.getenv("AZURE_OPENAI_KEY")
+    return endpoint, deployment, api_version, key
 
-AZURE_OPENAI_KEY = _get_azure_openai_key()
-AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT", "https://agent-linux.openai.azure.com/")
-AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-4.1-mini")
+# --- Token seguro: desencriptar si existe azure_openai_token.enc ---
+AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT, AZURE_OPENAI_API_VERSION, AZURE_OPENAI_KEY = interactive_llm_config()
 
 # Alias para compatibilidad con el agente (deben ir después de definir las variables originales)
 LLM_ENDPOINT = AZURE_OPENAI_ENDPOINT
@@ -38,7 +88,7 @@ LLM_MODEL = AZURE_OPENAI_DEPLOYMENT
 
 # Función para consultar el LLM
 def query_llm(prompt, temperature=0.2, max_tokens=256):
-    url = f"{AZURE_OPENAI_ENDPOINT}openai/deployments/{AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=2024-02-15-preview"
+    url = f"{AZURE_OPENAI_ENDPOINT}openai/deployments/{AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version={AZURE_OPENAI_API_VERSION}"
     headers = {
         "api-key": AZURE_OPENAI_KEY,
         "Content-Type": "application/json"
@@ -74,23 +124,7 @@ def query_llm(prompt, temperature=0.2, max_tokens=256):
     print("\033[91m[LLM] Se alcanzó el máximo de reintentos.\033[0m")
     return "[ERROR] El servicio LLM está saturado o no disponible. Intenta de nuevo en unos minutos."
 
-def query_llm(prompt, temperature=0.2, max_tokens=256):
-    url = f"{AZURE_OPENAI_ENDPOINT}openai/deployments/{AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=2024-02-15-preview"
-    headers = {
-        "api-key": AZURE_OPENAI_KEY,
-        "Content-Type": "application/json"
-    }
-    data = {
-        "messages": [
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": temperature,
-        "max_tokens": max_tokens
-    }
-    response = requests.post(url, headers=headers, json=data)
-    response.raise_for_status()
-    result = response.json()
-    return result["choices"][0]["message"]["content"]
+## Eliminar duplicado y asegurar que query_llm usa la versión de API configurada
 
 # Ejemplo de uso:
 if __name__ == "__main__":
