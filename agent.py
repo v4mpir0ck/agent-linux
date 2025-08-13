@@ -42,20 +42,22 @@ def print_help():
     ]
     # Tabla opciones básicas
     banner = "\033[96m+{}+\033[0m\n".format('-'*box_width)
-    banner += "\033[96m|{}|\033[0m\n".format(center_text('🧠  Agente IA para Linux  🧠', box_width))
+    banner += "\033[96m|{}|\033[0m\n".format(center_text('Agente IA para Linux', box_width))
     banner += "\033[96m+{}+\033[0m\n".format('-'*box_width)
     for opcion in opciones:
-        for linea in wrap_text(opcion, box_width-2):
-            banner += f"| \033[96m{linea.ljust(box_width-2)}\033[0m |\n"
+        for linea in wrap_text(opcion, box_width-4):
+            banner += f"➤ \033[96m{linea.ljust(box_width-4)}\033[0m\n"
     banner += "\033[96m+{}+\033[0m\n".format('-'*box_width)
+    # Sin barra final
     # Tabla opciones avanzadas
     banner += "\033[95m+{}+\033[0m\n".format('-'*box_width)
     banner += "\033[95m|{}|\033[0m\n".format(center_text('Opciones avanzadas', box_width))
     banner += "\033[95m+{}+\033[0m\n".format('-'*box_width)
     for opcion in avanzadas:
-        for linea in wrap_text(opcion, box_width-2):
-            banner += f"| \033[95m{linea.ljust(box_width-2)}\033[0m |\n"
+        for linea in wrap_text(opcion, box_width-4):
+            banner += f"➤ \033[95m{linea.ljust(box_width-4)}\033[0m\n"
     banner += "\033[95m+{}+\033[0m\n".format('-'*box_width)
+    # Sin barra final
     return banner
 import sys
 import os
@@ -401,6 +403,7 @@ if __name__ == "__main__":
         print(f"\033[94m[LLM] Estado: {llm_status}\033[0m\n")
     except Exception as e:
         print(f"\033[91m[LLM] No se pudo obtener la configuración del modelo: {e}\033[0m\n")
+    print("\033[91m[AVISO] Todas las opciones pasan por el LLM, por lo que el resultado puede variar según el contexto proporcionado.\033[0m\n")
     print(print_help())
     agent = Agent()
     while True:
