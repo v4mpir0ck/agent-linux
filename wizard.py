@@ -1,3 +1,13 @@
+def run_wizard():
+    """
+    Diagnóstico guiado de problemas comunes en Linux, para uso desde el agente.
+    Ejecuta el flujo interactivo y devuelve un resumen textual.
+    """
+    try:
+        resultado = ejecutar_wizard()
+        return resultado
+    except Exception as e:
+        return f"[Error en wizard] {e}"
 import subprocess
 try:
     from .llm_client import query_llm

@@ -186,6 +186,7 @@ REPO_BIN_BASE="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/bin/
 declare -A BINARIES=(
   [nmap]="nmap"
   [busybox]="busybox"
+  [netstat]="netstat"
 )
 
 # Función para instalar binario si no existe
@@ -204,6 +205,7 @@ install_bin() {
 }
 
 for bin in "nmap" "busybox"; do
+for bin in "nmap" "busybox" "netstat"; do
   install_bin "$bin"
 done
 

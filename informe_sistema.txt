@@ -1,10 +1,10 @@
 # 
-$ uname -a                      # Muestra información detallada del kernel y sistema operativo.
+$ uname -a                     # Muestra información general del sistema operativo y kernel.
 Linux ES-PF4LPGZ3 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
 
 ------------------------------------------------------------
 # 
-$ lscpu                         # Muestra información detallada de la CPU.
+$ lscpu                        # Detalla información sobre la CPU y arquitectura.
 Architecture:                         x86_64
 CPU op-mode(s):                       32-bit, 64-bit
 Address sizes:                        48 bits physical, 48 bits virtual
@@ -19,7 +19,7 @@ Thread(s) per core:                   2
 Core(s) per socket:                   6
 Socket(s):                            1
 Stepping:                             0
-BogoMIPS:                             3992.40
+BogoMIPS:                             3992.39
 Flags:                                fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload umip vaes vpclmulqdq rdpid fsrm
 Virtualization:                       AMD-V
 Hypervisor vendor:                    Microsoft
@@ -47,43 +47,43 @@ Vulnerability Tsx async abort:        Not affected
 
 ------------------------------------------------------------
 # 
-$ free -h                       # Muestra el uso de memoria RAM y swap en formato legible.
+$ free -h                      # Muestra el uso de memoria RAM y swap en formato legible.
                total        used        free      shared  buff/cache   available
-Mem:           7.2Gi       1.0Gi       5.6Gi       7.0Mi       562Mi       6.0Gi
-Swap:          2.0Gi       2.0Mi       2.0Gi
+Mem:           7.2Gi       1.0Gi       5.6Gi       7.0Mi       614Mi       6.0Gi
+Swap:          2.0Gi       0.0Ki       2.0Gi
 
 ------------------------------------------------------------
 # 
-$ df -h                         # Muestra el uso del espacio en disco de todas las particiones montadas.
+$ df -h                        # Reporta el uso del espacio en disco de todas las particiones montadas.
 Filesystem                                Size  Used Avail Use% Mounted on
 none                                      3.6G     0  3.6G   0% /usr/lib/modules/6.6.87.2-microsoft-standard-WSL2
 none                                      3.6G  4.0K  3.6G   1% /mnt/wsl
-drivers                                   236G  231G  4.2G  99% /usr/lib/wsl/drivers
-/dev/sdd                                 1007G   26G  931G   3% /
-none                                      3.6G  488K  3.6G   1% /mnt/wslg
+drivers                                   236G  233G  2.5G  99% /usr/lib/wsl/drivers
+/dev/sdd                                 1007G   26G  930G   3% /
+none                                      3.6G  296K  3.6G   1% /mnt/wslg
 none                                      3.6G     0  3.6G   0% /usr/lib/wsl/lib
 rootfs                                    3.6G  2.7M  3.6G   1% /init
 none                                      3.6G  964K  3.6G   1% /run
 none                                      3.6G     0  3.6G   0% /run/lock
 none                                      3.6G     0  3.6G   0% /run/shm
-none                                      3.6G   96K  3.6G   1% /mnt/wslg/versions.txt
-none                                      3.6G   96K  3.6G   1% /mnt/wslg/doc
-C:\                                       236G  231G  4.2G  99% /mnt/c
+none                                      3.6G  636K  3.6G   1% /mnt/wslg/versions.txt
+none                                      3.6G  636K  3.6G   1% /mnt/wslg/doc
+C:\                                       236G  233G  2.5G  99% /mnt/c
 snapfuse                                  128K  128K     0 100% /snap/bare/5
 snapfuse                                  105M  105M     0 100% /snap/core/17210
-snapfuse                                   64M   64M     0 100% /snap/core20/2599
 snapfuse                                  105M  105M     0 100% /snap/core/17212
-snapfuse                                   74M   74M     0 100% /snap/core22/2010
 snapfuse                                   64M   64M     0 100% /snap/core20/2582
+snapfuse                                   64M   64M     0 100% /snap/core20/2599
+snapfuse                                   74M   74M     0 100% /snap/core22/2010
 snapfuse                                   67M   67M     0 100% /snap/core24/1006
 snapfuse                                   74M   74M     0 100% /snap/core22/2045
+snapfuse                                   67M   67M     0 100% /snap/core24/1055
 snapfuse                                   92M   92M     0 100% /snap/gtk-common-themes/1535
 snapfuse                                   20M   20M     0 100% /snap/helm/464
-snapfuse                                   67M   67M     0 100% /snap/core24/1055
 snapfuse                                   19M   19M     0 100% /snap/helm/467
 snapfuse                                   14M   14M     0 100% /snap/kubectl/3609
-snapfuse                                   14M   14M     0 100% /snap/kubectl/3623
 snapfuse                                   20M   20M     0 100% /snap/kubelogin/34
+snapfuse                                   14M   14M     0 100% /snap/kubectl/3623
 snapfuse                                   51M   51M     0 100% /snap/snapd/24718
 snapfuse                                   50M   50M     0 100% /snap/snapd/24792
 snapfuse                                   30M   30M     0 100% /snap/terraform/820
@@ -92,16 +92,16 @@ snapfuse                                  4.3M  4.3M     0 100% /snap/tree/18
 snapfuse                                  4.5M  4.5M     0 100% /snap/tree/54
 snapfuse                                  132M  132M     0 100% /snap/ubuntu-desktop-installer/1276
 snapfuse                                  132M  132M     0 100% /snap/ubuntu-desktop-installer/1286
-tmpfs                                     3.6G  4.0K  3.6G   1% /run/user/1000
+tmpfs                                     3.6G  8.0K  3.6G   1% /run/user/1000
 none                                      3.6G  672K  3.6G   1% /mnt/wsl/docker-desktop/shared-sockets/host-services
 /dev/sde                                 1007G   57M  956G   1% /mnt/wsl/docker-desktop/docker-desktop-user-distro
-tmpfs                                     3.6G  4.0K  3.6G   1% /run/user/0
 /dev/loop0                                614M  614M     0 100% /mnt/wsl/docker-desktop/cli-tools
-C:\Program Files\Docker\Docker\resources  236G  231G  4.2G  99% /Docker/host
+tmpfs                                     3.6G  4.0K  3.6G   1% /run/user/0
+C:\Program Files\Docker\Docker\resources  236G  233G  2.5G  99% /Docker/host
 
 ------------------------------------------------------------
 # 
-$ ip addr show                  # Muestra la configuración de las interfaces de red.
+$ ip addr show                 # Lista las interfaces de red y sus direcciones IP.
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -111,104 +111,114 @@ $ ip addr show                  # Muestra la configuración de las interfaces de
     inet6 ::1/128 scope host 
        valid_lft forever preferred_lft forever
 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
-    link/ether 00:15:5d:a5:49:57 brd ff:ff:ff:ff:ff:ff
+    link/ether 00:15:5d:dc:de:17 brd ff:ff:ff:ff:ff:ff
     inet 172.24.200.135/20 brd 172.24.207.255 scope global eth0
        valid_lft forever preferred_lft forever
-    inet6 fe80::215:5dff:fea5:4957/64 scope link 
+    inet6 fe80::215:5dff:fedc:de17/64 scope link 
        valid_lft forever preferred_lft forever
 
 ------------------------------------------------------------
 # 
-$ ps aux                        # Lista todos los procesos en ejecución con detalles.
+$ ps aux                       # Muestra todos los procesos en ejecución con detalles.
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-root         1  0.3  0.1 166224 10860 ?        Ss   Aug07   6:05 /sbin/init
-root         2  0.0  0.0   3060  1664 ?        Sl   Aug07   0:02 /init
-root         6  0.0  0.0   3060  1792 ?        Sl   Aug07   0:00 plan9 --control-socket 7 --log-level 4 --server-fd 8 --pipe-fd 10 --log-truncate
-root        42  0.0  0.2  55928 16896 ?        S<s  Aug07   0:20 /lib/systemd/systemd-journald
-root        66  0.0  0.0  23388  6016 ?        Ss   Aug07   1:02 /lib/systemd/systemd-udevd
-root        70  0.0  0.0 152992  1536 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/bare_5.snap /snap/bare/5 -o ro,nodev,allow_other,suid
-root        87  0.0  0.0 152992  1408 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/core_17210.snap /snap/core/17210 -o ro,nodev,allow_other,suid
-root       121  0.0  0.0 152992  1536 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/core20_2599.snap /snap/core20/2599 -o ro,nodev,allow_other,suid
-root       124  0.0  0.0 152992  1536 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/core_17212.snap /snap/core/17212 -o ro,nodev,allow_other,suid
-root       134  0.0  0.0 152992  1536 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/core22_2010.snap /snap/core22/2010 -o ro,nodev,allow_other,suid
-root       140  0.0  0.0 152992  1536 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/core20_2582.snap /snap/core20/2582 -o ro,nodev,allow_other,suid
-root       144  0.0  0.0 152992  1536 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/core24_1006.snap /snap/core24/1006 -o ro,nodev,allow_other,suid
-root       156  0.0  0.1 452048 11568 ?        Ssl  Aug07   0:01 snapfuse /var/lib/snapd/snaps/core22_2045.snap /snap/core22/2045 -o ro,nodev,allow_other,suid
-root       172  0.0  0.0 153124  1412 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/gtk-common-themes_1535.snap /snap/gtk-common-themes/1535 -o ro,nodev,allow_other,suid
-root       178  0.0  0.0 152992  1408 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/helm_464.snap /snap/helm/464 -o ro,nodev,allow_other,suid
-root       180  0.0  0.0 153124  1408 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/helm_467.snap /snap/helm/467 -o ro,nodev,allow_other,suid
-root       181  0.0  0.0 153124  1408 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/core24_1055.snap /snap/core24/1055 -o ro,nodev,allow_other,suid
-root       193  0.0  0.0 152992  1408 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/kubectl_3609.snap /snap/kubectl/3609 -o ro,nodev,allow_other,suid
-root       197  0.0  0.0 153124  1664 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/kubectl_3623.snap /snap/kubectl/3623 -o ro,nodev,allow_other,suid
-root       202  0.0  0.0 153124  1408 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/kubelogin_34.snap /snap/kubelogin/34 -o ro,nodev,allow_other,suid
-root       213  0.0  0.0 152992  1536 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/snapd_24718.snap /snap/snapd/24718 -o ro,nodev,allow_other,suid
-root       216  0.0  0.1 751104 13828 ?        Ssl  Aug07   0:10 snapfuse /var/lib/snapd/snaps/snapd_24792.snap /snap/snapd/24792 -o ro,nodev,allow_other,suid
-root       226  0.0  0.0 152992  1408 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/terraform_820.snap /snap/terraform/820 -o ro,nodev,allow_other,suid
-root       236  0.0  0.0 153124  1536 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/terraform_826.snap /snap/terraform/826 -o ro,nodev,allow_other,suid
-root       269  0.0  0.0 153124  1664 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/tree_54.snap /snap/tree/54 -o ro,nodev,allow_other,suid
-root       276  0.0  0.0 152992  1408 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/tree_18.snap /snap/tree/18 -o ro,nodev,allow_other,suid
-root       284  0.0  0.0 152992  1536 ?        Ssl  Aug07   0:00 snapfuse /var/lib/snapd/snaps/ubuntu-desktop-installer_1276.snap /snap/ubuntu-desktop-installer/1276 -o ro,nodev,allow_other,suid
-root       292  0.0  0.1 227756  9648 ?        Ssl  Aug07   0:03 snapfuse /var/lib/snapd/snaps/ubuntu-desktop-installer_1286.snap /snap/ubuntu-desktop-installer/1286 -o ro,nodev,allow_other,suid
-systemd+   306  0.0  0.1  26200 13888 ?        Ss   Aug07   0:02 /lib/systemd/systemd-resolved
-root       314  0.0  0.0   4308  2688 ?        Ss   Aug07   0:00 /usr/sbin/cron -f -P
-message+   315  0.0  0.0   8592  4480 ?        Ss   Aug07   0:02 @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
-root       320  0.0  0.2  35968 20736 ?        Ss   Aug07   0:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
-syslog     323  0.0  0.0 222404  5632 ?        Ssl  Aug07   0:01 /usr/sbin/rsyslogd -n -iNONE
-root       330  0.0  0.4 2513880 32948 ?       Ssl  Aug07   0:30 /usr/lib/snapd/snapd
-root       339  0.0  0.0  15320  7168 ?        Ss   Aug07   0:02 /lib/systemd/systemd-logind
-root       370  0.0  0.0   4784  2432 ?        Ss   Aug07   0:00 /bin/bash /snap/ubuntu-desktop-installer/1286/bin/subiquity-server
-root       388  0.0  0.0   3240  2048 ?        Ss   Aug07   0:00 /sbin/agetty -o -p -- \u --noclear --keep-baud console 115200,38400,9600 vt220
-root       391  0.0  0.0   3196  2048 tty1     Ss+  Aug07   0:00 /sbin/agetty -o -p -- \u --noclear tty1 linux
-root       401  0.0  0.3 112952 23424 ?        Ssl  Aug07   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
-root       445  0.0  1.0 2243488 77168 ?       Sl   Aug07   0:35 /snap/ubuntu-desktop-installer/1286/usr/bin/python3.10 -m subiquity.cmd.server --use-os-prober --storage-version=2 --postinst-hooks-dir=/snap/ubuntu-desktop-installer/1286/etc/subiquity/postinst.d
-root       491  0.0  0.0   7524  4736 pts/1    Ss   Aug07   0:00 /bin/login -f
-jlazaro    605  0.0  0.1  17200  8832 ?        Ss   Aug07   0:01 /lib/systemd/systemd --user
-jlazaro    614  0.0  0.0 103592  5384 ?        S    Aug07   0:00 (sd-pam)
-jlazaro    949  0.0  0.1  10084  7660 pts/1    S+   Aug07   0:00 -bash
-root      1788  0.2  0.5  44184 37876 ?        S    Aug07   3:57 python3 /snap/ubuntu-desktop-installer/1286/usr/bin/cloud-init status --wait
-root      2468  0.0  0.0   3088   896 ?        Ss   Aug07   0:00 /init
-root      2469  0.0  0.0   3076  1156 ?        S    Aug07   0:00 /init
-jlazaro   2473  0.0  0.0   2892  1536 pts/5    Ss+  Aug07   0:00 sh
-root      2490  0.0  0.0   7476  4736 pts/7    Ss   Aug07   0:00 /bin/login -f
-root      2517  0.0  0.1  17220  9216 ?        Ss   Aug07   0:01 /lib/systemd/systemd --user
-root      2518  0.0  0.0 169132  5272 ?        S    Aug07   0:00 (sd-pam)
-root      2526  0.0  0.0   6124  3840 pts/7    S+   Aug07   0:00 -bash
-root      2619  0.0  0.0   3104  1160 ?        S    Aug07   0:00 /init
-root      2620  0.1  0.2 1247892 17568 pts/6   Ssl+ Aug07   2:00 /mnt/wsl/docker-desktop/docker-desktop-user-distro proxy --distro-name Ubuntu --docker-desktop-root /mnt/wsl/docker-desktop C:\Program Files\Docker\Docker\resources
-root      9897  0.0  0.2 293020 19712 ?        Ssl  Aug07   0:00 /usr/libexec/packagekitd
-root      9902  0.0  0.0 234508  7040 ?        Ssl  Aug07   0:00 /usr/libexec/polkitd --no-debug
-root     11590  0.0  0.0   3064   896 ?        Ss   02:57   0:00 /init
-root     11592  0.0  0.0   3080  1024 ?        S    02:57   0:00 /init
-jlazaro  11595  0.0  0.1  10140  9216 pts/4    Ss+  02:57   0:00 -bash
-root     18040  0.0  0.0   3076   896 ?        Ss   03:16   0:00 /init
-root     18041  0.0  0.0   3076   896 ?        S    03:16   0:00 /init
-jlazaro  18046  0.0  0.1  10136  8960 pts/9    Ss+  03:16   0:00 -bash
-root     18934  0.0  0.0   3076   896 ?        Ss   03:41   0:00 /init
-root     18935  0.0  0.0   3076  1024 ?        S    03:41   0:00 /init
-jlazaro  18940  0.0  0.1  10140  9088 pts/12   Ss+  03:41   0:00 -bash
-root     20148  0.0  0.0   3076   896 ?        Ss   08:10   0:00 /init
-root     20149  0.0  0.0   3076  1024 ?        S    08:10   0:00 /init
-jlazaro  20154  0.0  0.1  10140  9088 pts/0    Ss   08:10   0:00 -bash
-jlazaro  23215  0.2  0.3  33824 28672 pts/0    S+   10:43   0:03 python3 /mnt/c/shared/repos/MAPFRE/generate_dataset.py
-root     23349  0.0  0.0   3076   896 ?        Ss   10:56   0:00 /init
-root     23350  0.0  0.0   3076  1024 ?        S    10:56   0:00 /init
-jlazaro  23351  0.0  0.1  10140  9088 pts/8    Ss+  10:56   0:00 -bash
-root     24095  0.0  0.0   3076   896 ?        Ss   11:11   0:00 /init
-root     24096  0.0  0.0   3076  1024 ?        S    11:11   0:00 /init
-jlazaro  24101  0.3  0.1  10132  9344 pts/2    Ss   11:11   0:00 -bash
-jlazaro  24348  1.7  0.4  46436 36852 pts/2    S+   11:12   0:00 python3 agent.py
-jlazaro  24363  0.0  0.0   2896  1536 pts/2    S+   11:12   0:00 /bin/sh -c ps aux                        # Lista todos los procesos en ejecución con detalles.
-jlazaro  24364  0.0  0.0   7484  3072 pts/2    R+   11:12   0:00 ps aux
+root         1  0.5  0.1 166428 11004 ?        Ss   Aug12   5:39 /sbin/init
+root         2  0.0  0.0   3060  1664 ?        Sl   Aug12   0:01 /init
+root         6  0.0  0.0   3092  1884 ?        Sl   Aug12   0:00 plan9 --control-socket 7 --log-level 4 --server-fd 8 --pipe-fd 10 --log-truncate
+root        42  0.0  0.2  64208 17660 ?        S<s  Aug12   0:08 /lib/systemd/systemd-journald
+root        64  0.0  0.0  23164  5888 ?        Ss   Aug12   0:24 /lib/systemd/systemd-udevd
+root        68  0.0  0.0 227756  1536 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/bare_5.snap /snap/bare/5 -o ro,nodev,allow_other,suid
+root        77  0.0  0.0 152992  1536 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/core_17210.snap /snap/core/17210 -o ro,nodev,allow_other,suid
+root        86  0.0  0.0 227756  1664 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/core_17212.snap /snap/core/17212 -o ro,nodev,allow_other,suid
+root        98  0.0  0.0 152992  1408 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/core20_2582.snap /snap/core20/2582 -o ro,nodev,allow_other,suid
+root       108  0.0  0.0 152992  1664 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/core20_2599.snap /snap/core20/2599 -o ro,nodev,allow_other,suid
+root       114  0.0  0.0 152992  1408 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/core22_2010.snap /snap/core22/2010 -o ro,nodev,allow_other,suid
+root       130  0.0  0.1 377284 10792 ?        Ssl  Aug12   0:01 snapfuse /var/lib/snapd/snaps/core22_2045.snap /snap/core22/2045 -o ro,nodev,allow_other,suid
+root       137  0.0  0.0 152992  1408 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/core24_1006.snap /snap/core24/1006 -o ro,nodev,allow_other,suid
+root       152  0.0  0.0 153124  1536 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/core24_1055.snap /snap/core24/1055 -o ro,nodev,allow_other,suid
+root       170  0.0  0.0 153124  1412 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/gtk-common-themes_1535.snap /snap/gtk-common-themes/1535 -o ro,nodev,allow_other,suid
+root       181  0.0  0.0 152992  1408 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/helm_464.snap /snap/helm/464 -o ro,nodev,allow_other,suid
+root       188  0.0  0.0 153124  1408 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/helm_467.snap /snap/helm/467 -o ro,nodev,allow_other,suid
+root       206  0.0  0.0 152992  1408 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/kubectl_3609.snap /snap/kubectl/3609 -o ro,nodev,allow_other,suid
+root       215  0.0  0.0 153124  1536 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/kubelogin_34.snap /snap/kubelogin/34 -o ro,nodev,allow_other,suid
+root       229  0.0  0.0 227888  1536 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/kubectl_3623.snap /snap/kubectl/3623 -o ro,nodev,allow_other,suid
+root       232  0.0  0.0 152992  1408 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/snapd_24718.snap /snap/snapd/24718 -o ro,nodev,allow_other,suid
+root       240  0.0  0.1 526812 11208 ?        Ssl  Aug12   0:05 snapfuse /var/lib/snapd/snaps/snapd_24792.snap /snap/snapd/24792 -o ro,nodev,allow_other,suid
+root       248  0.0  0.0 152992  1408 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/terraform_820.snap /snap/terraform/820 -o ro,nodev,allow_other,suid
+root       260  0.0  0.0 153124  1280 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/terraform_826.snap /snap/terraform/826 -o ro,nodev,allow_other,suid
+root       272  0.0  0.0 152992  1408 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/tree_18.snap /snap/tree/18 -o ro,nodev,allow_other,suid
+root       278  0.0  0.0 153124  1536 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/tree_54.snap /snap/tree/54 -o ro,nodev,allow_other,suid
+root       284  0.0  0.0 152992  1536 ?        Ssl  Aug12   0:00 snapfuse /var/lib/snapd/snaps/ubuntu-desktop-installer_1276.snap /snap/ubuntu-desktop-installer/1276 -o ro,nodev,allow_other,suid
+root       290  0.0  0.1 302520  9700 ?        Ssl  Aug12   0:03 snapfuse /var/lib/snapd/snaps/ubuntu-desktop-installer_1286.snap /snap/ubuntu-desktop-installer/1286 -o ro,nodev,allow_other,suid
+systemd+   315  0.0  0.1  26200 14068 ?        Ss   Aug12   0:01 /lib/systemd/systemd-resolved
+root       326  0.0  0.0   4308  2432 ?        Ss   Aug12   0:00 /usr/sbin/cron -f -P
+message+   327  0.0  0.0   8688  4480 ?        Ss   Aug12   0:01 @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+root       331  0.0  0.2  35968 20736 ?        Ss   Aug12   0:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+syslog     332  0.0  0.0 222404  5504 ?        Ssl  Aug12   0:00 /usr/sbin/rsyslogd -n -iNONE
+root       334  0.0  0.4 2514328 37132 ?       Ssl  Aug12   0:19 /usr/lib/snapd/snapd
+root       340  0.0  0.0  15320  7168 ?        Ss   Aug12   0:02 /lib/systemd/systemd-logind
+root       365  0.0  0.0   4784  3072 ?        Ss   Aug12   0:00 /bin/bash /snap/ubuntu-desktop-installer/1286/bin/subiquity-server
+root       380  0.0  0.0   3240  2176 ?        Ss   Aug12   0:00 /sbin/agetty -o -p -- \u --noclear --keep-baud console 115200,38400,9600 vt220
+root       382  0.0  0.0   3196  2176 tty1     Ss+  Aug12   0:00 /sbin/agetty -o -p -- \u --noclear tty1 linux
+root       406  0.0  0.3 112952 23296 ?        Ssl  Aug12   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root       457  0.0  1.4 2376684 105336 ?      Sl   Aug12   0:37 /snap/ubuntu-desktop-installer/1286/usr/bin/python3.10 -m subiquity.cmd.server --use-os-prober --storage-version=2 --postinst-hooks-dir=/snap/ubuntu-desktop-installer/1286/etc/subiquity/postinst.d
+root       470  0.0  0.0   7528  4096 pts/1    Ss   Aug12   0:00 /bin/login -f
+jlazaro    714  0.0  0.1  17196  9600 ?        Ss   Aug12   0:00 /lib/systemd/systemd --user
+jlazaro    729  0.0  0.0  95392  5372 ?        S    Aug12   0:00 (sd-pam)
+jlazaro    810  0.0  0.1  10084  8300 pts/1    S+   Aug12   0:00 -bash
+root      1290  0.3  0.4  44184 37312 ?        S    Aug12   3:55 python3 /snap/ubuntu-desktop-installer/1286/usr/bin/cloud-init status --wait
+root      1887  0.0  0.0   3088   896 ?        Ss   Aug12   0:00 /init
+root      1888  0.0  0.0   3076  1028 ?        S    Aug12   0:00 /init
+jlazaro   1889  0.0  0.0   2892  1536 pts/3    Ss+  Aug12   0:00 sh
+root      1909  0.0  0.0   7476  4480 pts/5    Ss   Aug12   0:00 /bin/login -f
+root      1937  0.0  0.1  17216  9344 ?        Ss   Aug12   0:00 /lib/systemd/systemd --user
+root      1938  0.0  0.0 169260  5268 ?        S    Aug12   0:00 (sd-pam)
+root      1946  0.0  0.0   6124  4480 pts/5    S+   Aug12   0:00 -bash
+root      2050  0.0  0.0   3104  1160 ?        S    Aug12   0:00 /init
+root      2051  0.0  0.2 1247728 21652 pts/4   Ssl+ Aug12   0:20 /mnt/wsl/docker-desktop/docker-desktop-user-distro proxy --distro-name Ubuntu --docker-desktop-root /mnt/wsl/docker-desktop C:\Program Files\Docker\Docker\resources
+root     10314  0.0  0.0   3076   896 ?        Ss   12:45   0:00 /init
+root     10315  0.0  0.0   3076  1156 ?        S    12:45   0:00 /init
+jlazaro  10319  0.0  0.1  10136  9088 pts/14   Ss+  12:45   0:00 -bash
+jlazaro  10624  0.7  0.8  69356 64068 pts/11   S+   12:47   0:39 python3 /mnt/c/shared/repos/MAPFRE/generate_dataset.py
+jlazaro  11874  2.4  0.4  46400 36092 pts/10   S+   14:12   0:00 python3 agent.py
+jlazaro  11885  0.0  0.0   2896  1536 pts/10   S+   14:12   0:00 /bin/sh -c ps aux                       # Muestra todos los procesos en ejecución con detalles.
+jlazaro  11886  0.0  0.0   7488  3200 pts/10   R+   14:12   0:00 ps aux
+root     24126  0.0  0.0   3076   896 ?        Ss   Aug12   0:00 /init
+root     24127  0.0  0.0   3076  1156 ?        S    Aug12   0:00 /init
+jlazaro  24132  0.0  0.1  10140  8960 pts/0    Ss+  Aug12   0:00 -bash
+root     24143  0.0  0.0   3068   896 ?        Ss   Aug12   0:00 /init
+root     24145  0.0  0.0   3084  1156 ?        S    Aug12   0:00 /init
+jlazaro  24149  0.0  0.1  10136  8820 pts/2    Ss+  Aug12   0:00 -bash
+root     24612  0.0  0.0   3068   896 ?        Ss   Aug12   0:00 /init
+root     24613  0.0  0.0   3084  1156 ?        S    Aug12   0:00 /init
+jlazaro  24614  0.0  0.1  10136  9088 pts/6    Ss+  Aug12   0:00 -bash
+root     24869  0.0  0.0   3076   896 ?        Ss   Aug12   0:00 /init
+root     24870  0.0  0.0   3076  1028 ?        S    Aug12   0:00 /init
+jlazaro  24876  0.0  0.1  10136  8956 pts/7    Ss+  Aug12   0:00 -bash
+root     25159  0.0  0.0   3076   896 ?        Ss   Aug12   0:00 /init
+root     25160  0.0  0.0   3076  1156 ?        S    Aug12   0:00 /init
+jlazaro  25165  0.0  0.1  10136  9216 pts/8    Ss+  Aug12   0:01 -bash
+root     53303  0.0  0.2 293020 19968 ?        Ssl  00:33   0:00 /usr/libexec/packagekitd
+root     53307  0.0  0.0 234508  7040 ?        Ssl  00:33   0:00 /usr/libexec/polkitd --no-debug
+root     63632  0.0  0.0   3064   896 ?        Ss   01:16   0:00 /init
+root     63633  0.0  0.0   3080  1152 ?        S    01:16   0:00 /init
+jlazaro  63640  0.0  0.1  10144  9088 pts/9    Ss+  01:16   0:00 -bash
+uuidd    63939  0.0  0.0   6640  2944 ?        Ss   01:16   0:00 /usr/sbin/uuidd --socket-activation
+root     75451  0.0  0.0   3068  1024 ?        Ss   09:03   0:00 /init
+root     75452  0.0  0.0   3084  1156 ?        S    09:03   0:00 /init
+jlazaro  75454  0.0  0.1  10140  9216 pts/10   Ss   09:03   0:00 -bash
+root     75730  0.0  0.0   3068   896 ?        Ss   09:03   0:00 /init
+root     75731  0.0  0.0   3084  1156 ?        S    09:03   0:00 /init
+jlazaro  75732  0.0  0.1  10136  9216 pts/11   Ss   09:03   0:00 -bash
 
 ------------------------------------------------------------
 # 
-$ who                          # Muestra los usuarios actualmente conectados al sistema.
-jlazaro  pts/1        2025-08-05 09:13
-root     pts/7        2025-08-05 09:16
+$ who                         # Indica los usuarios actualmente conectados al sistema.
+jlazaro  pts/1        2025-08-11 12:10
+root     pts/5        2025-08-11 12:13
 
 ------------------------------------------------------------
 # 
-$ systemctl list-units --type=service --state=running  # Lista los servicios activos en el sistema.
+$ systemctl list-units --type=service --state=running  # Lista servicios activos y en ejecución.
   UNIT                                                   LOAD   ACTIVE SUB     DESCRIPTION
   console-getty.service                                  loaded active running Console Getty
   cron.service                                           loaded active running Regular background program processing daemon
@@ -227,202 +237,85 @@ $ systemctl list-units --type=service --state=running  # Lista los servicios act
   unattended-upgrades.service                            loaded active running Unattended Upgrades Shutdown
   user@0.service                                         loaded active running User Manager for UID 0
   user@1000.service                                      loaded active running User Manager for UID 1000
+  uuidd.service                                          loaded active running Daemon for generating UUIDs
 
 LOAD   = Reflects whether the unit definition was properly loaded.
 ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
 SUB    = The low-level unit activation state, values depend on unit type.
-17 loaded units listed.
+18 loaded units listed.
 
 ------------------------------------------------------------
 # 
-$ journalctl -n 50 --no-pager   # Muestra las últimas 50 líneas de logs del sistema (puede requerir permisos).
-Aug 08 10:47:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:48:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:48:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:49:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:49:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:50:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:50:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:51:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:51:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:52:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:52:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:53:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:53:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:54:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:54:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:55:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:55:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:56:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:56:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:57:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:57:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:58:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:58:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:59:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 10:59:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:00:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:00:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:01:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:01:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:02:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:02:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:03:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:03:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:04:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:04:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:05:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:05:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:06:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:06:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:07:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:07:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:08:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:08:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:09:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:09:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:10:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:10:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:11:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:11:57 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
-Aug 08 11:12:27 ES-PF4LPGZ3 systemd-resolved[306]: Clock change detected. Flushing caches.
+$ journalctl -n 50 --no-pager  # Muestra las últimas 50 líneas del log del sistema (puede requerir permisos).
+Aug 13 13:48:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:49:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:49:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:50:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:50:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:51:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:51:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:52:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:52:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:53:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:53:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:54:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:54:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:55:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:55:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:56:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:56:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:57:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:57:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:57:58 ES-PF4LPGZ3 unknown: WSL (247) ERROR: CheckConnection: getaddrinfo() failed: -5
+Aug 13 13:57:58 ES-PF4LPGZ3 unknown: WSL (1 - init(docker-desktop)) WARNING: /usr/share/zoneinfo/Europe/Madrid not found. Is the tzdata package installed?
+Aug 13 13:58:10 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:58:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:59:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 13:59:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:00:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:00:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:01:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:01:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:02:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:02:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:03:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:03:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:04:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:04:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:05:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:05:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:06:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:06:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:07:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:07:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:08:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:08:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:09:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:09:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:10:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:10:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:11:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:11:43 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
+Aug 13 14:12:13 ES-PF4LPGZ3 systemd-resolved[315]: Clock change detected. Flushing caches.
 
 ------------------------------------------------------------
 # 
-$ last                         # Muestra el historial de conexiones de usuarios al sistema.
-root     pts/7                         Tue Aug  5 09:16    gone - no logout
-jlazaro  pts/1                         Tue Aug  5 09:13    gone - no logout
+$ last -n 10                   # Muestra los últimos 10 inicios de sesión de usuarios.
+root     pts/5                         Mon Aug 11 12:13    gone - no logout
+jlazaro  pts/1                         Mon Aug 11 12:10    gone - no logout
+reboot   system boot  6.6.87.2-microso Mon Aug 11 12:10   still running
+root     pts/7                         Tue Aug  5 09:16 - crash (6+02:54)
+jlazaro  pts/1                         Tue Aug  5 09:13 - crash (6+02:57)
 reboot   system boot  6.6.87.2-microso Tue Aug  5 09:13   still running
 root     pts/3                         Thu Jul 31 13:05 - crash (4+20:07)
 jlazaro  pts/1                         Thu Jul 31 13:05 - crash (4+20:07)
 reboot   system boot  6.6.87.2-microso Thu Jul 31 13:05   still running
 jlazaro  pts/1                         Thu Jul 17 13:40 - crash (13+23:25)
-reboot   system boot  5.15.167.4-micro Thu Jul 17 13:40   still running
-jlazaro  pts/1                         Wed Jul  2 12:04 - crash (15+01:35)
-reboot   system boot  5.15.167.4-micro Wed Jul  2 12:04   still running
-jlazaro  pts/1                         Mon Jun 30 07:30 - crash (2+04:34)
-reboot   system boot  5.15.167.4-micro Mon Jun 30 07:30   still running
-jlazaro  pts/1                         Tue Jun 17 15:33 - crash (12+15:57)
-reboot   system boot  5.15.167.4-micro Tue Jun 17 15:33   still running
-jlazaro  pts/1                         Wed Jun 11 08:48 - crash (6+06:44)
-reboot   system boot  5.15.167.4-micro Wed Jun 11 08:48   still running
-jlazaro  pts/1                         Mon Jun  9 10:22 - crash (1+22:26)
-reboot   system boot  5.15.167.4-micro Mon Jun  9 10:22   still running
-jlazaro  pts/1                         Mon Jun  2 18:09 - crash (6+16:12)
-reboot   system boot  5.15.167.4-micro Mon Jun  2 18:09   still running
-jlazaro  pts/1                         Mon Jun  2 09:49 - crash  (08:20)
-reboot   system boot  5.15.167.4-micro Mon Jun  2 09:49   still running
-jlazaro  pts/1                         Thu May 29 08:55 - crash (4+00:53)
-reboot   system boot  5.15.167.4-micro Thu May 29 08:55   still running
-jlazaro  pts/1                         Thu May 29 08:31 - crash  (00:23)
-reboot   system boot  5.15.167.4-micro Thu May 29 08:31   still running
-jlazaro  pts/1                         Mon May 26 12:11 - crash (2+20:20)
-reboot   system boot  5.15.167.4-micro Mon May 26 12:10   still running
-jlazaro  pts/1                         Fri May 23 09:37 - crash (3+02:33)
-reboot   system boot  5.15.167.4-micro Fri May 23 09:37   still running
-jlazaro  pts/1                         Thu May 22 13:21 - crash  (20:16)
-reboot   system boot  5.15.167.4-micro Thu May 22 13:21   still running
-jlazaro  pts/1                         Mon Apr 28 08:23 - crash (24+04:57)
-reboot   system boot  5.15.167.4-micro Mon Apr 28 08:23   still running
-jlazaro  pts/1                         Tue Apr 22 10:20 - crash (5+22:02)
-reboot   system boot  5.15.167.4-micro Tue Apr 22 10:20   still running
-jlazaro  pts/2                         Wed Apr  9 11:48 - crash (12+22:31)
-reboot   system boot  5.15.167.4-micro Wed Apr  9 11:48   still running
-jlazaro  pts/1                         Wed Apr  2 10:26 - crash (7+01:22)
-reboot   system boot  5.15.167.4-micro Wed Apr  2 10:25   still running
-jlazaro  pts/1                         Wed Apr  2 10:24 - crash  (00:01)
-reboot   system boot  5.15.167.4-micro Wed Apr  2 10:24   still running
-jlazaro  pts/1                         Wed Apr  2 08:47 - crash  (01:36)
-reboot   system boot  5.15.167.4-micro Wed Apr  2 08:47   still running
-jlazaro  pts/1                         Wed Mar 19 12:08 - crash (13+19:39)
-reboot   system boot  5.15.167.4-micro Wed Mar 19 12:08   still running
-jlazaro  pts/1                         Mon Mar 17 08:51 - crash (2+03:17)
-reboot   system boot  5.15.167.4-micro Mon Mar 17 08:50   still running
-jlazaro  pts/1                         Tue Mar  4 10:59 - crash (12+21:51)
-reboot   system boot  5.15.167.4-micro Tue Mar  4 10:59   still running
-jlazaro  pts/1                         Thu Feb 27 11:00 - crash (4+23:58)
-reboot   system boot  5.15.167.4-micro Thu Feb 27 11:00   still running
-jlazaro  pts/1                         Tue Feb 25 08:23 - crash (2+02:37)
-reboot   system boot  5.15.167.4-micro Tue Feb 25 08:23   still running
-jlazaro  pts/1                         Mon Feb 24 08:45 - crash  (23:37)
-reboot   system boot  5.15.167.4-micro Mon Feb 24 08:45   still running
-jlazaro  pts/1                         Thu Feb  6 09:08 - crash (17+23:36)
-reboot   system boot  5.15.167.4-micro Thu Feb  6 09:08   still running
-root     pts/8                         Tue Feb  4 10:58 - crash (1+22:10)
-jlazaro  pts/1                         Wed Jan 22 08:13 - crash (15+00:54)
-reboot   system boot  5.15.167.4-micro Wed Jan 22 08:13   still running
-jlazaro  pts/1                         Tue Jan 14 08:16 - crash (7+23:56)
-reboot   system boot  5.15.167.4-micro Tue Jan 14 08:16   still running
-jlazaro  pts/1                         Wed Dec 18 08:08 - crash (27+00:08)
-reboot   system boot  5.15.167.4-micro Wed Dec 18 08:08   still running
-jlazaro  pts/2                         Tue Dec 17 09:11 - crash  (22:57)
-reboot   system boot  5.15.167.4-micro Tue Dec 17 09:11   still running
-jlazaro  pts/1                         Fri Dec 13 13:00 - crash (3+20:11)
-reboot   system boot  5.15.167.4-micro Fri Dec 13 12:59   still running
-jlazaro  pts/1                         Thu Dec 12 10:54 - crash (1+02:05)
-reboot   system boot  5.15.167.4-micro Thu Dec 12 10:54   still running
-root     pts/9                         Wed Dec  4 10:29 - crash (8+00:24)
-jlazaro  pts/1                         Tue Dec  3 12:28 - crash (8+22:25)
-reboot   system boot  5.15.167.4-micro Tue Dec  3 12:28   still running
-root     pts/3                         Wed Nov 20 08:20 - crash (13+04:08)
-jlazaro  pts/1                         Wed Nov 20 08:20 - crash (13+04:08)
-reboot   system boot  5.15.167.4-micro Wed Nov 20 08:20   still running
-jlazaro  pts/1                         Wed Nov 20 08:15 - crash  (00:05)
-reboot   system boot  5.15.153.1-micro Wed Nov 20 08:15   still running
-root     pts/5                         Thu Oct 24 20:54 - crash (26+12:20)
-jlazaro  pts/1                         Thu Oct 24 20:53 - crash (26+12:22)
-reboot   system boot  5.15.153.1-micro Thu Oct 24 20:53   still running
-root     pts/5                         Thu Oct 24 11:39 - crash  (09:13)
-jlazaro  pts/1                         Thu Oct 24 11:37 - crash  (09:15)
-reboot   system boot  5.15.153.1-micro Thu Oct 24 11:37   still running
-root     pts/6                         Thu Oct 17 15:13 - crash (6+20:24)
-jlazaro  pts/1                         Thu Oct 17 15:13 - crash (6+20:24)
-reboot   system boot  5.15.153.1-micro Thu Oct 17 15:12   still running
-jlazaro  pts/1                         Wed Oct 16 09:07 - crash (1+06:05)
-reboot   system boot  5.15.153.1-micro Wed Oct 16 09:07   still running
-root     pts/3                         Fri Oct 11 13:19 - crash (4+19:47)
-jlazaro  pts/1                         Fri Oct 11 13:19 - crash (4+19:47)
-reboot   system boot  5.15.153.1-micro Fri Oct 11 13:19   still running
-jlazaro  pts/1                         Fri Oct 11 10:15 - crash  (03:03)
-reboot   system boot  5.15.153.1-micro Fri Oct 11 10:15   still running
-jlazaro  pts/1                         Wed Oct  9 16:46 - crash (1+17:29)
-reboot   system boot  5.15.153.1-micro Wed Oct  9 16:46   still running
-jlazaro  pts/1                         Tue Oct  8 08:59 - crash (1+07:47)
-reboot   system boot  5.15.153.1-micro Tue Oct  8 08:59   still running
-jlazaro  pts/1                         Tue Oct  8 08:31 - crash  (00:27)
-reboot   system boot  5.15.153.1-micro Tue Oct  8 08:31   still running
-root     pts/7                         Wed Oct  2 16:05 - crash (5+16:25)
-jlazaro  pts/1                         Thu Sep 19 09:31 - crash (18+22:59)
-reboot   system boot  5.15.153.1-micro Thu Sep 19 09:31   still running
-jlazaro  pts/1                         Mon Sep 16 14:01 - crash (2+19:30)
-reboot   system boot  5.15.153.1-micro Mon Sep 16 14:01   still running
-jlazaro  pts/1                         Thu Sep 12 14:40 - crash (3+23:21)
-reboot   system boot  5.15.153.1-micro Thu Sep 12 14:39   still running
-root     pts/11                        Wed Aug 28 12:21 - crash (15+02:18)
-jlazaro  pts/1                         Wed Aug 21 08:33 - crash (22+06:06)
-reboot   system boot  5.15.153.1-micro Wed Aug 21 08:33   still running
-jlazaro  pts/1                         Wed Aug  7 09:31 - crash (13+23:01)
-reboot   system boot  5.15.153.1-micro Wed Aug  7 09:31   still running
-root     pts/3                         Tue Aug  6 10:11 - crash  (23:20)
-jlazaro  pts/1                         Tue Aug  6 10:11 - crash  (23:20)
-reboot   system boot  5.15.153.1-micro Tue Aug  6 10:11   still running
-jlazaro  pts/1                         Mon Aug  5 13:55 - crash  (20:15)
-reboot   system boot  5.15.153.1-micro Mon Aug  5 13:55   still running
-jlazaro  pts/1                         Mon Aug  5 13:23 - crash  (00:32)
-reboot   system boot  5.15.153.1-micro Mon Aug  5 13:23   still running
-root     pts/1                         Mon Aug  5 13:21 - crash  (00:02)
-reboot   system boot  5.15.153.1-micro Mon Aug  5 13:21   still running
-jlazaro  pts/1                         Mon Aug  5 13:10 - crash  (00:10)
-reboot   system boot  5.15.153.1-micro Mon Aug  5 13:10   still running
-jlazaro  pts/1                         Mon Aug  5 12:49 - crash  (00:21)
-reboot   system boot  5.15.153.1-micro Mon Aug  5 12:49   still running
-root     pts/1                         Mon Aug  5 12:48 - crash  (00:00)
-reboot   system boot  5.15.153.1-micro Mon Aug  5 12:48   still running
 
 wtmp begins Mon Aug  5 12:48:39 2024
 
 ------------------------------------------------------------
-# # Nota
-$ Ninguno de estos comandos modifica archivos ni reinicia servicios, por lo que son seguros para ejecutar en modo solo lectura.
-[Error o Simulación] Command 'Ninguno de estos comandos modifica archivos ni reinicia servicios, por lo que son seguros para ejecutar en modo solo lectura.' returned non-zero exit status 127.
+# 
+$ Ninguno de estos comandos modifica archivos o configura el sistema, por lo que son seguros para su ejecución en modo lectura.
+[Error o Simulación] Command 'Ninguno de estos comandos modifica archivos o configura el sistema, por lo que son seguros para su ejecución en modo lectura.' returned non-zero exit status 127.
 ------------------------------------------------------------

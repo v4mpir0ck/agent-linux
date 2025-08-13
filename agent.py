@@ -77,7 +77,7 @@ class Agent:
                 ],
                 "modulo": "informe",
                 "funcion": "generar_informe",
-                "mensaje": "\033[95mInforme generado en:\033[0m {ruta}"
+                "mensaje": "\033[95mInforme generado en:\033[0m {resultado}"
             },
             {
                 "nombre": "wizard",
@@ -135,7 +135,7 @@ class Agent:
             }
         ]
         for interceptor in interceptores:
-            if any(frase in instr for frase in interceptor["frases"]):
+            if any(frase in instr for frase in interceptor["frases"]) or interceptor["nombre"] in instr:
                 # --- ALERTAS INTELIGENTES ---
                 if interceptor["nombre"] == "alertas":
                     # 1. Pedir al LLM los comandos de diagnóstico recomendados
@@ -387,6 +387,10 @@ class Agent:
 
 # --- BLOQUE DE EJECUCIÓN INTERACTIVO ---
 if __name__ == "__main__":
+    try:
+        import readline
+    except ImportError:
+        pass
     print("\n\033[96mAgente IA para Linux (modo interactivo)\033[0m")
     print("Escribe 'salir' para terminar.\n")
     # Mostrar info de LLM

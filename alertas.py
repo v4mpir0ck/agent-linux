@@ -1,3 +1,40 @@
+import psutil
+import subprocess
+
+def diagnostico_sistema():
+    datos = {}
+    # CPU
+    datos['cpu'] = {'usage': psutil.cpu_percent(interval=1)}
+    # Memoria
+    mem = psutil.virtual_memory()
+    datos['memoria'] = {'usage': mem.percent}
+    # Disco (root)
+    disk = psutil.disk_usage('/')
+    datos['disco'] = {'free_pct': 100 - disk.percent, 'mount': '/'}
+    # Red
+    net_status = 'estable'
+    try:
+        subprocess.check_output('ping -c 1 -W 2 8.8.8.8', shell=True)
+    except Exception:
+        net_status = 'inestable'
+    datos['red'] = {'status': net_status}
+    # NTP
+    ntp_enabled = True
+    try:
+        out = subprocess.check_output('timedatectl show -p NTPSynchronized', shell=True, universal_newlines=True)
+        ntp_enabled = 'yes' in out.lower() or 'true' in out.lower()
+    except Exception:
+        ntp_enabled = False
+    datos['ntp'] = {'enabled': ntp_enabled}
+    # Actualizaciones (solo para sistemas apt)
+    updates_pending = False
+    try:
+        out = subprocess.check_output('apt list --upgradable 2>/dev/null | grep -v "Listing..."', shell=True, universal_newlines=True)
+        updates_pending = bool(out.strip())
+    except Exception:
+        updates_pending = False
+    datos['updates'] = {'pending': updates_pending}
+    return datos
 def sugerir_alertas(problemas):
     # problemas: lista de strings con problemas detectados
     alertas = []
@@ -16,34 +53,8 @@ def sugerir_alertas(problemas):
 
 
 def mostrar_alertas():
-    # Simulación de alertas agrupadas por severidad
-    return [
-        {
-            "mensaje": "Espacio en disco bajo en /var",
-            "nivel": "critico",
-            "sugerencia": "Libera espacio o amplía el disco."
-        },
-        {
-            "mensaje": "Uso de CPU elevado (>90%)",
-            "nivel": "warning",
-            "sugerencia": "Revisa procesos consumidores."
-        },
-        {
-            "mensaje": "Sincronización NTP deshabilitada",
-            "nivel": "info",
-            "sugerencia": "Activa el servicio NTP para mantener la hora."
-        },
-        {
-            "mensaje": "Conexión de red inestable",
-            "nivel": "warning",
-            "sugerencia": "Verifica cables y configuración de red."
-        },
-        {
-            "mensaje": "Actualizaciones de seguridad pendientes",
-            "nivel": "info",
-            "sugerencia": "Ejecuta el gestor de actualizaciones."
-        }
-    ]
+    datos = diagnostico_sistema()
+    return generar_alertas_desde_diagnostico(datos)
 
 
 def generar_alertas_desde_diagnostico(datos):
