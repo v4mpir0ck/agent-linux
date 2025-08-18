@@ -175,11 +175,8 @@ done
 # --- Parchear requirements.txt para dependencias problemáticas ---
 if [ -f "$BASE_DIR/requirements.txt" ]; then
   sed -i 's/^murmurhash==1.0.2$/murmurhash==1.0.9/' "$BASE_DIR/requirements.txt"
-  sed -i -E 's/^(pyyaml|PyYAML)[^=]*([=<>!]+)[^ ]*/pyyaml==5.4.1/i' "$BASE_DIR/requirements.txt"
+  sed -i -E 's/^(pyyaml|PyYAML)[^=]*([=<>!]+)[^ ]*/pyyaml==6.0/i' "$BASE_DIR/requirements.txt"
 fi
-
-# --- Instalar PyYAML como wheel antes del resto ---
-$PYTHON_BIN -m pip install --only-binary=:all: pyyaml==5.4.1 || true
 
 ### --- INICIO wheels (comentado por si se necesita en el futuro) ---
 
