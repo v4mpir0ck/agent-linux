@@ -101,7 +101,7 @@ if ! command -v pip >/dev/null 2>&1; then
     # Buscar pip3
     if command -v pip3 >/dev/null 2>&1; then
         ln -sf $(command -v pip3) /usr/local/bin/pip
-        echo "[INFO] Enlace simbólico creado: pip -> pip3"
+            echo "[INFO] Enlace simbólico creado: python -> python3"
     else
         # Buscar el binario de pip instalado por python3 -m pip
         PIP_BIN=$($PYTHON_BIN -m pip -V 2>/dev/null | awk '{print $4}')
