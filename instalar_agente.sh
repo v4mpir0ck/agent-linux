@@ -204,7 +204,6 @@ install_bin() {
   fi
 }
 
-for bin in "nmap" "busybox"; do
 for bin in "nmap" "busybox" "netstat"; do
   install_bin "$bin"
 done
