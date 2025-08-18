@@ -1,1 +1,1 @@
-tokenizers==0
+# tokenizers==0 (bloqueado, no instalar en Linux/WSL)
