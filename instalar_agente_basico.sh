@@ -11,7 +11,12 @@ BIN_DEST="/usr/local/bin/agente"
 
 echo "Descargando el binario desde $BIN_URL..."
 curl -L "$BIN_URL" -o "$BIN_TMP"
-sudo mv "$BIN_TMP" "$BIN_DEST"
-sudo chmod +x "$BIN_DEST"
+if [ "$(id -u)" -eq 0 ]; then
+	mv "$BIN_TMP" "$BIN_DEST"
+	chmod +x "$BIN_DEST"
+else
+	sudo mv "$BIN_TMP" "$BIN_DEST"
+	sudo chmod +x "$BIN_DEST"
+fi
 
 echo "Agente instalado en $BIN_DEST"
