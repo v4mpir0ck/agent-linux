@@ -10,7 +10,7 @@ def run_wizard():
         return f"[Error en wizard] {e}"
 import subprocess
 try:
-    from .llm_client import query_llm
+    from llm_client import query_llm
 except ImportError:
     from llm_client import query_llm
 

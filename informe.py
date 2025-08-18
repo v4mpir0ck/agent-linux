@@ -3,7 +3,7 @@ import subprocess
 
 # Importa el cliente LLM
 try:
-    from .llm_client import query_llm
+    from llm_client import query_llm
 except ImportError:
     from llm_client import query_llm
 

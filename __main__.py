@@ -1,5 +1,5 @@
 
-from .agent import Agent, print_help
+from agent import Agent, print_help
 
 if __name__ == "__main__":
     print(print_help())

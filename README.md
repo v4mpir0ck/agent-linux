@@ -116,7 +116,7 @@ flowchart LR
 - `agent.py`: Agente principal, CLI interactivo.
 
 ## Autor
-- DXC / MAPFRE
+- Javier Lazaro 
 
 ## Licencia
 MIT

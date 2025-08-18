@@ -4,7 +4,7 @@
 
 set -e
 
-BIN_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/agente/dist/agente"
+BIN_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/dist/agente"
 BIN_TMP="/tmp/agente.bin"
 BIN_DEST="/usr/local/bin/agente"
 

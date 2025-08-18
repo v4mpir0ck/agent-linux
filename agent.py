@@ -140,7 +140,7 @@ class Agent:
                 if interceptor["nombre"] == "alertas":
                     # 1. Pedir al LLM los comandos de diagnóstico recomendados
                     try:
-                        from .llm_client import query_llm
+                        from llm_client import query_llm
                     except ImportError:
                         from llm_client import query_llm
                     system_prompt = (
@@ -204,7 +204,7 @@ class Agent:
         # Si no coincide con ningún interceptor, usar LLM
         # ...existing code...
         try:
-            from .llm_client import query_llm
+            from llm_client import query_llm
         except ImportError:
             from llm_client import query_llm
         import re
@@ -271,7 +271,7 @@ class Agent:
 
         # ...resto de la función original...
         try:
-            from .llm_client import query_llm
+            from llm_client import query_llm
         except ImportError:
             from llm_client import query_llm
         import re
@@ -396,7 +396,7 @@ if __name__ == "__main__":
     # Mostrar info de LLM
     try:
         try:
-            from .llm_client import LLM_ENDPOINT, LLM_MODEL
+            from llm_client import LLM_ENDPOINT, LLM_MODEL
         except ImportError:
             from llm_client import LLM_ENDPOINT, LLM_MODEL
         llm_endpoint = LLM_ENDPOINT
