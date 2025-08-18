@@ -236,4 +236,21 @@ if [ -d "$WHEELS_DIR" ]; then
 fi
 
 # --- Ejecutar el instalador Python principal ---
+
+# --- Generar ejecutable con PyInstaller incluyendo binarios y wheels ---
+echo "[INFO] Generando ejecutable del agente con PyInstaller..."
+$PYTHON_BIN -m pip install --upgrade pyinstaller
+cd "$BASE_DIR"
+PYINSTALL_BINARIES=""
+for f in bin/*; do
+  [ -f "$f" ] && PYINSTALL_BINARIES="$PYINSTALL_BINARIES --add-binary $f:bin"
+done
+PYINSTALL_DATA=""
+for f in wheels/*; do
+  [ -f "$f" ] && PYINSTALL_DATA="$PYINSTALL_DATA --add-data $f:wheels"
+done
+$PYTHON_BIN -m pyinstaller --onefile $PYINSTALL_BINARIES $PYINSTALL_DATA agent.py
+echo "[INFO] Ejecutable generado en $BASE_DIR/dist/agent"
+
+# --- Ejecutar el instalador Python principal ---
 $PYTHON_BIN "$BASE_DIR/instalar_agente.py"

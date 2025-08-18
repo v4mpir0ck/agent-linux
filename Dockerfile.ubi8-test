@@ -1,14 +1,6 @@
 FROM redhat/ubi8:latest
 
-# Instala utilidades básicas y wget
+# Instala utilidades básicas y curl
 RUN yum install -y wget curl unzip python3 python3-pip
 
-# Copia el instalador y el agente (asume que los archivos están en el contexto de build)
-# COPY agente/ /agente/
-# WORKDIR /agente
-
-# # Ejecuta el instalador
-# RUN chmod +x instalar_agente.sh && ./instalar_agente.sh
-
-# Comando por defecto (puedes cambiarlo por el que necesites para pruebas)
 CMD ["/bin/bash"]

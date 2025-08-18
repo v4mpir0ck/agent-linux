@@ -34,6 +34,13 @@ def ejecutar_herramientas():
         return f"Herramienta no soportada: {nombre}"
     import os
     import getpass
+    import sys
+    def get_resource_path(subdir, tool):
+        # Si ejecutado por PyInstaller, usar sys._MEIPASS
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, subdir, tool)
+        # Normal: buscar en rutas conocidas
+        return os.path.join(os.path.dirname(__file__), subdir, tool)
     user_home_bin = f"/home/{getpass.getuser()}/agente/bin"
     tmp_bin = "/tmp/agente/bin"
     base_cmd = herramientas[nombre].split('(')[-1].replace(')','').strip()
@@ -41,7 +48,7 @@ def ejecutar_herramientas():
     bin_tool_paths = [
         os.path.join(user_home_bin, tool),
         os.path.join(tmp_bin, tool),
-        os.path.join(os.path.dirname(__file__), 'bin', tool)
+        get_resource_path('bin', tool)
     ]
     bin_used = None
     for bin_path in bin_tool_paths:
