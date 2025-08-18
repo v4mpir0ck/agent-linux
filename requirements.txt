@@ -1,4 +1,4 @@
-murmurhash==1.0.2
+murmurhash==1.0.9
 requests>=2.25.0
 cryptography<40.0.0
 openai<0.28.0

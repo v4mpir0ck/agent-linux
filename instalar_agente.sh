@@ -1,3 +1,82 @@
+# Crear entorno virtual si no existe y usarlo para todo
+if [ ! -d "$HOME/agente-venv" ]; then
+  echo "[INFO] Creando entorno virtual en $HOME/agente-venv..."
+  python3 -m venv "$HOME/agente-venv"
+fi
+PYTHON_BIN="$HOME/agente-venv/bin/python3"
+if [ -z "$PYTHON_BIN" ]; then
+  echo "[ERROR] No se detectó el binario de Python. Revisa la variable PYTHON_BIN y la lógica de detección."
+  exit 1
+fi
+$PYTHON_BIN -m pip install --upgrade pip setuptools wheel pyinstaller
+$PYTHON_BIN -m pip install --upgrade pip setuptools wheel pyinstaller
+# Crear entorno virtual si no existe y usarlo para todo
+if [ ! -d "$HOME/agente-venv" ]; then
+  echo "[INFO] Creando entorno virtual en $HOME/agente-venv..."
+  python3 -m venv "$HOME/agente-venv"
+fi
+PYTHON_BIN="$HOME/agente-venv/bin/python3"
+export PYTHONPATH="$HOME/.local/lib/python3.10/site-packages:$PYTHONPATH"
+if [ -z "$PYTHON_BIN" ]; then
+  echo "[WARN] No se detectó el binario de Python. Intentando instalar python3 automáticamente..."
+  if command -v apt-get >/dev/null 2>&1; then
+    sudo apt-get update && sudo apt-get install -y python3 python3-pip
+    PYTHON_BIN="$(which python3)"
+  elif command -v dnf >/dev/null 2>&1; then
+    sudo dnf install -y python3 python3-pip
+    PYTHON_BIN="$(which python3)"
+  elif command -v yum >/dev/null 2>&1; then
+    sudo yum install -y python3 python3-pip
+    PYTHON_BIN="$(which python3)"
+  fi
+  if [ -z "$PYTHON_BIN" ]; then
+    echo "[ERROR] No se pudo instalar ni detectar el binario de Python. Revisa la variable PYTHON_BIN y la lógica de detección."
+    exit 1
+  fi
+fi
+# Instala pyinstaller en el entorno correcto y verifica instalación
+# Instala pyinstaller y verifica instalación correctamente
+$PYTHON_BIN -m pip install --upgrade pip setuptools wheel pyinstaller
+if ! $PYTHON_BIN -m pip show pyinstaller >/dev/null 2>&1; then
+  echo "[ERROR] PyInstaller no se instaló correctamente en $PYTHON_BIN. Revisa la instalación o instala manualmente con: $PYTHON_BIN -m pip install pyinstaller"
+  exit 1
+fi
+# Si se usa entorno virtual, instala dependencias si no están
+if [[ "$PYTHON_BIN" == "$HOME/agente-venv/bin/python"* ]]; then
+  echo "[INFO] Instalando dependencias en el entorno virtual si no están presentes..."
+  $PYTHON_BIN -m pip install --upgrade pip setuptools wheel
+  $PYTHON_BIN -m pip show pyinstaller >/dev/null 2>&1 || $PYTHON_BIN -m pip install pyinstaller
+fi
+PYTHON_BIN=""
+if [ -d "$HOME/agente-venv/bin" ]; then
+  if [ -x "$HOME/agente-venv/bin/python3" ]; then
+    PYTHON_BIN="$HOME/agente-venv/bin/python3"
+  elif [ -x "$HOME/agente-venv/bin/python" ]; then
+    PYTHON_BIN="$HOME/agente-venv/bin/python"
+  fi
+fi
+if [ -z "$PYTHON_BIN" ]; then
+  if [ -x "$HOME/.local/bin/python3" ]; then
+    PYTHON_BIN="$HOME/.local/bin/python3"
+  else
+    PYTHON_BIN="$(which python3)"
+  fi
+fi
+if [ -z "$PYTHON_BIN" ]; then
+  echo "[ERROR] No se detectó el binario de Python. Revisa la variable PYTHON_BIN y la lógica de detección."
+  exit 1
+fi
+export PATH="$HOME/.local/bin:$PATH"
+if [ -x "$HOME/.local/bin/python3" ]; then
+  PYTHON_BIN="$HOME/.local/bin/python3"
+else
+  PYTHON_BIN="$(which python3)"
+fi
+# Abort if running with sudo to avoid losing user environment
+if [ "$(id -u)" -eq 0 ]; then
+  echo "[ERROR] No ejecutes este script con sudo. Ejecuta como usuario normal para que se usen los paquetes de usuario."
+  exit 1
+fi
 #!/bin/bash
 # Instalador universal para el agente IA (offline/online)
 # Ejecuta el instalador Python con la versión adecuada
@@ -11,50 +90,10 @@ BASE_DIR="/tmp/agente"
 mkdir -p "$BASE_DIR"
 cd "$BASE_DIR"
 
-PYTHON_BIN=""
-for bin in python3 python; do
-  if command -v $bin >/dev/null 2>&1; then
-    ver=$($bin -c 'import sys; print(sys.version_info[0])')
-    if [ "$ver" = "3" ]; then
-      PYTHON_BIN=$bin
-      break
-    fi
-  fi
-done
-
-
-# Si no hay Python 3, intentar instalarlo automáticamente según la distribución
-if [ -z "$PYTHON_BIN" ]; then
-    echo "[INFO] Python 3 no encontrado. Intentando instalarlo..."
-    if command -v apt-get >/dev/null 2>&1; then
-        echo "[INFO] Detectado sistema Debian/Ubuntu. Instalando con apt-get..."
-        sudo apt-get update && sudo apt-get install -y python3 python3-pip
-        PYTHON_BIN=python3
-    elif command -v dnf >/dev/null 2>&1; then
-        echo "[INFO] Detectado sistema Fedora/CentOS/RHEL (dnf). Instalando con dnf..."
-        sudo dnf install -y python3 python3-pip gcc python3-devel rust cargo
-        python3 -m pip install --upgrade pip setuptools wheel setuptools-rust
-        # Crear enlace simbólico python -> python3 si no existe
-        if ! command -v python >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1; then
-            ln -sf $(command -v python3) /usr/local/bin/python
-            echo "[INFO] Enlace simbólico creado: python -> python3"
-        fi
-        PYTHON_BIN=python3
-    elif command -v yum >/dev/null 2>&1; then
-        echo "[INFO] Detectado sistema CentOS/RHEL (yum). Instalando con yum..."
-        sudo yum install -y python3 python3-pip
-        # Crear enlace simbólico python -> python3 si no existe
-        if ! command -v python >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1; then
-            ln -sf $(command -v python3) /usr/local/bin/python
-            echo "[INFO] Enlace simbólico creado: python -> python3"
-        fi
-        PYTHON_BIN=python3
-    else
-        echo "[ERROR] No se pudo instalar Python automáticamente. Instálalo manualmente."
-        echo "[SUGERENCIA] Puedes ejecutar el agente manualmente con: python3 instalar_agente.py"
-        exit 1
-    fi
-
+PYTHON_BIN="$HOME/agente-venv/bin/python3"
+if [ ! -x "$PYTHON_BIN" ]; then
+  echo "[ERROR] El binario de Python del entorno virtual no existe. Revisa la creación del entorno virtual."
+  exit 1
 fi
 
 PIP_BIN=""
@@ -89,11 +128,11 @@ if ! $PYTHON_BIN -m pip --version >/dev/null 2>&1; then
         rm -f "$SCRIPT_DIR/get-pip.py"
     fi
 
-    # Si sigue sin estar, error
-    if ! $PYTHON_BIN -m pip --version >/dev/null 2>&1; then
-        echo "[ERROR] No se pudo instalar pip automáticamente. Instálalo manualmente."
-        exit 1
-    fi
+  # Si sigue sin estar, error
+  if ! $PYTHON_BIN -m pip --version >/dev/null 2>&1; then
+    echo "[ERROR] No se pudo instalar pip automáticamente. Instálalo manualmente."
+    exit 1
+  fi
 fi
 
 # Crear enlace simbólico para pip si no existe
@@ -133,48 +172,9 @@ for f in "${NEEDED_FILES[@]}"; do
   curl -sSLo "$BASE_DIR/$f" "$REPO_RAW_AGENTE$f"
 done
 
+### --- INICIO wheels (comentado por si se necesita en el futuro) ---
 
 
-
-
-
-WHEELS_DIR="$BASE_DIR/wheels"
-if [ ! -d "$WHEELS_DIR" ]; then
-  echo "[INFO] No se encontró la carpeta wheels. Intentando descargar la carpeta completa desde Google Drive..."
-  if ! command -v gdown >/dev/null 2>&1; then
-    echo "[INFO] Instalando gdown para descargar desde Google Drive..."
-    $PYTHON_BIN -m pip install --no-cache-dir gdown || sudo $PYTHON_BIN -m pip install --no-cache-dir gdown
-  fi
-  GDRIVE_FOLDER_ID="1u1ME2pREDk8i20nW2h7xq0282Ansf1JT"
-  gdown --folder --id "$GDRIVE_FOLDER_ID" -O "$BASE_DIR"
-  if [ -f "$BASE_DIR/wheels.zip" ]; then
-    echo "[INFO] wheels.zip detectado. Creando carpeta wheels y descomprimiendo..."
-    mkdir -p "$WHEELS_DIR"
-    unzip -o "$BASE_DIR/wheels.zip" -d "$WHEELS_DIR"
-    rm -f "$BASE_DIR/wheels.zip"
-    # Si no hay archivos .whl en wheels, buscar y mover desde el base
-    whl_count=$(find "$WHEELS_DIR" -type f -name '*.whl' | wc -l)
-    if [ "$whl_count" -eq 0 ]; then
-      echo "[WARN] La carpeta wheels existe pero está vacía. Buscando archivos .whl en subcarpetas..."
-      find "$BASE_DIR" -type f -name '*.whl' -exec mv {} "$WHEELS_DIR/" \;
-      whl_count=$(find "$WHEELS_DIR" -type f -name '*.whl' | wc -l)
-      if [ "$whl_count" -gt 0 ]; then
-        echo "[INFO] Archivos .whl encontrados y movidos a wheels/."
-      fi
-    fi
-  fi
-  if [ ! -d "$WHEELS_DIR" ]; then
-    echo "[ERROR] La carpeta wheels no se creó correctamente tras descargar la carpeta de Google Drive."
-    echo "Descárgala manualmente desde: https://drive.google.com/drive/folders/1u1ME2pREDk8i20nW2h7xq0282Ansf1JT?usp=sharing"
-    exit 1
-  fi
-  whl_count=$(find "$WHEELS_DIR" -type f -name '*.whl' | wc -l)
-  if [ "$whl_count" -eq 0 ]; then
-    echo "[ERROR] No se encontraron archivos .whl en wheels/ tras la descarga y comprobaciones."
-    echo "Descárgalos manualmente desde: https://drive.google.com/drive/folders/1u1ME2pREDk8i20nW2h7xq0282Ansf1JT?usp=sharing y colócalos en wheels/"
-    exit 1
-  fi
-fi
 
 
 BIN_DIR="$BASE_DIR/bin"
@@ -223,6 +223,14 @@ esac
 # Ejecutar el instalador Python
 
 # --- Actualizar pip, setuptools y wheel antes de instalar dependencias ---
+
+# --- Instalar dependencias de compilación en Linux ---
+if command -v apt-get >/dev/null 2>&1; then
+  echo "[INFO] Instalando build-essential y python3-dev para compilación de paquetes nativos..."
+  sudo apt-get update
+  sudo apt-get install -y build-essential python3-dev
+fi
+
 echo "[INFO] Actualizando pip, setuptools y wheel..."
 $PYTHON_BIN -m pip install --upgrade pip setuptools wheel
 
@@ -238,17 +246,25 @@ fi
 
 # --- Generar ejecutable con PyInstaller incluyendo binarios y wheels ---
 echo "[INFO] Generando ejecutable del agente con PyInstaller..."
-$PYTHON_BIN -m pip install --upgrade pyinstaller
+echo "[DEBUG] Usando PYTHON_BIN: $PYTHON_BIN"
+# Activar el entorno virtual antes de instalar PyInstaller
+source "$HOME/agente-venv/bin/activate"
+pip install --upgrade pyinstaller
+if ! pyinstaller --version >/dev/null 2>&1; then
+  echo "[ERROR] PyInstaller no está disponible en el entorno virtual. Reinstalando..."
+  pip install pyinstaller
+  if ! pyinstaller --version >/dev/null 2>&1; then
+    echo "[ERROR] PyInstaller sigue sin estar disponible en el entorno virtual. Revisa la instalación manualmente."
+    deactivate
+    exit 1
+  fi
+fi
 cd "$BASE_DIR"
 PYINSTALL_BINARIES=""
 for f in bin/*; do
   [ -f "$f" ] && PYINSTALL_BINARIES="$PYINSTALL_BINARIES --add-binary $f:bin"
 done
-PYINSTALL_DATA=""
-for f in wheels/*; do
-  [ -f "$f" ] && PYINSTALL_DATA="$PYINSTALL_DATA --add-data $f:wheels"
-done
-$PYTHON_BIN -m pyinstaller --onefile $PYINSTALL_BINARIES $PYINSTALL_DATA agent.py
+pyinstaller --onefile $PYINSTALL_BINARIES $PYINSTALL_DATA agent.py
 echo "[INFO] Ejecutable generado en $BASE_DIR/dist/agent"
 
 # --- Ejecutar el instalador Python principal ---
