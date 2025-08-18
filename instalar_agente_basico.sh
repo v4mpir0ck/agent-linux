@@ -4,8 +4,7 @@
 
 set -e
 
-# Descarga el binario desde el repo público de GitHub
-BIN_URL="https://github.com/v4mpir0ck/agent-linux/raw/main/mapfre/agente/dist/agente"
+BIN_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/agente/dist/agente"
 BIN_TMP="/tmp/agente.bin"
 BIN_DEST="/usr/local/bin/agente"
 
