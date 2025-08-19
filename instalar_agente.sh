@@ -78,13 +78,17 @@ fi
 if [ -f "$PYINSTALLER_BIN" ]; then
   echo "[OK] PyInstaller está disponible en el entorno virtual."
 else
-  echo "[WARN] PyInstaller no está disponible. Intentando instalar..."
-  "$PYTHON_BIN" -m pip install --upgrade pip setuptools wheel
-  "$PYTHON_BIN" -m pip install pyinstaller==4.5 || "$PYTHON_BIN" -m pip install pyinstaller
+  echo "[WARN] PyInstaller no está disponible. Intentando reinstalación forzada..."
+  "$PYTHON_BIN" -m pip install --force-reinstall --no-cache-dir pyinstaller
+  if [ ! -f "$PYINSTALLER_BIN" ]; then
+    echo "[WARN] Reinstalación forzada falló. Probando desinstalar e instalar versión 4.5..."
+    "$PYTHON_BIN" -m pip uninstall -y pyinstaller
+    "$PYTHON_BIN" -m pip install --no-cache-dir pyinstaller==4.5
+  fi
   if [ -f "$PYINSTALLER_BIN" ]; then
-    echo "[OK] PyInstaller instalado correctamente."
+    echo "[OK] PyInstaller instalado correctamente tras reinstalación."
   else
-    echo "[FATAL] PyInstaller no se pudo instalar. Abortando instalación."
+    echo "[FATAL] PyInstaller no se pudo instalar ni regenerar el binario. Abortando instalación."
     exit 1
   fi
 fi
