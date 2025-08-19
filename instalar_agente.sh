@@ -36,20 +36,44 @@ if [ -z "$PYTHON_BIN" ]; then
 fi
 # Instala pyinstaller en el entorno correcto y verifica instalación
 # Instala pyinstaller y verifica instalación correctamente
+# Mostrar información de entorno
+echo "[INFO] Python ejecutable: $PYTHON_BIN"
+echo "[INFO] Versión de Python: $($PYTHON_BIN --version)"
+echo "[INFO] Ruta de venv: $HOME/agente-venv"
+
+# Detectar binario de pyinstaller en el venv
+PYINSTALLER_BIN="$HOME/agente-venv/bin/pyinstaller"
+if [ ! -f "$PYINSTALLER_BIN" ]; then
+  PYINSTALLER_BIN="$HOME/agente-venv/Scripts/pyinstaller.exe" # Para Windows
+fi
+
+# Instala pyinstaller en el entorno correcto y verifica instalación
 $PYTHON_BIN -m pip install --upgrade pip setuptools wheel
 if ! $PYTHON_BIN -m pip --version | grep -qE 'pip 2[5-9]|pip 3[0-9]'; then
   echo "[WARN] La versión de pip es antigua. Actualizando pip, setuptools y wheel..."
   $PYTHON_BIN -m pip install --upgrade pip setuptools wheel
 fi
-# Instala pyinstaller en el entorno correcto y verifica instalación
 $PYTHON_BIN -m pip install --upgrade pip setuptools wheel pyinstaller
-if ! $PYTHON_BIN -m pyinstaller --version >/dev/null 2>&1; then
+if ! "$PYTHON_BIN" -m pyinstaller --version >/dev/null 2>&1; then
   echo "[ERROR] PyInstaller no está disponible en el entorno virtual. Reinstalando pyinstaller==4.5..."
-  $PYTHON_BIN -m pip install pyinstaller==4.5
-  if ! $PYTHON_BIN -m pyinstaller --version >/dev/null 2>&1; then
-    echo "[ERROR] PyInstaller sigue sin estar disponible en el entorno virtual. Revisa la instalación manualmente."
-    exit 1
-  fi
+  "$PYTHON_BIN" -m pip install pyinstaller==4.5
+fi
+
+# Mostrar ruta y versión de PyInstaller tras instalar
+echo "[INFO] PyInstaller binario: $PYINSTALLER_BIN"
+if [ -f "$PYINSTALLER_BIN" ]; then
+  "$PYINSTALLER_BIN" --version
+else
+  echo "[WARN] No se encontró el binario de PyInstaller en el venv."
+fi
+
+# Verifica de nuevo usando el binario absoluto
+if ! "$PYINSTALLER_BIN" --version >/dev/null 2>&1; then
+  echo "[ERROR] PyInstaller sigue sin estar disponible en el entorno virtual. Revisa la instalación manualmente."
+  echo "[DEBUG] PATH actual: $PATH"
+  echo "[DEBUG] Archivos en $HOME/agente-venv/bin:"
+  ls -l "$HOME/agente-venv/bin" 2>/dev/null || ls -l "$HOME/agente-venv/Scripts" 2>/dev/null
+  exit 1
 fi
 # Si se usa entorno virtual, instala dependencias si no están
 if [[ "$PYTHON_BIN" == "$HOME/agente-venv/bin/python"* ]]; then
