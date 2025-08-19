@@ -84,6 +84,43 @@ for bin in busybox nc netstat nmap traceroute; do
   fi
 done
 
+# Detectar arquitectura y distro para decidir si compilar o descargar binario
+echo "[INFO] Detectando compatibilidad para construir binario localmente..."
+ARCH=$(uname -m)
+DISTRO=$(awk -F= '/^ID=/ {print $2}' /etc/os-release 2>/dev/null || echo "unknown")
+COMPATIBLE_BUILD=0
+if [[ "$ARCH" == "x86_64" ]] && [[ "$DISTRO" == "ubuntu" || "$DISTRO" == "debian" || "$DISTRO" == "rhel" || "$DISTRO" == "centos" || "$DISTRO" == "fedora" || "$DISTRO" == "rocky" ]]; then
+  COMPATIBLE_BUILD=1
+fi
+
+if [ "$COMPATIBLE_BUILD" -eq 1 ]; then
+  echo "[INFO] Sistema compatible, generando binario local con PyInstaller..."
+  pip install pyinstaller
+  pyinstaller --onefile agente/__main__.py --name agente
+  BIN_DEST="dist/agente"
+  if [ -f "$BIN_DEST" ]; then
+    echo "[OK] Binario generado localmente en $BIN_DEST"
+  else
+    echo "[ERROR] Falló la generación local, descargando binario precompilado..."
+    BIN_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/dist/agente"
+    BIN_TMP="/tmp/agente.bin"
+    BIN_DEST="agente/bin/agente"
+    curl -L "$BIN_URL" -o "$BIN_TMP"
+    mv "$BIN_TMP" "$BIN_DEST"
+    chmod +x "$BIN_DEST"
+    echo "[OK] Binario agente descargado en $BIN_DEST"
+  fi
+else
+  echo "[INFO] Sistema no compatible para build local, descargando binario precompilado..."
+  BIN_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/dist/agente"
+  BIN_TMP="/tmp/agente.bin"
+  BIN_DEST="agente/bin/agente"
+  curl -L "$BIN_URL" -o "$BIN_TMP"
+  mv "$BIN_TMP" "$BIN_DEST"
+  chmod +x "$BIN_DEST"
+  echo "[OK] Binario agente descargado en $BIN_DEST"
+fi
+
 # Instala dependencias del agente
 echo "[INFO] Instalando dependencias del agente..."
 if [ -f requirements.txt ]; then
@@ -103,7 +140,14 @@ fi
 # Instala PyInstaller y genera ejecutable
 echo "[INFO] Instalando PyInstaller y generando ejecutable..."
 pip install pyinstaller
-pyinstaller --onefile agente/__main__.py --name agente
+BIN_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/dist/agente"
+BIN_TMP="/tmp/agente.bin"
+BIN_DEST="agente/bin/agente"
+echo "[INFO] Descargando binario agente desde $BIN_URL..."
+curl -L "$BIN_URL" -o "$BIN_TMP"
+mv "$BIN_TMP" "$BIN_DEST"
+chmod +x "$BIN_DEST"
+echo "[OK] Binario agente descargado en $BIN_DEST"
 
 echo "[OK] Instalación y empaquetado del agente completados. Ejecutable generado en dist/agente."
 # Crear entorno virtual si no existe y usarlo para todo
