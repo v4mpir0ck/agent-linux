@@ -1,9 +1,31 @@
 # Crear entorno virtual si no existe y usarlo para todo
 if [ ! -d "$HOME/agente-venv" ]; then
   echo "[INFO] Creando entorno virtual en $HOME/agente-venv..."
-  python3 -m venv "$HOME/agente-venv"
+  if command -v python3.10 >/dev/null 2>&1; then
+    python3.10 -m venv "$HOME/agente-venv"
+    PYTHON_BIN="$HOME/agente-venv/bin/python3.10"
+  elif command -v python3.9 >/dev/null 2>&1; then
+    python3.9 -m venv "$HOME/agente-venv"
+    PYTHON_BIN="$HOME/agente-venv/bin/python3.9"
+  elif command -v python3.8 >/dev/null 2>&1; then
+    python3.8 -m venv "$HOME/agente-venv"
+    PYTHON_BIN="$HOME/agente-venv/bin/python3.8"
+  else
+    python3 -m venv "$HOME/agente-venv"
+    PYTHON_BIN="$HOME/agente-venv/bin/python3"
+  fi
+else
+  # Detecta el binario correcto según versión
+  if [ -f "$HOME/agente-venv/bin/python3.10" ]; then
+    PYTHON_BIN="$HOME/agente-venv/bin/python3.10"
+  elif [ -f "$HOME/agente-venv/bin/python3.9" ]; then
+    PYTHON_BIN="$HOME/agente-venv/bin/python3.9"
+  elif [ -f "$HOME/agente-venv/bin/python3.8" ]; then
+    PYTHON_BIN="$HOME/agente-venv/bin/python3.8"
+  else
+    PYTHON_BIN="$HOME/agente-venv/bin/python3"
+  fi
 fi
-PYTHON_BIN="$HOME/agente-venv/bin/python3"
 if [ -z "$PYTHON_BIN" ]; then
   echo "[ERROR] No se detectó el binario de Python. Revisa la variable PYTHON_BIN y la lógica de detección."
   exit 1
