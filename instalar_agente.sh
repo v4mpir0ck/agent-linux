@@ -36,6 +36,11 @@ if [ -z "$PYTHON_BIN" ]; then
 fi
 # Instala pyinstaller en el entorno correcto y verifica instalación
 # Instala pyinstaller y verifica instalación correctamente
+$PYTHON_BIN -m pip install --upgrade pip setuptools wheel
+if ! $PYTHON_BIN -m pip --version | grep -qE 'pip 2[5-9]|pip 3[0-9]'; then
+  echo "[WARN] La versión de pip es antigua. Actualizando pip, setuptools y wheel..."
+  $PYTHON_BIN -m pip install --upgrade pip setuptools wheel
+fi
 $PYTHON_BIN -m pip install --upgrade pip setuptools wheel pyinstaller
 if ! $PYTHON_BIN -m pip show pyinstaller >/dev/null 2>&1; then
   echo "[ERROR] PyInstaller no se instaló correctamente en $PYTHON_BIN. Revisa la instalación o instala manualmente con: $PYTHON_BIN -m pip install pyinstaller"
