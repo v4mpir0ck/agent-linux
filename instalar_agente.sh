@@ -44,7 +44,10 @@ echo "[INFO] Ruta de venv: $HOME/agente-venv"
 # Detectar binario de pyinstaller en el venv
 PYINSTALLER_BIN="$HOME/agente-venv/bin/pyinstaller"
 if [ ! -f "$PYINSTALLER_BIN" ]; then
-  PYINSTALLER_BIN="$HOME/agente-venv/Scripts/pyinstaller.exe" # Para Windows
+  # Solo si es Windows, buscar en Scripts
+  if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+    PYINSTALLER_BIN="$HOME/agente-venv/Scripts/pyinstaller.exe"
+  fi
 fi
 
 # Instala pyinstaller en el entorno correcto y verifica instalación
@@ -64,12 +67,7 @@ echo "[INFO] PyInstaller binario: $PYINSTALLER_BIN"
 if [ -f "$PYINSTALLER_BIN" ]; then
   "$PYINSTALLER_BIN" --version
 else
-  echo "[WARN] No se encontró el binario de PyInstaller en el venv."
-fi
-
-# Verifica de nuevo usando el binario absoluto
-if ! "$PYINSTALLER_BIN" --version >/dev/null 2>&1; then
-  echo "[ERROR] PyInstaller sigue sin estar disponible en el entorno virtual. Revisa la instalación manualmente."
+  echo "[ERROR] No se encontró el binario de PyInstaller en el venv. Revisa la instalación manualmente."
   echo "[DEBUG] PATH actual: $PATH"
   echo "[DEBUG] Archivos en $HOME/agente-venv/bin:"
   ls -l "$HOME/agente-venv/bin" 2>/dev/null || ls -l "$HOME/agente-venv/Scripts" 2>/dev/null
