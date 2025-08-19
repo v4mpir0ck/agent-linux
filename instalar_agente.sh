@@ -41,16 +41,22 @@ if ! $PYTHON_BIN -m pip --version | grep -qE 'pip 2[5-9]|pip 3[0-9]'; then
   echo "[WARN] La versión de pip es antigua. Actualizando pip, setuptools y wheel..."
   $PYTHON_BIN -m pip install --upgrade pip setuptools wheel
 fi
+# Instala pyinstaller en el entorno correcto y verifica instalación
 $PYTHON_BIN -m pip install --upgrade pip setuptools wheel pyinstaller
-if ! $PYTHON_BIN -m pip show pyinstaller >/dev/null 2>&1; then
-  echo "[ERROR] PyInstaller no se instaló correctamente en $PYTHON_BIN. Revisa la instalación o instala manualmente con: $PYTHON_BIN -m pip install pyinstaller"
-  exit 1
+if ! $PYTHON_BIN -m pyinstaller --version >/dev/null 2>&1; then
+  echo "[ERROR] PyInstaller no está disponible en el entorno virtual. Reinstalando..."
+  $PYTHON_BIN -m pip install pyinstaller
+  if ! $PYTHON_BIN -m pyinstaller --version >/dev/null 2>&1; then
+    echo "[ERROR] PyInstaller sigue sin estar disponible en el entorno virtual. Revisa la instalación manualmente."
+    deactivate
+    exit 1
+  fi
 fi
 # Si se usa entorno virtual, instala dependencias si no están
 if [[ "$PYTHON_BIN" == "$HOME/agente-venv/bin/python"* ]]; then
   echo "[INFO] Instalando dependencias en el entorno virtual si no están presentes..."
   $PYTHON_BIN -m pip install --upgrade pip setuptools wheel
-  $PYTHON_BIN -m pip show pyinstaller >/dev/null 2>&1 || $PYTHON_BIN -m pip install pyinstaller
+  $PYTHON_BIN -m pyinstaller --version >/dev/null 2>&1 || $PYTHON_BIN -m pip install pyinstaller
 fi
 PYTHON_BIN=""
 if [ -d "$HOME/agente-venv/bin" ]; then
@@ -258,10 +264,10 @@ echo "[DEBUG] Usando PYTHON_BIN: $PYTHON_BIN"
 # Activar el entorno virtual antes de instalar PyInstaller
 source "$HOME/agente-venv/bin/activate"
 pip install --upgrade pyinstaller
-if ! pyinstaller --version >/dev/null 2>&1; then
+if ! python3 -m pyinstaller --version >/dev/null 2>&1; then
   echo "[ERROR] PyInstaller no está disponible en el entorno virtual. Reinstalando..."
   pip install pyinstaller
-  if ! pyinstaller --version >/dev/null 2>&1; then
+  if ! python3 -m pyinstaller --version >/dev/null 2>&1; then
     echo "[ERROR] PyInstaller sigue sin estar disponible en el entorno virtual. Revisa la instalación manualmente."
     deactivate
     exit 1
@@ -272,7 +278,7 @@ PYINSTALL_BINARIES=""
 for f in bin/*; do
   [ -f "$f" ] && PYINSTALL_BINARIES="$PYINSTALL_BINARIES --add-binary $f:bin"
 done
-pyinstaller --onefile $PYINSTALL_BINARIES $PYINSTALL_DATA agent.py
+python3 -m pyinstaller --onefile $PYINSTALL_BINARIES $PYINSTALL_DATA agent.py
 echo "[INFO] Ejecutable generado en $BASE_DIR/dist/agent"
 
 # --- Ejecutar el instalador Python principal ---
