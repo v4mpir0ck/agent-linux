@@ -97,35 +97,37 @@ fi
 # Si falla por error de importación, compilar localmente
 BIN_TEST_OUTPUT=$($BIN_DEST --help 2>&1 || true)
 if echo "$BIN_TEST_OUTPUT" | grep -qE 'GLIBC|libpython|Failed to load Python shared library|No module named'; then
-	echo "[WARN] El binario descargado no es compatible con este sistema o le faltan módulos. Intentando compilar localmente..."
-	REPO_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/agente"
-	mkdir -p /tmp/agente_src
-	curl -O https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/requirements.txt -o /tmp/agente_src/requirements.txt
-	for file in __main__.py agent.py alertas.py configuracion.py conectividad.py herramientas.py informe.py llm_client.py main.py procesos.py sistema.py usuarios.py wizard.py; do
-		curl -o /tmp/agente_src/$file "$REPO_URL/$file"
-	done
-	# Instalar dependencias de build
-	if command -v apt-get >/dev/null 2>&1; then
-		$SUDO apt-get update
-		$SUDO apt-get install -y python3-pip python3-venv build-essential libffi-dev libssl-dev
-	elif command -v yum >/dev/null 2>&1; then
-		$SUDO yum install -y python3-pip gcc libffi-devel openssl-devel
-	elif command -v dnf >/dev/null 2>&1; then
-		$SUDO dnf install -y python3-pip gcc libffi-devel openssl-devel
-	fi
-	python3 -m venv /tmp/agente-venv
-	source /tmp/agente-venv/bin/activate
-	pip install --upgrade pip setuptools wheel
-	pip install -r /tmp/agente_src/requirements.txt
-	pip install pyinstaller
-	pyinstaller --onefile /tmp/agente_src/__main__.py --name agente
-	if [ -f dist/agente ]; then
-		mv dist/agente $BIN_DEST
-		chmod +x $BIN_DEST
-		echo "[OK] Binario agente compilado localmente y reemplazado en $BIN_DEST"
-	else
-		echo "[ERROR] Falló la compilación local. Revisa dependencias y fuentes."
-		exit 1
-	fi
+		echo "[WARN] El binario descargado no es compatible con este sistema o le faltan módulos. Intentando compilar localmente en modo onedir..."
+		REPO_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/agente"
+		mkdir -p /tmp/agente_src
+		curl -O https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/requirements.txt -o /tmp/agente_src/requirements.txt
+		for file in __main__.py agent.py alertas.py configuracion.py conectividad.py herramientas.py informe.py llm_client.py main.py procesos.py sistema.py usuarios.py wizard.py; do
+			curl -o /tmp/agente_src/$file "$REPO_URL/$file"
+		done
+		# Instalar dependencias de build
+		if command -v apt-get >/dev/null 2>&1; then
+			$SUDO apt-get update
+			$SUDO apt-get install -y python3-pip python3-venv build-essential libffi-dev libssl-dev
+		elif command -v yum >/dev/null 2>&1; then
+			$SUDO yum install -y python3-pip gcc libffi-devel openssl-devel
+		elif command -v dnf >/dev/null 2>&1; then
+			$SUDO dnf install -y python3-pip gcc libffi-devel openssl-devel
+		fi
+		python3 -m venv /tmp/agente-venv
+		source /tmp/agente-venv/bin/activate
+		pip install --upgrade pip setuptools wheel
+		pip install -r /tmp/agente_src/requirements.txt
+		pip install pyinstaller
+		pyinstaller /tmp/agente_src/__main__.py --name agente
+		if [ -d dist/agente ]; then
+			$SUDO rm -rf /opt/agente
+			$SUDO cp -r dist/agente /opt/agente
+			$SUDO ln -sf /opt/agente/agente /usr/local/bin/agente
+			$SUDO chmod +x /opt/agente/agente
+			echo "[OK] Binario agente compilado localmente en modo onedir y disponible como 'agente' en /usr/local/bin. Ejecuta 'agente' desde cualquier lugar."
+		else
+			echo "[ERROR] Falló la compilación local en modo onedir. Revisa dependencias y fuentes."
+			exit 1
+		fi
 fi
 fi
