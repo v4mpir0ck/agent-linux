@@ -79,8 +79,8 @@ echo "Agente instalado en $BIN_DEST"
 
 # Probar el binario y compilar localmente si falla por GLIBC/Python
 echo "[INFO] Probando binario instalado..."
-$BIN_DEST --help >/dev/null 2>&1
-if [ $? -ne 0 ]; then
+BIN_TEST_OUTPUT=$($BIN_DEST --help 2>&1 || true)
+if echo "$BIN_TEST_OUTPUT" | grep -qE 'GLIBC|libpython|Failed to load Python shared library'; then
 	echo "[WARN] El binario descargado no es compatible con este sistema. Intentando compilar localmente..."
 	# Descargar fuentes y requirements
 	REPO_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/agente"
