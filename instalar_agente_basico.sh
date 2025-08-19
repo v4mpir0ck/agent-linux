@@ -77,12 +77,27 @@ fi
 
 echo "Agente instalado en $BIN_DEST"
 
-# Probar el binario y compilar localmente si falla por GLIBC/Python
 echo "[INFO] Probando binario instalado..."
+
+# Wrapper para ejecutar el binario y copiar la librería compartida si es necesario
+LIBPY=$(find /usr/lib /lib -name 'libpython3.10.so.1.0' | head -n1)
+if [ -x "$BIN_DEST" ] && [ -n "$LIBPY" ]; then
+	"$BIN_DEST" &
+	BIN_PID=$!
+	sleep 1
+	TMP_DIR=$(ls -d /tmp/_MEI* 2>/dev/null | sort -r | head -n1)
+	if [ -n "$TMP_DIR" ]; then
+		cp "$LIBPY" "$TMP_DIR/"
+	fi
+	wait $BIN_PID
+else
+	echo "No se encontró el binario o la librería de Python."
+fi
+
+# Si falla por error de importación, compilar localmente
 BIN_TEST_OUTPUT=$($BIN_DEST --help 2>&1 || true)
-if echo "$BIN_TEST_OUTPUT" | grep -qE 'GLIBC|libpython|Failed to load Python shared library'; then
-	echo "[WARN] El binario descargado no es compatible con este sistema. Intentando compilar localmente..."
-	# Descargar fuentes y requirements
+if echo "$BIN_TEST_OUTPUT" | grep -qE 'GLIBC|libpython|Failed to load Python shared library|No module named'; then
+	echo "[WARN] El binario descargado no es compatible con este sistema o le faltan módulos. Intentando compilar localmente..."
 	REPO_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/agente"
 	mkdir -p /tmp/agente_src
 	curl -O https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/requirements.txt -o /tmp/agente_src/requirements.txt
@@ -94,9 +109,9 @@ if echo "$BIN_TEST_OUTPUT" | grep -qE 'GLIBC|libpython|Failed to load Python sha
 		$SUDO apt-get update
 		$SUDO apt-get install -y python3-pip python3-venv build-essential libffi-dev libssl-dev
 	elif command -v yum >/dev/null 2>&1; then
-		$SUDO yum install -y python3-pip python3-venv gcc libffi-devel openssl-devel
+		$SUDO yum install -y python3-pip gcc libffi-devel openssl-devel
 	elif command -v dnf >/dev/null 2>&1; then
-		$SUDO dnf install -y python3-pip python3-venv gcc libffi-devel openssl-devel
+		$SUDO dnf install -y python3-pip gcc libffi-devel openssl-devel
 	fi
 	python3 -m venv /tmp/agente-venv
 	source /tmp/agente-venv/bin/activate
@@ -112,4 +127,5 @@ if echo "$BIN_TEST_OUTPUT" | grep -qE 'GLIBC|libpython|Failed to load Python sha
 		echo "[ERROR] Falló la compilación local. Revisa dependencias y fuentes."
 		exit 1
 	fi
+fi
 fi

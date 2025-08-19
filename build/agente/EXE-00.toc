@@ -37,18 +37,16 @@
    'Production/Documents/DXC/Projects/mapfre/agente/build/agente/localpycs/pyimod03_ctypes.pyc',
    'PYMODULE'),
   ('pyiboot01_bootstrap',
-   '/home/jlazaro/.local/lib/python3.10/site-packages/PyInstaller/loader/pyiboot01_bootstrap.py',
+   '/tmp/agente-venv/lib/python3.10/site-packages/PyInstaller/loader/pyiboot01_bootstrap.py',
    'PYSOURCE'),
   ('pyi_rth_inspect',
-   '/home/jlazaro/.local/lib/python3.10/site-packages/PyInstaller/hooks/rthooks/pyi_rth_inspect.py',
+   '/tmp/agente-venv/lib/python3.10/site-packages/PyInstaller/hooks/rthooks/pyi_rth_inspect.py',
    'PYSOURCE'),
   ('__main__',
    '/mnt/c/Users/jlazaro7/OneDrive - DXC '
    'Production/Documents/DXC/Projects/mapfre/agente/__main__.py',
    'PYSOURCE'),
-  ('libpython3.10.so.1.0',
-   '/lib/x86_64-linux-gnu/libpython3.10.so.1.0',
-   'BINARY'),
+  ('libpython3.10.so', '/lib/x86_64-linux-gnu/libpython3.10.so', 'BINARY'),
   ('lib-dynload/_contextvars.cpython-310-x86_64-linux-gnu.so',
    '/usr/lib/python3.10/lib-dynload/_contextvars.cpython-310-x86_64-linux-gnu.so',
    'EXTENSION'),
@@ -97,6 +95,62 @@
   ('libcrypto.so.3', '/lib/x86_64-linux-gnu/libcrypto.so.3', 'BINARY'),
   ('liblzma.so.5', '/lib/x86_64-linux-gnu/liblzma.so.5', 'BINARY'),
   ('libbz2.so.1.0', '/lib/x86_64-linux-gnu/libbz2.so.1.0', 'BINARY'),
+  ('__init__.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/__init__.py',
+   'DATA'),
+  ('agent.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/agent.py',
+   'DATA'),
+  ('alertas.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/alertas.py',
+   'DATA'),
+  ('conectividad.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/conectividad.py',
+   'DATA'),
+  ('configuracion.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/configuracion.py',
+   'DATA'),
+  ('encrypt_token.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/encrypt_token.py',
+   'DATA'),
+  ('herramientas.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/herramientas.py',
+   'DATA'),
+  ('informe.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/informe.py',
+   'DATA'),
+  ('llm_client.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/llm_client.py',
+   'DATA'),
+  ('main.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/main.py',
+   'DATA'),
+  ('procesos.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/procesos.py',
+   'DATA'),
+  ('sistema.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/sistema.py',
+   'DATA'),
+  ('usuarios.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/usuarios.py',
+   'DATA'),
+  ('wizard.py',
+   '/mnt/c/Users/jlazaro7/OneDrive - DXC '
+   'Production/Documents/DXC/Projects/mapfre/agente/wizard.py',
+   'DATA'),
   ('base_library.zip',
    '/mnt/c/Users/jlazaro7/OneDrive - DXC '
    'Production/Documents/DXC/Projects/mapfre/agente/build/agente/base_library.zip',
@@ -104,8 +158,8 @@
  [],
  False,
  False,
- 1755520550,
+ 1755615385,
  [('run',
-   '/home/jlazaro/.local/lib/python3.10/site-packages/PyInstaller/bootloader/Linux-64bit-intel/run',
+   '/tmp/agente-venv/lib/python3.10/site-packages/PyInstaller/bootloader/Linux-64bit-intel/run',
    'EXECUTABLE')],
  '/lib/x86_64-linux-gnu/libpython3.10.so.1.0')
