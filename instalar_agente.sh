@@ -73,6 +73,21 @@ else
   ls -l "$HOME/agente-venv/bin" 2>/dev/null || ls -l "$HOME/agente-venv/Scripts" 2>/dev/null
   exit 1
 fi
+
+# Verificación definitiva: si existe el binario, ignorar el error del módulo
+if [ -f "$PYINSTALLER_BIN" ]; then
+  echo "[OK] PyInstaller está disponible en el entorno virtual."
+else
+  echo "[WARN] PyInstaller no está disponible. Intentando instalar..."
+  "$PYTHON_BIN" -m pip install --upgrade pip setuptools wheel
+  "$PYTHON_BIN" -m pip install pyinstaller==4.5 || "$PYTHON_BIN" -m pip install pyinstaller
+  if [ -f "$PYINSTALLER_BIN" ]; then
+    echo "[OK] PyInstaller instalado correctamente."
+  else
+    echo "[FATAL] PyInstaller no se pudo instalar. Abortando instalación."
+    exit 1
+  fi
+fi
 # Si se usa entorno virtual, instala dependencias si no están
 if [[ "$PYTHON_BIN" == "$HOME/agente-venv/bin/python"* ]]; then
   echo "[INFO] Instalando dependencias en el entorno virtual si no están presentes..."
