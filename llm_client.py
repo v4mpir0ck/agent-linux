@@ -9,36 +9,50 @@ import hashlib
 from cryptography.fernet import Fernet
 
 def interactive_llm_config():
-    enc_path = os.path.join(os.path.dirname(__file__), "azure_openai_token.enc")
-    import getpass
-    print("\033[96m[LLM] ¿Quieres modificar la configuración del LLM (endpoint, key, modelo)?\033[0m")
-    resp = input("[LLM] Escribe 's' para editar o cualquier otra tecla para continuar: ").strip().lower()
-    # Cargar valores actuales si existen
-    current_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
-    current_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
-    current_api_version = os.getenv("AZURE_OPENAI_API_VERSION")
-    current_key = os.getenv("AZURE_OPENAI_KEY")
-    # Si existe el archivo encriptado, intentar leerlo para mostrar los valores actuales
-    if os.path.exists(enc_path):
+    try:
+        enc_path = os.path.join(os.path.dirname(__file__), "azure_openai_token.enc")
         import getpass
-        for intento in range(1):
-            passphrase = getpass.getpass("Introduce la passphrase para mostrar los valores actuales: ")
+        print("\033[96m[LLM] ¿Quieres modificar la configuración del LLM (endpoint, key, modelo)?\033[0m")
+        resp = input("[LLM] Escribe 's' para editar o cualquier otra tecla para continuar: ").strip().lower()
+        # Cargar valores actuales si existen
+        current_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+        current_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+        current_api_version = os.getenv("AZURE_OPENAI_API_VERSION")
+        current_key = os.getenv("AZURE_OPENAI_KEY")
+        # Si existe el archivo encriptado, intentar leerlo para mostrar los valores actuales
+        if os.path.exists(enc_path):
+            import getpass
+            for intento in range(1):
+                passphrase = getpass.getpass("Introduce la passphrase para mostrar los valores actuales: ")
+                key_bytes = hashlib.sha256(passphrase.encode()).digest()[:32]
+                fernet_key = base64.urlsafe_b64encode(key_bytes)
+                fernet = Fernet(fernet_key)
+                try:
+                    with open(enc_path, "rb") as f:
+                        token_enc = f.read()
+                    llm_data = fernet.decrypt(token_enc).decode()
+                    llm_parts = llm_data.split('\n')
+                    if len(llm_parts) == 4:
+                        current_endpoint, current_deployment, current_api_version, current_key = llm_parts
+                except Exception:
+                    pass
+        if resp == "s":
+            endpoint = input(f"Nuevo endpoint [{current_endpoint}]: ").strip() or current_endpoint
+            deployment = input(f"Nombre del modelo/deployment [{current_deployment}]: ").strip() or current_deployment
+            api_version = input(f"API version [{current_api_version}]: ").strip() or current_api_version
+            key = getpass.getpass(f"API Key/token [{(current_key[:6] + '...') if current_key else ''}]: ").strip() or current_key
+            passphrase = getpass.getpass("Passphrase para encriptar: ").strip()
+            llm_data = f"{endpoint}\n{deployment}\n{api_version}\n{key}"
             key_bytes = hashlib.sha256(passphrase.encode()).digest()[:32]
             fernet_key = base64.urlsafe_b64encode(key_bytes)
             fernet = Fernet(fernet_key)
-            try:
-                with open(enc_path, "rb") as f:
-                    token_enc = f.read()
-                llm_data = fernet.decrypt(token_enc).decode()
-                llm_parts = llm_data.split('\n')
-                if len(llm_parts) == 4:
-                    current_endpoint, current_deployment, current_api_version, current_key = llm_parts
-            except Exception:
-                pass
-    if resp == "s":
-        endpoint = input(f"Nuevo endpoint [{current_endpoint}]: ").strip() or current_endpoint
-        deployment = input(f"Nombre del modelo/deployment [{current_deployment}]: ").strip() or current_deployment
-        api_version = input(f"API version [{current_api_version}]: ").strip() or current_api_version
+            with open(enc_path, "wb") as f:
+                f.write(fernet.encrypt(llm_data.encode()))
+            print("\033[92m[LLM] Configuración guardada y encriptada correctamente.\033[0m")
+            return endpoint, deployment, api_version, key
+    except KeyboardInterrupt:
+        print("\n\033[92mConfiguración cancelada por el usuario.\033[0m")
+        return
         import getpass
         key = getpass.getpass(f"API Key/token [{current_key[:6]}...]: ").strip() or current_key
         passphrase = getpass.getpass("Passphrase para encriptar: ").strip()

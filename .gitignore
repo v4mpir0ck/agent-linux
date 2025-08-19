@@ -3,7 +3,35 @@ wheels/
 # Excluir la carpeta y el zip de wheels del repo
 wheels/
 wheels.zip
-.env
--env/
+
+# Ignorar todo en dist excepto el binario agent
+/dist/*
+!/dist/agent
+
+# Ignorar archivos de compilación y temporales
+/build/
 .__pycache__/
-__pycache__/
+.nuitka-cache/
+*.bin
+*.spec
+*.pyc
+*.pyo
+*.log
+
+# Ignorar binarios generados
+agente/dist/*
+!agente/dist/agent
+
+# Ignorar archivos de entorno
+.env
+*.env
+
+# Ignorar backups y archivos temporales
+*.bak
+*.backup
+*.swp
+*.swo
+
+# Ignorar archivos de test y datos
+*.xlsx
+*.jsonl
