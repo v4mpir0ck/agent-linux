@@ -2,19 +2,25 @@
 # Instalador universal para Ubuntu y UBI
 set -e
 echo "[INFO] Instalando dependencias del sistema..."
+if [ "$(id -u)" -eq 0 ]; then
+  SUDO=""
+else
+  SUDO="sudo"
+fi
+
 if command -v apt-get >/dev/null 2>&1; then
-  sudo apt-get update
-  sudo apt-get install -y software-properties-common
-  sudo add-apt-repository -y ppa:deadsnakes/ppa
-  sudo apt-get update
-  sudo apt-get install -y python3.10 python3.10-venv python3.10-distutils python3-pip build-essential libffi-dev libssl-dev curl wget
+  $SUDO apt-get update
+  $SUDO apt-get install -y software-properties-common
+  $SUDO add-apt-repository -y ppa:deadsnakes/ppa
+  $SUDO apt-get update
+  $SUDO apt-get install -y python3.10 python3.10-venv python3.10-distutils python3-pip build-essential libffi-dev libssl-dev curl wget
 elif command -v yum >/dev/null 2>&1; then
   echo "[INFO] Instalando dependencias base en UBI/RHEL/CentOS..."
-  sudo yum install -y python3 python3-pip python3-venv gcc libffi-devel openssl-devel curl wget
+  $SUDO yum install -y python3 python3-pip python3-venv gcc libffi-devel openssl-devel curl wget
   echo "[WARN] Si necesitas Python 3.10+, instala manualmente o usa imagen oficial de Python 3.10."
 elif command -v dnf >/dev/null 2>&1; then
   echo "[INFO] Instalando dependencias base en Fedora..."
-  sudo dnf install -y python3 python3-pip python3-venv gcc libffi-devel openssl-devel curl wget
+  $SUDO dnf install -y python3 python3-pip python3-venv gcc libffi-devel openssl-devel curl wget
   echo "[WARN] Si necesitas Python 3.10+, instala manualmente o usa imagen oficial de Python 3.10."
 else
   echo "[ERROR] No se detectó gestor de paquetes compatible. Instala dependencias manualmente."
