@@ -4,6 +4,50 @@
 
 set -e
 
+# Requisitos mínimos
+REQUIRED_PYTHON="3.10"
+REQUIRED_GLIBC="2.35"
+
+# Actualizar Python si es necesario
+PYTHON_VERSION=$(python3 --version 2>/dev/null | awk '{print $2}' | cut -d. -f1,2)
+if [ "$PYTHON_VERSION" != "$REQUIRED_PYTHON" ]; then
+	echo "[INFO] Instalando Python $REQUIRED_PYTHON..."
+	if command -v apt-get >/dev/null 2>&1; then
+		sudo apt-get update
+		sudo apt-get install -y software-properties-common
+		sudo add-apt-repository -y ppa:deadsnakes/ppa
+		sudo apt-get update
+		sudo apt-get install -y python3.10 python3.10-venv python3.10-distutils python3-pip
+	elif command -v yum >/dev/null 2>&1; then
+		sudo yum install -y python3
+		echo "[WARN] Instala Python 3.10 manualmente si no está disponible en el sistema."
+	elif command -v dnf >/dev/null 2>&1; then
+		sudo dnf install -y python3
+		echo "[WARN] Instala Python 3.10 manualmente si no está disponible en el sistema."
+	else
+		echo "[ERROR] No se detectó gestor de paquetes compatible para instalar Python."
+		exit 1
+	fi
+fi
+
+# Actualizar GLIBC si es necesario
+GLIBC_VERSION=$(ldd --version | head -n1 | awk '{print $NF}')
+if [ "$(printf '%s\n' "$REQUIRED_GLIBC" "$GLIBC_VERSION" | sort -V | head -n1)" != "$REQUIRED_GLIBC" ]; then
+	echo "[INFO] Actualizando GLIBC a $REQUIRED_GLIBC..."
+	if command -v apt-get >/dev/null 2>&1; then
+		sudo apt-get update
+		sudo apt-get install -y libc6
+	elif command -v yum >/dev/null 2>&1; then
+		sudo yum update -y glibc
+	elif command -v dnf >/dev/null 2>&1; then
+		sudo dnf upgrade -y glibc
+	else
+		echo "[ERROR] No se detectó gestor de paquetes compatible para actualizar GLIBC."
+		exit 1
+	fi
+	echo "[WARN] Si la versión de GLIBC sigue siendo antigua, considera actualizar el sistema operativo o usar una imagen base más moderna."
+fi
+
 BIN_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/dist/agente"
 BIN_TMP="/tmp/agente.bin"
 BIN_DEST="/usr/local/bin/agente"
