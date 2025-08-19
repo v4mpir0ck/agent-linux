@@ -77,10 +77,14 @@ if [ -x "$HOME/.local/bin/python3" ]; then
 else
   PYTHON_BIN="$(which python3)"
 fi
-# Abort if running with sudo to avoid losing user environment
+# Permitir ejecución como root solo si estamos dentro de Docker
 if [ "$(id -u)" -eq 0 ]; then
-  echo "[ERROR] No ejecutes este script con sudo. Ejecuta como usuario normal para que se usen los paquetes de usuario."
-  exit 1
+  if [ -f /.dockerenv ]; then
+    echo "[WARN] Ejecutando como root dentro de Docker. Esto es seguro en contenedores, pero no recomendado fuera de Docker."
+  else
+    echo "[ERROR] No ejecutes este script como root fuera de Docker. Ejecuta como usuario normal para que se usen los paquetes de usuario."
+    exit 1
+  fi
 fi
 #!/bin/bash
 # Instalador universal para el agente IA (offline/online)
