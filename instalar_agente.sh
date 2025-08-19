@@ -9,6 +9,9 @@ INSTALL_PATH="/usr/local/bin/agent"
 
 # Descargar el binario
 curl -L "$REPO_URL" -o "$INSTALL_PATH"
+echo "[DEBUG] Binario descargado en $INSTALL_PATH"
+ls -lh "$INSTALL_PATH"
+file "$INSTALL_PATH"
 chmod +x "$INSTALL_PATH"
 
 # Verificar instalación
@@ -16,6 +19,8 @@ if "$INSTALL_PATH" --help >/dev/null 2>&1; then
     echo "[OK] El agente se ha instalado correctamente en $INSTALL_PATH"
 else
     echo "[ERROR] No se pudo instalar el agente."
+    echo "[DEBUG] Salida de ejecución:"
+    "$INSTALL_PATH" --help || true
     exit 1
 fi
 
