@@ -16,11 +16,11 @@ if command -v apt-get >/dev/null 2>&1; then
   $SUDO apt-get install -y python3.10 python3.10-venv python3.10-distutils python3-pip build-essential libffi-dev libssl-dev curl wget
 elif command -v yum >/dev/null 2>&1; then
   echo "[INFO] Instalando dependencias base en UBI/RHEL/CentOS..."
-  $SUDO yum install -y python3 python3-pip python3-venv gcc libffi-devel openssl-devel curl wget
+  $SUDO yum install -y python3 python3-pip gcc libffi-devel openssl-devel curl wget
   echo "[WARN] Si necesitas Python 3.10+, instala manualmente o usa imagen oficial de Python 3.10."
 elif command -v dnf >/dev/null 2>&1; then
   echo "[INFO] Instalando dependencias base en Fedora..."
-  $SUDO dnf install -y python3 python3-pip python3-venv gcc libffi-devel openssl-devel curl wget
+  $SUDO dnf install -y python3 python3-pip gcc libffi-devel openssl-devel curl wget
   echo "[WARN] Si necesitas Python 3.10+, instala manualmente o usa imagen oficial de Python 3.10."
 else
   echo "[ERROR] No se detectó gestor de paquetes compatible. Instala dependencias manualmente."
