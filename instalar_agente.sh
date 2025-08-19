@@ -47,6 +47,43 @@ source "$HOME/agente-venv/bin/activate"
 echo "[INFO] Actualizando pip, setuptools y wheel..."
 pip install --upgrade pip setuptools wheel
 
+# Descargar requirements.txt y todos los .py del agente
+echo "[INFO] Descargando archivos del agente desde el repositorio..."
+REPO_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/agente"
+mkdir -p agente
+curl -O https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/requirements.txt
+for file in __main__.py agent.py alertas.py; do
+  curl -o agente/$file "$REPO_URL/$file"
+done
+
+# Comprobar e instalar binarios del sistema
+echo "[INFO] Comprobando binarios del sistema (busybox, nc, netstat, nmap, traceroute)..."
+BIN_REPO_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/agente/bin"
+mkdir -p agente/bin
+for bin in busybox nc netstat nmap traceroute; do
+  if command -v $bin >/dev/null 2>&1; then
+    echo "[OK] $bin ya está instalado en el sistema."
+  else
+    echo "[WARN] $bin no está instalado. Intentando instalar desde el sistema..."
+    if [ "$bin" = "busybox" ]; then
+      $SUDO apt-get install -y busybox 2>/dev/null || $SUDO yum install -y busybox 2>/dev/null || $SUDO dnf install -y busybox 2>/dev/null || true
+    elif [ "$bin" = "nc" ]; then
+      $SUDO apt-get install -y netcat 2>/dev/null || $SUDO yum install -y nc 2>/dev/null || $SUDO dnf install -y nc 2>/dev/null || true
+    elif [ "$bin" = "netstat" ]; then
+      $SUDO apt-get install -y net-tools 2>/dev/null || $SUDO yum install -y net-tools 2>/dev/null || $SUDO dnf install -y net-tools 2>/dev/null || true
+    else
+      $SUDO apt-get install -y $bin 2>/dev/null || $SUDO yum install -y $bin 2>/dev/null || $SUDO dnf install -y $bin 2>/dev/null || true
+    fi
+    if command -v $bin >/dev/null 2>&1; then
+      echo "[OK] $bin instalado correctamente desde el sistema."
+    else
+      echo "[WARN] No se pudo instalar $bin desde el sistema. Descargando binario desde el repositorio..."
+      curl -o agente/bin/$bin "$BIN_REPO_URL/$bin"
+      chmod +x agente/bin/$bin
+    fi
+  fi
+done
+
 # Instala dependencias del agente
 echo "[INFO] Instalando dependencias del agente..."
 if [ -f requirements.txt ]; then
