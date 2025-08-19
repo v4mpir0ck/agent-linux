@@ -76,3 +76,40 @@ else
 fi
 
 echo "Agente instalado en $BIN_DEST"
+
+# Probar el binario y compilar localmente si falla por GLIBC/Python
+echo "[INFO] Probando binario instalado..."
+$BIN_DEST --help >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo "[WARN] El binario descargado no es compatible con este sistema. Intentando compilar localmente..."
+	# Descargar fuentes y requirements
+	REPO_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/agente"
+	mkdir -p /tmp/agente_src
+	curl -O https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/requirements.txt -o /tmp/agente_src/requirements.txt
+	for file in __main__.py agent.py alertas.py configuracion.py conectividad.py herramientas.py informe.py llm_client.py main.py procesos.py sistema.py usuarios.py wizard.py; do
+		curl -o /tmp/agente_src/$file "$REPO_URL/$file"
+	done
+	# Instalar dependencias de build
+	if command -v apt-get >/dev/null 2>&1; then
+		$SUDO apt-get update
+		$SUDO apt-get install -y python3-pip python3-venv build-essential libffi-dev libssl-dev
+	elif command -v yum >/dev/null 2>&1; then
+		$SUDO yum install -y python3-pip python3-venv gcc libffi-devel openssl-devel
+	elif command -v dnf >/dev/null 2>&1; then
+		$SUDO dnf install -y python3-pip python3-venv gcc libffi-devel openssl-devel
+	fi
+	python3 -m venv /tmp/agente-venv
+	source /tmp/agente-venv/bin/activate
+	pip install --upgrade pip setuptools wheel
+	pip install -r /tmp/agente_src/requirements.txt
+	pip install pyinstaller
+	pyinstaller --onefile /tmp/agente_src/__main__.py --name agente
+	if [ -f dist/agente ]; then
+		mv dist/agente $BIN_DEST
+		chmod +x $BIN_DEST
+		echo "[OK] Binario agente compilado localmente y reemplazado en $BIN_DEST"
+	else
+		echo "[ERROR] Falló la compilación local. Revisa dependencias y fuentes."
+		exit 1
+	fi
+fi
