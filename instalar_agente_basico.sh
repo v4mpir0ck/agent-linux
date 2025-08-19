@@ -3,6 +3,13 @@
 # Copia el binario generado y lo renombra a 'agente'
 
 set -e
+
+# Detectar si es root y definir SUDO antes de cualquier uso
+if [ "$(id -u)" -eq 0 ]; then
+	SUDO=""
+else
+	SUDO="sudo"
+fi
 # Detectar si es root y definir SUDO
 if [ "$(id -u)" -eq 0 ]; then
 	SUDO=""
