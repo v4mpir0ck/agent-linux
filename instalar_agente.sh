@@ -44,11 +44,10 @@ fi
 # Instala pyinstaller en el entorno correcto y verifica instalación
 $PYTHON_BIN -m pip install --upgrade pip setuptools wheel pyinstaller
 if ! $PYTHON_BIN -m pyinstaller --version >/dev/null 2>&1; then
-  echo "[ERROR] PyInstaller no está disponible en el entorno virtual. Reinstalando..."
-  $PYTHON_BIN -m pip install pyinstaller
+  echo "[ERROR] PyInstaller no está disponible en el entorno virtual. Reinstalando pyinstaller==4.5..."
+  $PYTHON_BIN -m pip install pyinstaller==4.5
   if ! $PYTHON_BIN -m pyinstaller --version >/dev/null 2>&1; then
     echo "[ERROR] PyInstaller sigue sin estar disponible en el entorno virtual. Revisa la instalación manualmente."
-    deactivate
     exit 1
   fi
 fi
