@@ -4,7 +4,7 @@
 
 set -e
 
-REPO_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/agente/dist/agent"
+REPO_URL="https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/dist/agent"
 INSTALL_PATH="/usr/local/bin/agent"
 
 # Descargar el binario
