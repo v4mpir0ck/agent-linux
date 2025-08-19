@@ -173,20 +173,6 @@ for f in "${NEEDED_FILES[@]}"; do
   curl -sSLo "$BASE_DIR/$f" "$REPO_RAW_AGENTE$f"
 done
 # --- Parchear requirements.txt para dependencias problemáticas ---
-if [ -f "$BASE_DIR/requirements.txt" ]; then
-  sed -i 's/^murmurhash==1.0.2$/murmurhash==1.0.9/' "$BASE_DIR/requirements.txt"
-  sed -i -E 's/^(pyyaml|PyYAML)[^=]*([=<>!]+)[^ ]*/pyyaml==6.0/i' "$BASE_DIR/requirements.txt"
-  # Bloquear tokenizers en requirements.txt
-  sed -i -E 's/^(tokenizers.*)$/# \1 (bloqueado, no instalar en Linux\/WSL)/' "$BASE_DIR/requirements.txt"
-fi
-
-# --- Parchear constraints.txt para bloquear tokenizers ---
-if [ -f "$BASE_DIR/constraints.txt" ]; then
-  sed -i -E 's/^(tokenizers.*)$/# \1 (bloqueado, no instalar en Linux\/WSL)/' "$BASE_DIR/constraints.txt"
-fi
-
-### --- INICIO wheels (comentado por si se necesita en el futuro) ---
-
 
 
 

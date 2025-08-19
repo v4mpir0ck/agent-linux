@@ -1,10 +1,10 @@
-murmurhash==1.0.9
+#murmurhash==1.0.9
 requests>=2.25.0
 cryptography<40.0.0
 openai<0.28.0
-pyyaml==6.0
-sentence-transformers==0.4.1.2
+#pyyaml==6.0
+#sentence-transformers==0.4.1.2
 #transformers<4.11.0
 # langchain eliminado: solo disponible >=3.7
 # httpx eliminado: solo disponible >=3.7
-gdown<4.5.0
+#gdown<4.5.0
