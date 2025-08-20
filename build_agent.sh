@@ -15,7 +15,7 @@ PYTHON_BIN="python3"
 rm -rf "$DIST_DIR"/* "$PROJECT_ROOT/build" "$PROJECT_ROOT/__pycache__" "$PROJECT_ROOT/.nuitka-cache" "$PROJECT_ROOT/dist"/*
 
 # Compilación con Nuitka usando libpython estática
-$PYTHON_BIN -m nuitka --onefile --standalone --static-libpython=yes --output-dir="$DIST_DIR" --output-filename="$BIN_NAME" "$MAIN_FILE"
+$PYTHON_BIN -m nuitka --onefile --standalone --output-dir="$DIST_DIR" --output-filename="$BIN_NAME" "$MAIN_FILE"
 
 # Renombrar el binario para quitar extensión .bin si existe
 if [ -f "$DIST_DIR/$BIN_NAME.bin" ]; then
