@@ -9,10 +9,15 @@ INSTALL_PATH="/usr/local/bin/agent"
 
 # Descargar el binario
 curl -L "$REPO_URL" -o "$INSTALL_PATH"
-echo "[DEBUG] Binario descargado en $INSTALL_PATH"
-ls -lh "$INSTALL_PATH"
-file "$INSTALL_PATH"
 chmod +x "$INSTALL_PATH"
+
+# Copiar configuración encriptada si existe en el mismo directorio que el script
+CONFIG_SRC="$(dirname "$0")/azure_openai_token.enc"
+CONFIG_DEST="/usr/local/bin/azure_openai_token.enc"
+if [ -f "$CONFIG_SRC" ]; then
+    cp "$CONFIG_SRC" "$CONFIG_DEST"
+    echo "[OK] Configuración encriptada copiada a $CONFIG_DEST"
+fi
 
 # Verificar instalación
 if "$INSTALL_PATH" --help >/dev/null 2>&1; then
