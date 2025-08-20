@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+import sys
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 import requests
@@ -9,9 +10,9 @@ import hashlib
 from cryptography.fernet import Fernet
 
 def interactive_llm_config():
+    enc_path = os.path.join(os.path.dirname(sys.argv[0]), "azure_openai_token.enc")
+    import getpass
     try:
-        enc_path = os.path.join(os.path.dirname(__file__), "azure_openai_token.enc")
-        import getpass
         print("\033[96m[LLM] ¿Quieres modificar la configuración del LLM (endpoint, key, modelo)?\033[0m")
         resp = input("[LLM] Escribe 's' para editar o cualquier otra tecla para continuar: ").strip().lower()
         # Cargar valores actuales si existen
@@ -21,7 +22,6 @@ def interactive_llm_config():
         current_key = os.getenv("AZURE_OPENAI_KEY")
         # Si existe el archivo encriptado, intentar leerlo para mostrar los valores actuales
         if os.path.exists(enc_path):
-            import getpass
             for intento in range(1):
                 passphrase = getpass.getpass("Introduce la passphrase para mostrar los valores actuales: ")
                 key_bytes = hashlib.sha256(passphrase.encode()).digest()[:32]
@@ -53,10 +53,6 @@ def interactive_llm_config():
     except KeyboardInterrupt:
         print("\n\033[92mConfiguración cancelada por el usuario.\033[0m")
         return
-        import getpass
-        key = getpass.getpass(f"API Key/token [{current_key[:6]}...]: ").strip() or current_key
-        passphrase = getpass.getpass("Passphrase para encriptar: ").strip()
-        llm_data = f"{endpoint}\n{deployment}\n{api_version}\n{key}"
         key_bytes = hashlib.sha256(passphrase.encode()).digest()[:32]
         fernet_key = base64.urlsafe_b64encode(key_bytes)
         fernet = Fernet(fernet_key)
