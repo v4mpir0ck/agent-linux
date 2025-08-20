@@ -22,7 +22,7 @@ jobs:
       - name: Build agent in Docker
         run: |
           docker build -f dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build .
-          docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash /src/build_agent.sh
+          docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "cd /src && ./build_agent.sh"
 
       - name: Upload binario como artefacto
         uses: actions/upload-artifact@v4
