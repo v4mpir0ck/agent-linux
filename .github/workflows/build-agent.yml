@@ -16,11 +16,20 @@ jobs:
   build-and-release:
     runs-on: ubuntu-latest
     steps:
+
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          path: agente
+
+      - name: Debug lista archivos en workspace/agente
+        run: ls -l ${{ github.workspace }}/agente
+
+      - name: Debug busca build_agent.sh en todo el workspace
+        run: find ${{ github.workspace }} -name build_agent.sh
 
       - name: Build Docker image
-        run: docker build -f dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build .
+        run: docker build -f ${{ github.workspace }}/agente/dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build ${{ github.workspace }}/agente
 
       - name: lista archivos en /src
         run: docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "ls -l /src"
