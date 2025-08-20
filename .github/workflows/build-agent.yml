@@ -15,23 +15,19 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dockerfile: [Dockerfile.ubi8-test, Dockerfile.ubuntu, Dockerfile.centos]
-    if: matrix.dockerfile == github.event.inputs.dockerfile
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Build agent in Docker
         run: |
-          docker build -f dockerfiles/${{ matrix.dockerfile }} -t agent-build .
+          docker build -f dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build .
           docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash /src/build_agent.sh
 
       - name: Upload binario como artefacto
         uses: actions/upload-artifact@v4
         with:
-          name: agent-${{ matrix.dockerfile }}
+          name: agent-${{ github.event.inputs.dockerfile }}
           path: agente/dist/agent
 
       - name: Publicar binario en GitHub Releases
