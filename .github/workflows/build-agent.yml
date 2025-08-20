@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       dockerfile:
-        description: 'Dockerfile a usar (ej: Dockerfile.ubi8-test, Dockerfile.ubuntu, Dockerfile.centos)'
+        description: 'Dockerfile a usar (ej: Dockerfile.ubi8, Dockerfile.ubuntu, Dockerfile.centos)'
         required: true
-        default: 'Dockerfile.ubi8-test'
+        default: 'Dockerfile.ubi8'
       release_tag:
         description: 'Tag para el release (ej: v1.0.0-ubi8)'
         required: true
