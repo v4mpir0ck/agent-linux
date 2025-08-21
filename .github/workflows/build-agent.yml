@@ -27,10 +27,24 @@ jobs:
       - name: Build agent in Docker
         run: docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
 
+      - name: Debug estructura y .git
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "Directorio actual: $(pwd)"
+          echo "Contenido del workspace:"
+          ls -la
+          echo "Buscando .git en el workspace:"
+          find . -name .git -type d
+
       - name: Autoincrementa tag de release
         id: autotag
         working-directory: ${{ github.workspace }}
         run: |
+          echo "Directorio actual: $(pwd)"
+          echo "Contenido del workspace:"
+          ls -la
+          echo "Buscando .git en el workspace:"
+          find . -name .git -type d
           # Obtiene el último tag que coincide con el formato vX.Y.Z-<dockerfile>
           DOCKERFILE="${{ github.event.inputs.dockerfile }}"
           LAST_TAG=$(git tag --list "v*-${DOCKERFILE}" | sort -V | tail -n 1)
@@ -61,9 +75,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
+      - name: Debug estructura y .git para releases
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "Directorio actual: $(pwd)"
+          echo "Contenido del workspace:"
+          ls -la
+          echo "Buscando .git en el workspace:"
+          find . -name .git -type d
+
       - name: Actualiza releases.md
         working-directory: ${{ github.workspace }}
         run: |
+          echo "Directorio actual: $(pwd)"
+          echo "Contenido del workspace:"
+          ls -la
+          echo "Buscando .git en el workspace:"
+          find . -name .git -type d
           python agente/update_releases_md.py "${{ steps.autotag.outputs.next_tag }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ steps.autotag.outputs.next_tag }}"
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
