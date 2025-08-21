@@ -13,9 +13,20 @@ on:
         default: 'v1.0.0-ubi8'
 
 jobs:
+      - name: Actualiza releases.md
+
   build-and-release:
     runs-on: ubuntu-latest
     steps:
+      # ...existing code...
+      - name: Actualiza releases.md
+        run: |
+          python update_releases_md.py "${{ github.event.inputs.release_tag }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ github.event.inputs.release_tag }}"
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git add releases.md
+          git commit -m "docs: actualiza releases.md con release ${{ github.event.inputs.release_tag }}"
+          git push
 
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -50,4 +61,13 @@ jobs:
           name: "Agent Binario ${{ matrix.dockerfile }}"
           files: agente/dist/agent
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Actualiza releases.md
+        run: |
+          python update_releases_md.py "${{ github.event.inputs.release_tag }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ github.event.inputs.release_tag }}"
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git add releases.md
+          git commit -m "docs: actualiza releases.md con release ${{ github.event.inputs.release_tag }}"
+          git push
