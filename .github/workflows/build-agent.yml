@@ -36,6 +36,9 @@ jobs:
       - name: Build agent in Docker
         run: docker run --rm -v $PWD:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
 
+      - name: Debug - List dist directory
+        run: ls -l dist
+
       - name: Autoincrementa tag de release
         id: autotag
         run: |
