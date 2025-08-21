@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build Docker image
-        run: docker build -f agente/dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build agente
+        run: docker build -f ./dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build .
 
       - name: lista archivos en /src
         run: docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "ls -l /src"
@@ -26,14 +26,6 @@ jobs:
       - name: Build agent in Docker
         run: docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
 
-      - name: Debug estructura y .git
-        working-directory: ${{ github.workspace }}
-        run: |
-          echo "Directorio actual: $(pwd)"
-          echo "Contenido del workspace:"
-          ls -la
-          echo "Buscando .git en el workspace:"
-          find . -name .git -type d
 
       - name: Calcula el siguiente tag automáticamente
         id: autotag
@@ -74,14 +66,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
-      - name: Debug estructura y .git para releases
-        working-directory: ${{ github.workspace }}
-        run: |
-          echo "Directorio actual: $(pwd)"
-          echo "Contenido del workspace:"
-          ls -la
-          echo "Buscando .git en el workspace:"
-          find . -name .git -type d
 
       - name: Actualiza releases.md
         working-directory: ${{ github.workspace }}
