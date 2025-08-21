@@ -1,3 +1,4 @@
+[El historial de binarios generados se documenta en `README-releases.md`]
 # Pipeline CI/CD y releases
 
 ## Workflow de GitHub Actions

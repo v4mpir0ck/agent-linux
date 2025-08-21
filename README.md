@@ -1,3 +1,4 @@
+- [Historial de releases y binarios generados](README-releases.md)
 # 🧠 Agente IA para Linux
 
 Este README cubre la visión general y el uso rápido del agente. Para detalles sobre binarios, pipelines y estructura, consulta los enlaces:
