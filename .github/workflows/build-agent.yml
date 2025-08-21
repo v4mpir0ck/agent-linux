@@ -53,7 +53,7 @@ jobs:
 
       - name: Actualiza releases.md
         run: |
-          python update_releases_md.py "${{ github.event.inputs.release_tag }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ github.event.inputs.release_tag }}"
+          python agente/update_releases_md.py "${{ github.event.inputs.release_tag }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ github.event.inputs.release_tag }}"
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
           git add releases.md
