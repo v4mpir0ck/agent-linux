@@ -11,31 +11,34 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agente
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
+          path: agente
           fetch-depth: 0
 
       - name: Debug lista archivos en workspace/agente
-        run: ls -l agente
+        run: ls -l
 
       - name: Debug busca build_agent.sh en todo el workspace
         run: find . -name build_agent.sh
 
       - name: Build Docker image
-        run: docker build -f agente/dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build agente
+        run: docker build -f dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build .
 
       - name: lista archivos en /src
-        run: docker run --rm -v ${{ github.workspace }}:/src agent-build bash -c "ls -l /src/agente"
+        run: docker run --rm -v $PWD:/src agent-build bash -c "ls -l /src"
 
       - name: Build agent in Docker
-        run: docker run --rm -v ${{ github.workspace }}:/src agent-build bash -c "cd /src/agente && chmod +x build_agent.sh && ./build_agent.sh"
+        run: docker run --rm -v $PWD:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
 
       - name: Autoincrementa tag de release
         id: autotag
         run: |
-          # Obtiene el último tag que coincide con el formato vX.Y.Z-<dockerfile>
           DOCKERFILE="${{ github.event.inputs.dockerfile }}"
           LAST_TAG=$(git tag --list "v*-${DOCKERFILE}" | sort -V | tail -n 1)
           if [[ -z "$LAST_TAG" ]]; then
@@ -54,22 +57,22 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: agent-${{ github.event.inputs.dockerfile }}
-          path: agente/dist/agent
+          path: dist/agent
 
       - name: Publicar binario en GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.autotag.outputs.next_tag }}
           name: "Agent Binario ${{ github.event.inputs.dockerfile }}"
-          files: agente/dist/agent
+          files: dist/agent
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
       - name: Actualiza releases.md
         run: |
-          python agente/update_releases_md.py "${{ steps.autotag.outputs.next_tag }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ steps.autotag.outputs.next_tag }}"
+          python update_releases_md.py "${{ steps.autotag.outputs.next_tag }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ steps.autotag.outputs.next_tag }}"
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
-          git add agente/README-releases.md
+          git add README-releases.md
           git commit -m "docs: actualiza README-releases.md con release ${{ steps.autotag.outputs.next_tag }}"
           git push
