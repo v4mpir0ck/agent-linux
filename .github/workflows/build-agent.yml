@@ -20,11 +20,11 @@ jobs:
       - name: Build Docker image
         run: docker build -f ./dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build .
 
-      - name: lista archivos en /src
-        run: docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "ls -l /src"
+      - name: lista archivos en /src/agente
+        run: docker run --rm -v ${{ github.workspace }}:/src agent-build bash -c "ls -l /src/agente"
 
       - name: Build agent in Docker
-        run: docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
+        run: docker run --rm -v ${{ github.workspace }}:/src agent-build bash -c "cd /src/agente && chmod +x build_agent.sh && ./build_agent.sh"
 
 
       - name: Calcula el siguiente tag automáticamente
