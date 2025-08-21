@@ -15,22 +15,22 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          path: agente
+          fetch-depth: 0
 
       - name: Debug lista archivos en workspace/agente
-        run: ls -l ${{ github.workspace }}/agente
+        run: ls -l agente
 
       - name: Debug busca build_agent.sh en todo el workspace
-        run: find ${{ github.workspace }} -name build_agent.sh
+        run: find . -name build_agent.sh
 
       - name: Build Docker image
-        run: docker build -f ${{ github.workspace }}/agente/dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build ${{ github.workspace }}/agente
+        run: docker build -f agente/dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build agente
 
       - name: lista archivos en /src
-        run: docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "ls -l /src"
+        run: docker run --rm -v ${{ github.workspace }}:/src agent-build bash -c "ls -l /src/agente"
 
       - name: Build agent in Docker
-        run: docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
+        run: docker run --rm -v ${{ github.workspace }}:/src agent-build bash -c "cd /src/agente && chmod +x build_agent.sh && ./build_agent.sh"
 
       - name: Autoincrementa tag de release
         id: autotag
