@@ -15,40 +15,40 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          path: agente
+
+      - name: Debug lista archivos en workspace/agente
+        run: ls -l ${{ github.workspace }}/agente
+
+      - name: Debug busca build_agent.sh en todo el workspace
+        run: find ${{ github.workspace }} -name build_agent.sh
 
       - name: Build Docker image
-        run: docker build -f ./dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build .
+        run: docker build -f ${{ github.workspace }}/agente/dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build ${{ github.workspace }}/agente
 
-      - name: lista archivos en /src/agente
-        run: docker run --rm -v ${{ github.workspace }}:/src agent-build bash -c "ls -l /src/agente"
+      - name: lista archivos en /src
+        run: docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "ls -l /src"
 
       - name: Build agent in Docker
-        run: docker run --rm -v ${{ github.workspace }}:/src agent-build bash -c "cd /src/agente && chmod +x build_agent.sh && ./build_agent.sh"
+        run: docker run --rm -v ${{ github.workspace }}/agente:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
 
-
-      - name: Calcula el siguiente tag automáticamente
+      - name: Autoincrementa tag de release
         id: autotag
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const dockerfile = '${{ github.event.inputs.dockerfile }}';
-            const { data: tags } = await github.rest.repos.listTags({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              per_page: 100
-            });
-            const filtered = tags.filter(t => t.name.endsWith('-' + dockerfile));
-            if (filtered.length === 0) {
-              return 'v1.0.0-' + dockerfile;
-            }
-            filtered.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-            const last = filtered[filtered.length - 1].name;
-            const base = last.replace('-' + dockerfile, '').replace('v', '');
-            const [major, minor, patch] = base.split('.').map(Number);
-            const nextTag = `v${major}.${minor}.${patch + 1}-${dockerfile}`;
-            return nextTag;
-          result-encoding: string
+        run: |
+          # Obtiene el último tag que coincide con el formato vX.Y.Z-<dockerfile>
+          DOCKERFILE="${{ github.event.inputs.dockerfile }}"
+          LAST_TAG=$(git tag --list "v*-${DOCKERFILE}" | sort -V | tail -n 1)
+          if [[ -z "$LAST_TAG" ]]; then
+            NEXT_TAG="v1.0.0-${DOCKERFILE}"
+          else
+            BASE=$(echo "$LAST_TAG" | sed -E "s/-${DOCKERFILE}//")
+            MAJOR=$(echo $BASE | cut -d'.' -f1 | sed 's/v//')
+            MINOR=$(echo $BASE | cut -d'.' -f2)
+            PATCH=$(echo $BASE | cut -d'.' -f3)
+            PATCH=$((PATCH+1))
+            NEXT_TAG="v${MAJOR}.${MINOR}.${PATCH}-${DOCKERFILE}"
+          fi
+          echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
 
       - name: Upload binario como artefacto
         uses: actions/upload-artifact@v4
@@ -59,21 +59,17 @@ jobs:
       - name: Publicar binario en GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.autotag.outputs.result }}
+          tag_name: ${{ steps.autotag.outputs.next_tag }}
           name: "Agent Binario ${{ github.event.inputs.dockerfile }}"
-          body: "Release del binario agent para distribución ${{ github.event.inputs.dockerfile }}.\nArchivo: agent-${{ github.event.inputs.dockerfile }}"
           files: agente/dist/agent
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
-
       - name: Actualiza releases.md
-        working-directory: ${{ github.workspace }}
         run: |
-          python agente/update_releases_md.py "${{ steps.autotag.outputs.result }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ steps.autotag.outputs.result }}"
+          python agente/update_releases_md.py "${{ steps.autotag.outputs.next_tag }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ steps.autotag.outputs.next_tag }}"
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
-          git pull --rebase
           git add agente/README-releases.md
-          git commit -m "docs: actualiza README-releases.md con release ${{ steps.autotag.outputs.result }}" || echo "No hay cambios para commitear"
+          git commit -m "docs: actualiza README-releases.md con release ${{ steps.autotag.outputs.next_tag }}"
           git push
