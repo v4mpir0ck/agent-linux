@@ -13,8 +13,6 @@ on:
         default: 'v1.0.0-ubi8'
 
 jobs:
-      - name: Actualiza releases.md
-
   build-and-release:
     runs-on: ubuntu-latest
     steps:
