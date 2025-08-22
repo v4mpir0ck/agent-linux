@@ -44,6 +44,9 @@ jobs:
       - name: Debug - List dist directory
         run: ls -l dist
 
+      - name: Debug - List workspace
+        run: ls -lR
+
       - name: Autoincrementa tag de release
         id: autotag
         run: |
