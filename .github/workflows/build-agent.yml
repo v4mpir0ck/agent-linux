@@ -89,3 +89,9 @@ jobs:
           git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/v4mpir0ck/agent-linux.git HEAD:main
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
+
+      - name: Debug git user y remote
+        run: |
+          git config --get user.name
+          git config --get user.email
+          git remote -v
