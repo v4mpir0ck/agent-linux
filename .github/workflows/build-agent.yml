@@ -42,7 +42,7 @@ jobs:
           mv dist/agent-host dist/agent || true
 
       - name: Debug - List dist directory
-        run: ls -l dist
+        run: ls -l dist/agent
 
       - name: Debug - List workspace
         run: ls -lR
@@ -67,18 +67,18 @@ jobs:
           fi
           echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
 
-      # - name: Upload binario como artefacto
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: agent-${{ github.event.inputs.dockerfile }}
-      #     path: agent/dist/agent
+      - name: Upload binario como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-${{ github.event.inputs.dockerfile }}
+          path: agente/dist/agent
 
       - name: Publicar binario en GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-            tag_name: ${{ steps.autotag.outputs.next_tag }}
-            name: "Agent Binario ${{ github.event.inputs.dockerfile }}"
-            files: dist/agent
+          tag_name: ${{ steps.autotag.outputs.next_tag }}
+          name: "Agent Binario ${{ github.event.inputs.dockerfile }}"
+          files: agente/dist/agent
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
