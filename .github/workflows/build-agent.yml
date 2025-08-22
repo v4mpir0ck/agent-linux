@@ -76,9 +76,9 @@ jobs:
       - name: Publicar binario en GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.autotag.outputs.next_tag }}
-          name: "Agent Binario ${{ github.event.inputs.dockerfile }}"
-          files: agent/dist/agent
+            tag_name: ${{ steps.autotag.outputs.next_tag }}
+            name: "Agent Binario ${{ github.event.inputs.dockerfile }}"
+            files: dist/agent
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
