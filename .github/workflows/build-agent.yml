@@ -67,11 +67,11 @@ jobs:
           fi
           echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
 
-      - name: Upload binario como artefacto
-        uses: actions/upload-artifact@v4
-        with:
-          name: agent-${{ github.event.inputs.dockerfile }}
-          path: agent/dist/agent
+      # - name: Upload binario como artefacto
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: agent-${{ github.event.inputs.dockerfile }}
+      #     path: agent/dist/agent
 
       - name: Publicar binario en GitHub Releases
         uses: softprops/action-gh-release@v2
@@ -82,14 +82,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
-      - name: Actualiza releases.md
-        env:
-          GH_PUSH_TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
-        run: |
-          python update_releases_md.py "${{ steps.autotag.outputs.next_tag }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ steps.autotag.outputs.next_tag }}"
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
-          git add README-releases.md
-          git commit -m "docs: actualiza README-releases.md con release ${{ steps.autotag.outputs.next_tag }}"
-          git remote set-url origin https://x-access-token:${GH_PUSH_TOKEN}@github.com/v4mpir0ck/agent-linux.git
-          git push origin HEAD:main
+      # - name: Actualiza releases.md
+      #   env:
+      #     GH_PUSH_TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
+      #   run: |
+      #     python update_releases_md.py "${{ steps.autotag.outputs.next_tag }}" "${{ github.event.inputs.dockerfile }}" "${{ github.event.inputs.dockerfile }}" "https://github.com/v4mpir0ck/agent-linux/releases/tag/${{ steps.autotag.outputs.next_tag }}"
+      #     git config --global user.email "github-actions@github.com"
+      #     git config --global user.name "github-actions"
+      #     git add README-releases.md
+      #     git commit -m "docs: actualiza README-releases.md con release ${{ steps.autotag.outputs.next_tag }}"
+      #     git remote set-url origin https://x-access-token:${GH_PUSH_TOKEN}@github.com/v4mpir0ck/agent-linux.git
+      #     git push origin HEAD:main
