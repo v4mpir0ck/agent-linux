@@ -36,6 +36,11 @@ jobs:
       - name: Build agent in Docker
         run: docker run --rm -v $PWD:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
 
+      - name: Copia binario del contenedor al host
+        run: |
+          cp dist/agent dist/agent-host || true
+          mv dist/agent-host dist/agent || true
+
       - name: Debug - List dist directory
         run: ls -l dist
 
