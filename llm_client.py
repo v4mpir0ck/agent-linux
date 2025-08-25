@@ -7,12 +7,18 @@ import requests
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv(dotenv_path)
+def get_enc_path():
+    # Path persistente junto al binario/script
+    if getattr(sys, 'frozen', False):
+        # Ejecutable generado (Nuitka, PyInstaller, etc.)
+        base_path = os.path.dirname(sys.executable)
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, "azure_openai_token.enc")
 
 def interactive_llm_config():
-    enc_path = os.path.join(os.path.dirname(sys.argv[0]), "azure_openai_token.enc")
     import getpass
+    enc_path = get_enc_path()
     # Try to load from encrypted file if present
     if os.path.exists(enc_path):
         for intento in range(3):
