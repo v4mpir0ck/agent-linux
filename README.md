@@ -1,12 +1,59 @@
 - [Historial de releases y binarios generados](README-releases.md)
-# 🧠 Agente IA para Linux
 
-Este README cubre la visión general y el uso rápido del agente. Para detalles sobre binarios, pipelines y estructura, consulta los enlaces:
+# 🧠 Proyecto Agente IA Linux
+
+Este proyecto tiene **tres líneas principales de trabajo**:
+
+---
+
+```mermaid
+graph TD
+	 A[Agente IA para Linux] --> B[CLI interactivo]
+	 A --> C[Opciones avanzadas]
+	 A --> D[Integración LLM]
+	 E[Pipelines CI/CD] --> F[Build multiplataforma]
+	 E --> G[Release automatizado]
+	 E --> H[Dockerfiles por distro]
+	 I[Generador de Dataset] --> J[Extracción Q&A]
+	 I --> K[Conversión a formatos Azure]
+	 I --> L[Automatización con LLM]
+	 subgraph Proyecto
+		  A
+		  E
+		  I
+	 end
+```
+
+---
+
+## Líneas principales
+
+1. **Agente IA para Linux**
+	- CLI interactivo y seguro
+	- Ejecución de comandos y diagnósticos
+	- Integración con LLM (Azure OpenAI)
+	- Configuración persistente y portable
+
+2. **Pipelines CI/CD**
+	- Workflows para compilar binarios por distro
+	- Publicación automática en GitHub Releases
+	- Dockerfiles y scripts para builds reproducibles
+
+3. **Generador de Dataset**
+	- Extracción automática de Q&A desde repositorios
+	- Conversión a formatos compatibles con Azure OpenAI (Direct Preference)
+	- Automatización y limpieza de datos
+
+---
+
+## Documentación y enlaces
 
 - [Binario portable y uso remoto](README-binario.md)
 - [Pipeline CI/CD y releases](README-pipeline.md)
 - [Estructura del repositorio](README-estructura.md)
+- [Historial de releases y binarios generados](README-releases.md)
 
+---
 
 ## Instalación rápida (binario portable)
 
@@ -26,49 +73,7 @@ chmod +x agent
 ./agent
 ```
 
-Esto descarga el binario específico y lo ejecuta directamente. Consulta [README-releases.md](README-releases.md) para ver todos los binarios disponibles.
-
-## Descripción
-
-Agente inteligente para ejecutar comandos en Linux usando LLM, con CLI interactivo, seguridad y portabilidad.
-
-## Ejemplo visual
-
-```
-+---------------------------------------------------------------+
-|                   SUGERENCIA DEL LLM                         |
-+---------------------------------------------------------------+
-| Mostrar servidores DNS del sistema                            |
-|  Comando sugerido:                                            |
-| cat /etc/resolv.conf                                          |
-+---------------------------------------------------------------+
-+---------------------------------------------------------------+
-|                 RESULTADO DEL COMANDO                         |
-+---------------------------------------------------------------+
-# Output crudo aquí
-+---------------------------------------------------------------+
-[Opciones rápidas] sistema | cpu | memoria | disco | red | procesos | usuarios | servicio <nombre> | dns | salir
-```
-
-## Instalación y uso clásico (Python)
-
-1. Clona el repositorio
-```bash
-git clone <URL-del-repo>
-cd agente
-```
-2. Instalación de dependencias (offline/online)
-```bash
-./instalar_agente.sh
-```
-3. Configura el token seguro de Azure OpenAI (solo si usas LLM Azure)
-```bash
-python encrypt_token.py
-```
-4. Ejecuta el agente
-```bash
-python agent.py
-```
+---
 
 ## Autor y licencia
 - Javier Lazaro

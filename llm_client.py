@@ -60,8 +60,24 @@ def prompt_llm_config():
         deployment = input(f"Nombre del modelo/deployment [{os.getenv('AZURE_OPENAI_DEPLOYMENT','')}] : ").strip() or os.getenv('AZURE_OPENAI_DEPLOYMENT','')
         api_version = input(f"API version [{os.getenv('AZURE_OPENAI_API_VERSION','')}] : ").strip() or os.getenv('AZURE_OPENAI_API_VERSION','')
         key = getpass.getpass(f"API Key/token [{(os.getenv('AZURE_OPENAI_KEY','')[:6] + '...') if os.getenv('AZURE_OPENAI_KEY','') else ''}] : ").strip() or os.getenv('AZURE_OPENAI_KEY','')
+        # Guardar encriptado
+        save_encrypted_llm_config(endpoint, deployment, api_version, key)
         return endpoint, deployment, api_version, key
     return None
+
+def save_encrypted_llm_config(endpoint, deployment, api_version, key):
+    import getpass
+    enc_path = get_enc_path()
+    print("\033[96m[LLM] Guardando configuración encriptada...\033[0m")
+    passphrase = getpass.getpass("Introduce una passphrase para proteger la configuración: ")
+    key_bytes = hashlib.sha256(passphrase.encode()).digest()[:32]
+    fernet_key = base64.urlsafe_b64encode(key_bytes)
+    fernet = Fernet(fernet_key)
+    llm_data = f"{endpoint}\n{deployment}\n{api_version}\n{key}"
+    token_enc = fernet.encrypt(llm_data.encode())
+    with open(enc_path, "wb") as f:
+        f.write(token_enc)
+    print(f"\033[92m[LLM] Configuración guardada en {enc_path}\033[0m")
 
 # --- Token seguro: desencriptar si existe azure_openai_token.enc ---
 llm_config = prompt_llm_config()
