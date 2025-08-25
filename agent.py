@@ -68,6 +68,12 @@ class Agent:
         comando = None
         instr = instruccion.lower().strip()
         tokens = instr.split()
+        # --- INTERCEPTACIÓN DE AYUDA/MENÚ ---
+        help_keywords = [
+            "ayuda", "help", "opciones", "qué puedes hacer", "menu", "menú", "mostrar ayuda", "mostrar opciones", "ver ayuda", "ver opciones"
+        ]
+        if any(kw in instr for kw in help_keywords):
+            return print_help()
         # --- INTERCEPTACIÓN DE OPCIONES AVANZADAS ---
         interceptores = [
             {

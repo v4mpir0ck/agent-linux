@@ -7,13 +7,26 @@ Este README cubre la visión general y el uso rápido del agente. Para detalles 
 - [Pipeline CI/CD y releases](README-pipeline.md)
 - [Estructura del repositorio](README-estructura.md)
 
+
 ## Instalación rápida (binario portable)
 
-> **Para instalar el agente en cualquier sistema solo necesitas ejecutar:**
-> ```bash
-> curl -O https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/instalar_agente.sh && chmod +x instalar_agente.sh && ./instalar_agente.sh
-> ```
-> Esto descarga e instala el binario y la configuración encriptada si existe.
+**Descarga el binario desde [GitHub Releases](https://github.com/v4mpir0ck/agent-linux/releases/latest) según tu distribución:**
+
+### Fedora / RHEL / UBI
+```bash
+curl -L -o agent "https://github.com/v4mpir0ck/agent-linux/releases/latest/download/agent-Dockerfile.ubi8"
+chmod +x agent
+./agent
+```
+
+### Ubuntu
+```bash
+curl -L -o agent "https://github.com/v4mpir0ck/agent-linux/releases/latest/download/agent-Dockerfile.ubuntu"
+chmod +x agent
+./agent
+```
+
+Esto descarga el binario específico y lo ejecuta directamente. Consulta [README-releases.md](README-releases.md) para ver todos los binarios disponibles.
 
 ## Descripción
 
