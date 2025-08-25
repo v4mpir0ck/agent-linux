@@ -45,7 +45,24 @@ def interactive_llm_config():
     key = os.getenv("AZURE_OPENAI_KEY")
     return endpoint, deployment, api_version, key
 
-AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT, AZURE_OPENAI_API_VERSION, AZURE_OPENAI_KEY = interactive_llm_config()
+def prompt_llm_config():
+    import getpass
+    print("\033[96m[LLM] ¿Quieres modificar la configuración del LLM (endpoint, key, modelo)?\033[0m")
+    resp = input("[LLM] Escribe 's' para editar o cualquier otra tecla para continuar: ").strip().lower()
+    if resp == "s":
+        endpoint = input(f"Nuevo endpoint [{os.getenv('AZURE_OPENAI_ENDPOINT','')}] : ").strip() or os.getenv('AZURE_OPENAI_ENDPOINT','')
+        deployment = input(f"Nombre del modelo/deployment [{os.getenv('AZURE_OPENAI_DEPLOYMENT','')}] : ").strip() or os.getenv('AZURE_OPENAI_DEPLOYMENT','')
+        api_version = input(f"API version [{os.getenv('AZURE_OPENAI_API_VERSION','')}] : ").strip() or os.getenv('AZURE_OPENAI_API_VERSION','')
+        key = getpass.getpass(f"API Key/token [{(os.getenv('AZURE_OPENAI_KEY','')[:6] + '...') if os.getenv('AZURE_OPENAI_KEY','') else ''}] : ").strip() or os.getenv('AZURE_OPENAI_KEY','')
+        return endpoint, deployment, api_version, key
+    return None
+
+# --- Token seguro: desencriptar si existe azure_openai_token.enc ---
+llm_config = prompt_llm_config()
+if llm_config:
+    AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT, AZURE_OPENAI_API_VERSION, AZURE_OPENAI_KEY = llm_config
+else:
+    AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT, AZURE_OPENAI_API_VERSION, AZURE_OPENAI_KEY = interactive_llm_config()
 LLM_ENDPOINT = AZURE_OPENAI_ENDPOINT
 LLM_MODEL = AZURE_OPENAI_DEPLOYMENT
 
