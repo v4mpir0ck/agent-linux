@@ -21,17 +21,17 @@ jobs:
           path: agente
           fetch-depth: 0
 
-      - name: Debug lista archivos en workspace/agente
-        run: ls -l
+      # - name: Debug lista archivos en workspace/agente
+      #   run: ls -l
 
-      - name: Debug busca build_agent.sh en todo el workspace
-        run: find . -name build_agent.sh
+      # - name: Debug busca build_agent.sh en todo el workspace
+      #   run: find . -name build_agent.sh
 
       - name: Build Docker image
         run: docker build -f dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build .
 
-      - name: lista archivos en /src
-        run: docker run --rm -v $PWD:/src agent-build bash -c "ls -l /src"
+      # - name: lista archivos en /src
+      #   run: docker run --rm -v $PWD:/src agent-build bash -c "ls -l /src"
 
       - name: Build agent in Docker
         run: docker run --rm -v $PWD:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
@@ -41,11 +41,11 @@ jobs:
           cp dist/agent dist/agent-host || true
           mv dist/agent-host dist/agent || true
 
-      - name: Debug - List dist directory
-        run: ls -l dist/agent
+      # - name: Debug - List dist directory
+      #   run: ls -l dist/agent
 
-      - name: Debug - List workspace
-        run: ls -lR
+      # - name: Debug - List workspace
+      #   run: ls -lR
 
       - name: Autoincrementa tag de release
         id: autotag
