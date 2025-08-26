@@ -2,6 +2,14 @@
 
 # 🧠 Proyecto Agente IA Linux
 
+## Índice
+
+- [Líneas principales](#líneas-principales)
+- [Generación automática de datasets en formato Azure OpenAI DPO](#generación-automática-de-datasets-en-formato-azure-openai-dpo)
+- [Documentación y enlaces](#documentación-y-enlaces)
+- [Instalación rápida (binario portable)](#instalación-rápida-binario-portable)
+- [Autor y licencia](#autor-y-licencia)
+
 Este proyecto tiene **tres líneas principales de trabajo**:
 
 ---
@@ -44,14 +52,11 @@ graph TD
 	- Conversión a formatos compatibles con Azure OpenAI (Direct Preference)
 	- Automatización y limpieza de datos
 
----
-
 ## Documentación y enlaces
 
 - [Binario portable y uso remoto](README-binario.md)
 - [Pipeline CI/CD y releases](README-pipeline.md)
 - [Estructura del repositorio](README-estructura.md)
-- [Historial de releases y binarios generados](README-releases.md)
 
 ---
 

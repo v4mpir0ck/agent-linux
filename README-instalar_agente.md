@@ -20,7 +20,6 @@ sudo ./instalar_agente.sh
 
 ## Notas
 - El binario se publica automáticamente en GitHub Releases por la pipeline CI/CD.
-- Consulta el historial de releases en [README-releases.md](README-releases.md).
 
 ---
 [Volver al README principal](README.md)
