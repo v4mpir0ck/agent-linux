@@ -25,6 +25,7 @@ else
     exit 1
 fi
 
+
 # Obtener la última release desde GitHub API
 REPO="v4mpir0ck/agent-linux"
 API_URL="https://api.github.com/repos/$REPO/releases/latest"
@@ -38,6 +39,24 @@ fi
 INSTALL_PATH="/usr/local/bin/agent"
 curl -L "$RELEASE_URL" -o "$INSTALL_PATH"
 chmod +x "$INSTALL_PATH"
+
+# Copiar binarios de herramientas según la familia del SO
+TOOLS_DIR="$(dirname "$0")/bin/$OS_FAMILY"
+if [ -d "$TOOLS_DIR" ]; then
+    for tool in nmap netstat lsof ss tcpdump; do
+        SRC="$TOOLS_DIR/$tool"
+        DEST="/usr/local/bin/$tool"
+        if [ -f "$SRC" ]; then
+            cp "$SRC" "$DEST"
+            chmod +x "$DEST"
+            echo "[OK] Binario $tool copiado a $DEST"
+        else
+            echo "[WARN] Binario $tool no encontrado en $TOOLS_DIR"
+        fi
+    done
+else
+    echo "[WARN] No se encontró carpeta de binarios para $OS_FAMILY, se usarán los del sistema si existen."
+fi
 
 # Copiar configuración encriptada si existe en el mismo directorio que el script
 CONFIG_SRC="$(dirname "$0")/azure_openai_token.enc"

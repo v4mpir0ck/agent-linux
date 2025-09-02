@@ -47,7 +47,7 @@ graph TD
 	- Publicación automática en GitHub Releases
 	- Dockerfiles y scripts para builds reproducibles
 
-3. **Generador de Dataset**
+3. **Generador de Dataset personalizado**
 	- Extracción automática de Q&A desde repositorios
 	- Conversión a formatos compatibles con Azure OpenAI (Direct Preference)
 	- Automatización y limpieza de datos
@@ -56,11 +56,13 @@ graph TD
 
 - [Binario portable y uso remoto](README-binario.md)
 - [Pipeline CI/CD y releases](README-pipeline.md)
-- [Estructura del repositorio](README-estructura.md)
-
+- [Generador de Dataset personalizado](README-generate-dataset.md)
+- [Instalación del agente IA](README-instalar_agente.md)
 ---
 
 ## Instalación rápida (binario portable)
+
+El agente incluye binarios portables de herramientas de red (`nmap`, `netstat`, `lsof`, `ss`, `tcpdump`) para cada distribución soportada. El instalador detecta tu sistema y despliega automáticamente estos binarios junto al agente, garantizando funcionamiento sin dependencias externas. Si no se encuentran binarios para tu distro, se usarán los del sistema o deberás instalarlos manualmente.
 
 **Descarga el binario desde [GitHub Releases](https://github.com/v4mpir0ck/agent-linux/releases/latest) según tu distribución:**
 
@@ -79,6 +81,20 @@ chmod +x agent
 ```
 
 ---
+
+## Requisitos de configuración para el agente IA
+
+Para que el agente funcione correctamente, es necesario:
+
+1. Tener un modelo de Azure OpenAI desplegado en tu suscripción (por ejemplo, GPT-4, GPT-3.5, etc).
+2. Proporcionar los valores de configuración al agente al arrancar:
+	- **AZURE_OPENAI_ENDPOINT**: URL del endpoint de tu modelo desplegado.
+	- **AZURE_OPENAI_KEY**: Clave de acceso a la API.
+	- **AZURE_OPENAI_DEPLOYMENT**: Nombre del deployment/modelo configurado.
+
+Puedes pasar estos valores como variables de entorno, en un archivo `.env`, o directamente en la configuración del agente.
+
+Sin estos datos, el agente no podrá conectarse al modelo y no funcionará correctamente.
 
 ## Autor y licencia
 - Javier Lazaro

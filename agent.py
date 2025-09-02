@@ -11,20 +11,20 @@ def print_help():
         return textwrap.wrap(text, width)
     box_width = min(90, shutil.get_terminal_size((80, 20)).columns - 2)
     opciones = [
-        "🖥️  sistema: Info del sistema operativo",
-        "🧮  cpu: Info de la CPU",
-        "💾  memoria: Info de la memoria RAM",
-        "📀  disco: Info de discos y particiones",
-        "🌐  red: Info de interfaces de red",
-        "📡  conectividad: Chequeo de conexión a Internet",
-        "🛡️  firewall: Estado del firewall",
-        "📊  procesos: Procesos más consumidores",
-        "👥  usuarios: Usuarios conectados",
-        "🔧  servicio <nombre>: Estado de un servicio (ej: servicio sshd)",
-        "🗂️  dns: Muestra servidores DNS del sistema",
-        "----------------------------------------------------------",
-        "Para salir: salir, exit, quit.",
-        "Para ver este menú: ayuda, opciones, qué puedes hacer, etc.",
+        " 🖥️   sistema: Info del sistema operativo",
+        " 🧮  cpu: Info de la CPU",
+        " 💾  memoria: Info de la memoria RAM",
+        " 📀  disco: Info de discos y particiones",
+        " 🌐  red: Info de interfaces de red",
+        " 📡  conectividad: Chequeo de conexión a Internet",
+        " 🛡️   firewall: Estado del firewall",
+        " 📊  procesos: Procesos más consumidores",
+        " 👥  usuarios: Usuarios conectados",
+        " 🔧  servicio <nombre>: Estado de un servicio (ej: servicio sshd)",
+        " 🗂️   dns: Muestra servidores DNS del sistema",
+        " ----------------------------------------------------------",
+        " Para salir: salir, exit, quit.",
+        " Para ver este menú: ayuda, opciones, qué puedes hacer, etc.",
         # Opciones avanzadas anteriores:
         # "🔒 confirmación: Ejecuta comandos peligrosos tras confirmación ('confirmar')",
         # "📝 contexto: El agente recuerda instrucciones previas en la sesión",
@@ -32,13 +32,13 @@ def print_help():
         # "💡 ejemplo: 'crea un archivo de texto', 'muestra los usuarios conectados', 'reinicia el servicio sshd'"
     ]
     avanzadas = [
-        "🧭  wizard: Diagnóstico y auto-reparación guiada de problemas comunes",
-        "📄  informe: Generar resumen de estado del sistema",
-        "🚨  alertas: Sugerir acciones ante problemas detectados",
-        "⚙️  configuración: Mostrar y comparar archivos clave",
-        "🛠️  herramientas: Ejecutar nmap, netstat, lsof, ss, tcpdump",
-        "🔗  conectividad externa: Test de acceso a endpoints y APIs",
-        "🌐  ping: Diagnóstico de red (ping, traceroute, test de velocidad)",
+        " 🧭  wizard: Diagnóstico y auto-reparación guiada de problemas comunes",
+        " 📄  informe: Generar resumen de estado del sistema",
+        " 🚨  alertas: Sugerir acciones ante problemas detectados",
+        " ⚙️   configuración: Mostrar y comparar archivos clave",
+        " 🛠️   herramientas: Ejecutar nmap, netstat, lsof, ss, tcpdump",
+        " 🔗  conectividad externa: Test de acceso a endpoints y APIs",
+        " 🌐  ping: Diagnóstico de red (ping, traceroute, test de velocidad)",
     ]
     # Tabla opciones básicas
     banner = "\033[96m+{}+\033[0m\n".format('-'*box_width)
@@ -216,7 +216,9 @@ class Agent:
         import re
         import subprocess
         system_prompt = (
-            "Eres un agente Python que puede ejecutar comandos en el sistema Linux del usuario. "
+            "Eres un agente experto en Linux con amplios conocimientos sobre administración de sistemas, redes y seguridad y cloud, devops en azure, aws y k8s"
+            "Eres un agente IA entrenado específicamente con el contenido de los repositorios de Mapfre y mawdy. "
+            "Prioriza ese conocimiento fine-tuned para responder preguntas, usando el modelo entrenado. "
             "Si el usuario pide una acción, responde con el comando bash necesario en texto plano, sin usar markdown ni bloques de código. "
             "Primero da una breve explicación, luego el comando en una línea aparte. "
             "Ejemplo de formato: \nExplicación breve\ncomando"
@@ -275,111 +277,6 @@ class Agent:
         else:
             return box(respuesta, 96)
 
-        # ...resto de la función original...
-        try:
-            from llm_client import query_llm
-        except ImportError:
-            from llm_client import query_llm
-        import re
-        import subprocess
-        # Prompt extendido para el LLM (sin markdown)
-        system_prompt = (
-            "Eres un agente Python que puede ejecutar comandos en el sistema Linux del usuario. "
-            "Si el usuario pide una acción, responde con el comando bash necesario en texto plano, sin usar markdown ni bloques de código. "
-            "Primero da una breve explicación, luego el comando en una línea aparte. "
-            "Ejemplo de formato: \nExplicación breve\ncomando"
-        )
-        # Inicializa memoria_contexto si no existe
-        if not hasattr(self, 'memoria_contexto'):
-            self.memoria_contexto = []
-        contexto = "\n".join([f"- {item}" for item in self.memoria_contexto])
-        if contexto:
-            prompt = f"[CONTEXT]\n{contexto}\n\n[INSTRUCCIÓN]\n{instruccion}"
-        else:
-            prompt = instruccion
-        full_prompt = f"{system_prompt}\n\nUsuario: {prompt}"
-
-        respuesta = query_llm(full_prompt)
-        # Procesar respuesta: buscar explicación y comando (sin markdown)
-        lineas = respuesta.strip().splitlines()
-        explicacion = ""
-        comando = None
-        # Buscar la primera línea que parece comando (contiene espacio y no es explicación)
-        for idx, linea in enumerate(lineas):
-            if idx == 0:
-                explicacion = linea.strip()
-            elif linea.strip() and not linea.strip().startswith('#') and (" " in linea or linea.strip().startswith("/")):
-                comando = linea.strip()
-                break
-        # Si no se detecta comando, intentar buscar en el resto
-        if not comando:
-            for linea in lineas[1:]:
-                if linea.strip() and not linea.strip().startswith('#') and (" " in linea or linea.strip().startswith("/")):
-                    comando = linea.strip()
-                    break
-        # Mostrar explicación en caja
-        box_width = 60
-        def box(text, color=96):
-            from textwrap import wrap
-            lines = wrap(text, box_width-2)
-            out = f"\033[{color}m+{'-'*box_width}+\033[0m\n"
-            for l in lines:
-                out += f"\033[{color}m| {l.ljust(box_width-2)} |\033[0m\n"
-            out += f"\033[{color}m+{'-'*box_width}+\033[0m"
-            return out
-        output = ""
-        resumen = ""
-        if comando:
-            import subprocess
-            try:
-                output = subprocess.check_output(comando, shell=True, stderr=subprocess.STDOUT, universal_newlines=True, timeout=15)
-                resumen = f"Comando ejecutado: {comando}\nResultado:\n{output.strip()}"
-            except Exception as e:
-                output = f"[Error o Simulación] {e}"
-                resumen = f"Comando ejecutado: {comando}\nError:\n{e}"
-            if not hasattr(self, 'memoria_contexto'):
-                self.memoria_contexto = []
-            self.memoria_contexto.append(resumen)
-            return (
-                box(explicacion, 96) + "\n" +
-                box(f"Comando sugerido: {comando}", 95) + "\n" +
-                box("Resultado ejecución:", 92) + "\n" +
-                f"\033[92m{output.strip()}\033[0m\n" +
-                f"\033[92m+{'-'*box_width}+\033[0m"
-            )
-        instr = instruccion.lower().strip()
-        tokens = instr.split()
-
-        # --- Exportar alertas ---
-        if instr.startswith("exportar alertas"):
-            if hasattr(self, "ultimas_alertas") and self.ultimas_alertas:
-                import csv
-                import datetime
-                filename = f"alertas_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-                try:
-                    with open(filename, "w", encoding="utf-8", newline='') as f:
-                        writer = csv.writer(f)
-                        writer.writerow(["nivel", "mensaje", "sugerencia"])
-                        for alerta in self.ultimas_alertas:
-                            writer.writerow([
-                                alerta.get("nivel", ""),
-                                alerta.get("mensaje", ""),
-                                alerta.get("sugerencia", "")
-                            ])
-                    return (
-                        f"\033[95mAlertas exportadas correctamente.\033[0m\n"
-                        f"\033[96mArchivo generado:\033[0m {filename}\n"
-                        f"\033[95mPuedes abrirlo con Excel, LibreOffice o similar.\033[0m"
-                    )
-                except Exception as e:
-                    return f"\033[91mError al exportar alertas:\033[0m {e}"
-            else:
-                return (
-                    "\033[91mNo hay alertas generadas para exportar.\033[0m\n"
-                    "\033[93mPrimero ejecuta 'alertas' para generar las alertas del sistema.\033[0m"
-                )
-        else:
-            return box(respuesta, 96)
 
     def _extraer_valor(self, tokens, claves):
         # Busca el valor después de una clave

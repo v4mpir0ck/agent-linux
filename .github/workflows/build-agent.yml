@@ -33,8 +33,18 @@ jobs:
       # - name: lista archivos en /src
       #   run: docker run --rm -v $PWD:/src agent-build bash -c "ls -l /src"
 
+
       - name: Build agent in Docker
         run: docker run --rm -v $PWD:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
+
+      - name: Copia herramientas de red del contenedor al repo
+        run: |
+          CONTAINER_ID=$(docker create agent-build)
+          mkdir -p agente/bin/${{ github.event.inputs.dockerfile }}
+          for tool in nmap netstat lsof ss tcpdump; do
+            docker cp $CONTAINER_ID:/usr/bin/$tool agente/bin/${{ github.event.inputs.dockerfile }}/$tool || true
+          done
+          docker rm $CONTAINER_ID
 
       - name: Copia binario del contenedor al host
         run: |
