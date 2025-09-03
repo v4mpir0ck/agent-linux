@@ -1,5 +1,6 @@
 import os
 import sys
+import sys
 import json
 import requests
 from dotenv import load_dotenv
@@ -13,6 +14,13 @@ def interactive_llm_config():
     return endpoint, deployment, api_version, key
 
 
+def get_env_path():
+    if getattr(sys, 'frozen', False):
+        base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+    else:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_dir, '.env')
+
 def prompt_llm_config():
     print("\033[96m[LLM] ¿Quieres modificar la configuración del LLM (endpoint, key, modelo)?\033[0m")
     resp = input("[LLM] Escribe 's' para editar o cualquier otra tecla para continuar: ").strip().lower()
@@ -21,8 +29,7 @@ def prompt_llm_config():
         deployment = input(f"Nombre del modelo/deployment [{os.getenv('AZURE_OPENAI_DEPLOYMENT','')}] : ").strip() or os.getenv('AZURE_OPENAI_DEPLOYMENT','')
         api_version = input(f"API version [{os.getenv('AZURE_OPENAI_API_VERSION','')}] : ").strip() or os.getenv('AZURE_OPENAI_API_VERSION','')
         key = input(f"API Key/token [{(os.getenv('AZURE_OPENAI_KEY','')[:6] + '...') if os.getenv('AZURE_OPENAI_KEY','') else ''}] : ").strip() or os.getenv('AZURE_OPENAI_KEY','')
-        # Guardar en .env
-        env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+        env_path = get_env_path()
         with open(env_path, 'w') as f:
             f.write(f'AZURE_OPENAI_ENDPOINT={endpoint}\n')
             f.write(f'AZURE_OPENAI_DEPLOYMENT={deployment}\n')
@@ -34,8 +41,7 @@ def prompt_llm_config():
 
 
 
-# --- Cargar siempre la configuración desde .env al iniciar ---
-load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
+load_dotenv(get_env_path())
 AZURE_OPENAI_ENDPOINT = os.getenv('AZURE_OPENAI_ENDPOINT')
 AZURE_OPENAI_DEPLOYMENT = os.getenv('AZURE_OPENAI_DEPLOYMENT')
 AZURE_OPENAI_API_VERSION = os.getenv('AZURE_OPENAI_API_VERSION')
