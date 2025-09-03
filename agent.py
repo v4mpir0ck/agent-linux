@@ -1,6 +1,17 @@
 import os
+
+import sys
+def get_env_path():
+    # Guarda .env junto al binario ejecutable, no en el temporal de Nuitka
+    if getattr(sys, 'frozen', False):
+        # Nuitka onefile: sys.argv[0] es el binario
+        base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+    else:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_dir, '.env')
+
 def guardar_llm_config(endpoint, deployment, api_version, key):
-    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+    env_path = get_env_path()
     with open(env_path, 'w') as f:
         f.write(f'AZURE_OPENAI_ENDPOINT={endpoint}\n')
         f.write(f'AZURE_OPENAI_DEPLOYMENT={deployment}\n')
@@ -8,7 +19,7 @@ def guardar_llm_config(endpoint, deployment, api_version, key):
         f.write(f'AZURE_OPENAI_KEY={key}\n')
 
 def cargar_llm_config():
-    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+    env_path = get_env_path()
     config = {}
     if os.path.isfile(env_path):
         with open(env_path) as f:
