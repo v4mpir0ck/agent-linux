@@ -24,7 +24,7 @@ import configuracion
 import herramientas
 import informe
 import llm_client
-import main
+# import main  # Eliminado para evitar conflicto de importación circular
 import procesos
 import sistema
 import update_releases_md
