@@ -1,3 +1,35 @@
+import os
+def guardar_llm_config(endpoint, deployment, api_version, key):
+    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+    with open(env_path, 'w') as f:
+        f.write(f'AZURE_OPENAI_ENDPOINT={endpoint}\n')
+        f.write(f'AZURE_OPENAI_DEPLOYMENT={deployment}\n')
+        f.write(f'AZURE_OPENAI_API_VERSION={api_version}\n')
+        f.write(f'AZURE_OPENAI_KEY={key}\n')
+
+def cargar_llm_config():
+    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+    config = {}
+    if os.path.isfile(env_path):
+        with open(env_path) as f:
+            for line in f:
+                if '=' in line:
+                    k, v = line.strip().split('=', 1)
+                    config[k] = v
+    return config
+import conectividad  # Necesario para que Nuitka lo incluya en el binario
+import alertas
+import configuracion
+# import encrypt_token  # Eliminado: ya no se usa lógica de encriptado
+import herramientas
+import informe
+import llm_client
+import main
+import procesos
+import sistema
+import update_releases_md
+import usuarios
+import wizard
 
 
 
@@ -140,6 +172,16 @@ class Agent:
                 "mensaje": "\033[95mTest de ping:\033[0m\n{resultado}"
             }
         ]
+        # --- Configuración LLM interactiva ---
+        if instr.startswith("configurar llm") or instr.startswith("set llm"):
+            print("Introduce los datos de configuración del LLM:")
+            endpoint = input("Endpoint: ").strip()
+            deployment = input("Deployment: ").strip()
+            api_version = input("API Version: ").strip()
+            key = input("API Key: ").strip()
+            guardar_llm_config(endpoint, deployment, api_version, key)
+            return "Configuración LLM guardada en .env."
+
         for interceptor in interceptores:
             if any(frase in instr for frase in interceptor["frases"]) or interceptor["nombre"] in instr:
                 # --- ALERTAS INTELIGENTES ---
@@ -209,8 +251,14 @@ class Agent:
                     return interceptor["mensaje"].format(resultado=resultado)
         # Si no coincide con ningún interceptor, usar LLM
         # ...existing code...
+        # --- Cargar config LLM desde .env si existe ---
+        llm_config = cargar_llm_config()
         try:
             from llm_client import query_llm
+            if llm_config:
+                # Si el módulo lo permite, setear config
+                if hasattr(llm_client, 'set_config'):
+                    llm_client.set_config(llm_config)
         except ImportError:
             from llm_client import query_llm
         import re
@@ -298,12 +346,9 @@ if __name__ == "__main__":
     print("Escribe 'salir' para terminar.\n")
     # Mostrar info de LLM
     try:
-        try:
-            from llm_client import LLM_ENDPOINT, LLM_MODEL
-        except ImportError:
-            from llm_client import LLM_ENDPOINT, LLM_MODEL
-        llm_endpoint = LLM_ENDPOINT
-        llm_model = LLM_MODEL
+        from llm_client import AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT
+        llm_endpoint = AZURE_OPENAI_ENDPOINT
+        llm_model = AZURE_OPENAI_DEPLOYMENT
         llm_status = "\033[92mOK\033[0m" if llm_endpoint and llm_model else "\033[91mNO CONFIGURADO\033[0m"
         print(f"\033[94m[LLM] Endpoint: {llm_endpoint if llm_endpoint else 'NO CONFIGURADO'}\033[0m")
         print(f"\033[94m[LLM] Modelo: {llm_model if llm_model else 'NO CONFIGURADO'}\033[0m")

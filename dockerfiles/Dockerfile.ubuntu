@@ -1,7 +1,9 @@
+
 FROM ubuntu:22.04
 
-RUN apt-get update && \
-    apt-get install -y python3 python3-pip build-essential curl gcc g++ make python3-dev patchelf \
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update --allow-releaseinfo-change && \
+    apt-get install -y --fix-missing python3 python3-pip build-essential curl gcc g++ make python3-dev patchelf \
     nmap net-tools lsof iproute2 tcpdump && \
     pip3 install --upgrade pip setuptools wheel nuitka zstandard setuptools-rust && \
     pip3 install python-dotenv cryptography requests openai && \

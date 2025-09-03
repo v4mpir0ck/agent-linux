@@ -68,7 +68,7 @@ El agente incluye binarios portables de herramientas de red (`nmap`, `netstat`, 
 
 ### Fedora / RHEL / UBI
 ```bash
-curl -L -o agent "https://github.com/v4mpir0ck/agent-linux/releases/latest/download/agent-Dockerfile.ubi8"
+curl -L -o agent "curl -L -o agent https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.14-Dockerfile.ubi8/agent"
 chmod +x agent
 ./agent
 ```

@@ -9,7 +9,7 @@
 - Limpieza automática de temporales.
 
 ## Instalación remota
-- Usa `instalar_agente.sh` para descargar el binario y la configuración encriptada.
+
 
 
 ## Herramientas de red portables
