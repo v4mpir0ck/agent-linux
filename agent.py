@@ -4,8 +4,8 @@ import sys
 def get_env_path():
     # Guarda .env junto al binario ejecutable, no en el temporal de Nuitka
     if getattr(sys, 'frozen', False):
-        # Nuitka onefile: sys.argv[0] es el binario
-        base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        # Nuitka onefile: sys.executable es el binario real
+        base_dir = os.path.dirname(os.path.abspath(sys.executable))
     else:
         base_dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base_dir, '.env')

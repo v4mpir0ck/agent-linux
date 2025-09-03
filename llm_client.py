@@ -16,7 +16,7 @@ def interactive_llm_config():
 
 def get_env_path():
     if getattr(sys, 'frozen', False):
-        base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        base_dir = os.path.dirname(os.path.abspath(sys.executable))
     else:
         base_dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base_dir, '.env')
