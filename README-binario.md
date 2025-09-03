@@ -11,9 +11,10 @@
 ## Instalación remota
 - Usa `instalar_agente.sh` para descargar el binario y la configuración encriptada.
 
-## Configuración encriptada
-- El archivo `azure_openai_token.enc` se copia junto al binario si existe.
-- Permite tener el modelo configurado en cualquier destino.
+
+## Herramientas de red portables
+
+El binario portable se acompaña de las herramientas de red (`nmap`, `netstat`, `lsof`, `ss`, `tcpdump`) compiladas para cada distribución soportada. El instalador detecta tu sistema y copia automáticamente estos binarios junto al agente. Si no se encuentran, se usarán los del sistema.
 
 ## Compatibilidad
 - Compila el binario en la misma distro donde lo vas a usar (UBI8, Ubuntu, etc.).

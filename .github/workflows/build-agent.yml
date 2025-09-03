@@ -34,8 +34,10 @@ jobs:
       #   run: docker run --rm -v $PWD:/src agent-build bash -c "ls -l /src"
 
 
+
       - name: Build agent in Docker
-        run: docker run --rm -v $PWD:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh"
+        run: |
+          docker run --rm -v $PWD:/src agent-build bash -c "cd /src && chmod +x build_agent.sh && ./build_agent.sh && chown $(id -u):$(id -g) dist/agent"
 
       - name: Copia herramientas de red del contenedor al repo
         run: |
@@ -45,6 +47,7 @@ jobs:
             docker cp $CONTAINER_ID:/usr/bin/$tool agente/bin/${{ github.event.inputs.dockerfile }}/$tool || true
           done
           docker rm $CONTAINER_ID
+
 
       - name: Copia binario del contenedor al host
         run: |
