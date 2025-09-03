@@ -1,8 +1,9 @@
-#murmurhash==1.0.9
-requests>=2.25.0
+psutil
+python-dotenv
 cryptography<40.0.0
 openai<0.28.0
-python-dotenv
+requests>=2.25.0
+murmurhash==1.0.9
 #pyyaml==6.0
 #sentence-transformers==0.4.1.2
 #transformers<4.11.0
