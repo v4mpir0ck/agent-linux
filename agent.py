@@ -1,14 +1,7 @@
 import os
 
 import sys
-def get_env_path():
-    # Guarda .env junto al binario ejecutable, no en el temporal de Nuitka
-    if getattr(sys, 'frozen', False):
-        # Nuitka onefile: sys.executable es el binario real
-        base_dir = os.path.dirname(os.path.abspath(sys.executable))
-    else:
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(base_dir, '.env')
+from config_path import get_env_path
 
 def guardar_llm_config(endpoint, deployment, api_version, key):
     env_path = get_env_path()

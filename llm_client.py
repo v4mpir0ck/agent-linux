@@ -14,12 +14,7 @@ def interactive_llm_config():
     return endpoint, deployment, api_version, key
 
 
-def get_env_path():
-    if getattr(sys, 'frozen', False):
-        base_dir = os.path.dirname(os.path.abspath(sys.executable))
-    else:
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(base_dir, '.env')
+from config_path import get_env_path
 
 def prompt_llm_config():
     print("\033[96m[LLM] ¿Quieres modificar la configuración del LLM (endpoint, key, modelo)?\033[0m")
