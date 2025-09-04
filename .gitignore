@@ -1,5 +1,5 @@
 # Ignorar datasets y archivo de control en la raíz
-/dataset_dpo_*.jsonl
+/dataset*.jsonl
 /processed_repos.txt
 # Exclude wheels and wheels.zip from git
 wheels/
