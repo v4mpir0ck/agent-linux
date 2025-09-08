@@ -3,8 +3,10 @@
 # Uso: ./build_agent.sh
 
 
+
 set -e
 
+PYTHON_BIN="python3"
 # Asegura dependencias críticas para el binario
 $PYTHON_BIN -m pip install --upgrade pip
 $PYTHON_BIN -m pip install psutil python-dotenv
@@ -14,7 +16,6 @@ PROJECT_ROOT="$SCRIPT_DIR/.."
 DIST_DIR="$SCRIPT_DIR/dist"
 MAIN_FILE="$SCRIPT_DIR/__main__.py"
 BIN_NAME="agent"
-PYTHON_BIN="python3"
 
 # Limpieza de binarios y restos anteriores
 rm -rf "$DIST_DIR"/* "$PROJECT_ROOT/build" "$PROJECT_ROOT/__pycache__" "$PROJECT_ROOT/.nuitka-cache" "$PROJECT_ROOT/dist"/*
