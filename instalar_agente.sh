@@ -30,7 +30,7 @@ fi
 
 # Seleccionar URL de binario según la familia del SO
 if [ "$OS_FAMILY" = "ubi8" ]; then
-    RELEASE_URL="https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.18-Dockerfile.ubi8/agent"
+    RELEASE_URL="https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.19-Dockerfile.ubi8/agent"
 elif [ "$OS_FAMILY" = "ubuntu" ]; then
     RELEASE_URL="https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.13-Dockerfile.ubuntu/agent"
 else
