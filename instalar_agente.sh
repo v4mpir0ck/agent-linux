@@ -27,13 +27,14 @@ fi
 
 
 
-# Obtener la última release desde GitHub API
-REPO="v4mpir0ck/agent-linux"
-API_URL="https://api.github.com/repos/$REPO/releases/latest"
-RELEASE_URL=$(curl -s $API_URL | grep "browser_download_url" | grep "$OS_FAMILY" | cut -d '"' -f 4)
 
-if [ -z "$RELEASE_URL" ]; then
-    echo "[ERROR] No se encontró binario para la familia $OS_FAMILY en la última release."
+# Seleccionar URL de binario según la familia del SO
+if [ "$OS_FAMILY" = "ubi8" ]; then
+    RELEASE_URL="https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.18-Dockerfile.ubi8/agent"
+elif [ "$OS_FAMILY" = "ubuntu" ]; then
+    RELEASE_URL="https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.13-Dockerfile.ubuntu/agent"
+else
+    echo "[ERROR] Solo se soportan instalaciones automáticas para Ubuntu y UBI8. Por favor descarga el binario manualmente para tu sistema."
     exit 1
 fi
 
