@@ -32,7 +32,7 @@ fi
 if [ "$OS_FAMILY" = "ubi8" ]; then
     RELEASE_URL="https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.19-Dockerfile.ubi8/agent"
 elif [ "$OS_FAMILY" = "ubuntu" ]; then
-    RELEASE_URL="https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.13-Dockerfile.ubuntu/agent"
+    RELEASE_URL="https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.14-Dockerfile.ubuntu/agent"
 else
     echo "[ERROR] Solo se soportan instalaciones automáticas para Ubuntu y UBI8. Por favor descarga el binario manualmente para tu sistema."
     exit 1
@@ -72,7 +72,7 @@ else
     echo "[WARN] No se encontró carpeta de binarios para $OS_FAMILY, se usarán los del sistema si existen."
 fi
 
-echo "\n[INFO] Instalación finalizada. Puedes ejecutar el agente con: agent"
+echo "[INFO] Instalación finalizada. Puedes ejecutar el agente con: agent"
 
 
 # Verificar instalación
