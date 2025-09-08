@@ -26,6 +26,7 @@ else
 fi
 
 
+
 # Obtener la última release desde GitHub API
 REPO="v4mpir0ck/agent-linux"
 API_URL="https://api.github.com/repos/$REPO/releases/latest"
@@ -37,11 +38,19 @@ if [ -z "$RELEASE_URL" ]; then
 fi
 
 INSTALL_PATH="/usr/local/bin/agent"
+if [ ! -w "/usr/local/bin" ]; then
+    echo "[ERROR] No tienes permisos de escritura en /usr/local/bin. Ejecuta este script como root o con sudo."
+    exit 1
+fi
+
 curl -L "$RELEASE_URL" -o "$INSTALL_PATH"
 chmod +x "$INSTALL_PATH"
+echo "[OK] Agente instalado en $INSTALL_PATH"
+
 
 # Copiar binarios de herramientas según la familia del SO
 TOOLS_DIR="$(dirname "$0")/bin/$OS_FAMILY"
+BINARIOS_COPIADOS=0
 if [ -d "$TOOLS_DIR" ]; then
     for tool in nmap netstat lsof ss tcpdump; do
         SRC="$TOOLS_DIR/$tool"
@@ -50,21 +59,20 @@ if [ -d "$TOOLS_DIR" ]; then
             cp "$SRC" "$DEST"
             chmod +x "$DEST"
             echo "[OK] Binario $tool copiado a $DEST"
+            BINARIOS_COPIADOS=$((BINARIOS_COPIADOS+1))
         else
             echo "[WARN] Binario $tool no encontrado en $TOOLS_DIR"
         fi
     done
+    if [ $BINARIOS_COPIADOS -eq 0 ]; then
+        echo "[WARN] No se copió ningún binario auxiliar. El agente usará los del sistema si existen."
+    fi
 else
     echo "[WARN] No se encontró carpeta de binarios para $OS_FAMILY, se usarán los del sistema si existen."
 fi
 
-# # Copiar configuración encriptada si existe en el mismo directorio que el script
-# CONFIG_SRC="$(dirname "$0")/azure_openai_token.enc"
-# CONFIG_DEST="/usr/local/bin/azure_openai_token.enc"
-# if [ -f "$CONFIG_SRC" ]; then
-#     cp "$CONFIG_SRC" "$CONFIG_DEST"
-#     echo "[OK] Configuración encriptada copiada a $CONFIG_DEST"
-# fi
+echo "\n[INFO] Instalación finalizada. Puedes ejecutar el agente con: agent"
+
 
 # Verificar instalación
 if "$INSTALL_PATH" --help >/dev/null 2>&1; then

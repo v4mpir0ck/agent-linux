@@ -2,12 +2,14 @@
 
 # 🧠 Proyecto Agente IA Linux
 
+
 ## Índice
 
-- [Líneas principales](#líneas-principales)
+- [Workstreams](#workstreams)
 - [Generación automática de datasets en formato Azure OpenAI DPO](#generación-automática-de-datasets-en-formato-azure-openai-dpo)
 - [Documentación y enlaces](#documentación-y-enlaces)
 - [Instalación rápida (binario portable)](#instalación-rápida-binario-portable)
+- [Instalación mediante script](#instalación-mediante-script)
 - [Autor y licencia](#autor-y-licencia)
 
 Este proyecto tiene **tres líneas principales de trabajo**:
@@ -34,7 +36,7 @@ graph TD
 
 ---
 
-## Líneas principales
+## Workstreams
 
 1. **Agente IA para Linux**
 	- CLI interactivo y seguro
@@ -52,33 +54,52 @@ graph TD
 	- Conversión a formatos compatibles con Azure OpenAI (Direct Preference)
 	- Automatización y limpieza de datos
 
+
 ## Documentación y enlaces
 
 - [Binario portable y uso remoto](README-binario.md)
 - [Pipeline CI/CD y releases](README-pipeline.md)
 - [Generador de Dataset personalizado](README-generate-dataset.md)
 - [Instalación del agente IA](README-instalar_agente.md)
+
 ---
+
 
 ## Instalación rápida (binario portable)
 
-El agente incluye binarios portables de herramientas de red (`nmap`, `netstat`, `lsof`, `ss`, `tcpdump`) para cada distribución soportada. El instalador detecta tu sistema y despliega automáticamente estos binarios junto al agente, garantizando funcionamiento sin dependencias externas. Si no se encuentran binarios para tu distro, se usarán los del sistema o deberás instalarlos manualmente.
+Tienes dos opciones para instalar y usar el agente:
 
-**Descarga el binario desde [GitHub Releases](https://github.com/v4mpir0ck/agent-linux/releases/latest) según tu distribución:**
+1. **Descargar y ejecutar el binario directamente**
+	- El agente incluye binarios portables de herramientas de red (`nmap`, `netstat`, `lsof`, `ss`, `tcpdump`) para cada distribución soportada. El binario detecta tu sistema y usa los binarios auxiliares incluidos si están disponibles.
+	- Si no se encuentran binarios para tu distro, se usarán los del sistema o deberás instalarlos manualmente.
 
-### Fedora / RHEL / UBI
-```bash
-curl -L -o agent "curl -L -o agent https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.14-Dockerfile.ubi8/agent"
-chmod +x agent
-./agent
-```
+	**Descarga el binario desde [GitHub Releases](https://github.com/v4mpir0ck/agent-linux/releases/latest) según tu distribución:**
 
-### Ubuntu
-```bash
-curl -L -o agent "https://github.com/v4mpir0ck/agent-linux/releases/latest/download/agent-Dockerfile.ubuntu"
-chmod +x agent
-./agent
-```
+	### Fedora / RHEL / UBI
+	```bash
+	curl -L -o agent "https://github.com/v4mpir0ck/agent-linux/releases/download/v1.0.14-Dockerfile.ubi8/agent"
+	chmod +x agent
+	./agent
+	```
+
+	### Ubuntu
+	```bash
+	curl -L -o agent "https://github.com/v4mpir0ck/agent-linux/releases/latest/download/agent-Dockerfile.ubuntu"
+	chmod +x agent
+	./agent
+	```
+
+
+2. **Instalar mediante script**
+	- Puedes usar el script `instalar_agente.sh` para instalar el agente y copiar automáticamente los binarios auxiliares de red en el sistema.
+	- Esto es útil si quieres una instalación más integrada o necesitas que los binarios estén disponibles globalmente.
+
+	Puedes descargar el script con `curl` y ejecutarlo directamente:
+
+	```bash
+	curl -L -o instalar_agente.sh "https://raw.githubusercontent.com/v4mpir0ck/agent-linux/main/instalar_agente.sh"
+	bash instalar_agente.sh
+	```
 
 ---
 
@@ -98,4 +119,4 @@ Sin estos datos, el agente no podrá conectarse al modelo y no funcionará corre
 
 ## Autor y licencia
 - Javier Lazaro
-- MIT
+- GPL
