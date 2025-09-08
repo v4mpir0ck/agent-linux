@@ -2,7 +2,12 @@
 # Script para compilar y empaquetar el agente portable con Nuitka
 # Uso: ./build_agent.sh
 
+
 set -e
+
+# Asegura dependencias críticas para el binario
+$PYTHON_BIN -m pip install --upgrade pip
+$PYTHON_BIN -m pip install psutil python-dotenv
 
 SCRIPT_DIR="$(cd -- "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$SCRIPT_DIR/.."

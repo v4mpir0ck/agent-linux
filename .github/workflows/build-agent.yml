@@ -21,23 +21,21 @@ jobs:
           path: agente
           fetch-depth: 0
 
-      # - name: Debug lista archivos en workspace/agente
-      #   run: ls -l
-
-      # - name: Debug busca build_agent.sh en todo el workspace
-      #   run: find . -name build_agent.sh
-
       - name: Build Docker image
         run: docker build -f dockerfiles/${{ github.event.inputs.dockerfile }} -t agent-build .
-
-      # - name: lista archivos en /src
-      #   run: docker run --rm -v $PWD:/src agent-build bash -c "ls -l /src"
-
 
 
       - name: Build agent in Docker
         run: |
-          docker run --rm -v $PWD:/src agent-build bash -c "cd /src && pip install -r requirements.txt && chmod +x build_agent.sh && ./build_agent.sh && chown $(id -u):$(id -g) dist/agent"
+          docker run --rm -v $PWD:/src agent-build bash -c "\
+            cd /src && \
+            pip install --upgrade pip && \
+            pip install psutil python-dotenv && \
+            pip install -r requirements.txt && \
+            chmod +x build_agent.sh && \
+            ./build_agent.sh && \
+            chown $(id -u):$(id -g) dist/agent\
+          "
 
       # - name: Copia herramientas de red del contenedor al repo
       #   run: |
