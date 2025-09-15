@@ -49,7 +49,8 @@ def generate_qas_with_llm(text, n_examples=3):
         "presence_penalty": 0,
         "stop": None,
     }
-    url = f"{AZURE_OPENAI_ENDPOINT}/openai/deployments/{AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=2023-05-15"
+    api_version = os.environ.get('AZURE_OPENAI_API_VERSION') or '2023-05-15'
+    url = f"{AZURE_OPENAI_ENDPOINT}/openai/deployments/{AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version={api_version}"
     try:
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
@@ -114,7 +115,8 @@ def collect_dataset_llm(root):
                         "presence_penalty": 0,
                         "stop": None,
                     }
-                    url = f"{AZURE_OPENAI_ENDPOINT}/openai/deployments/{AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=2023-05-15"
+                    api_version = os.environ.get('AZURE_OPENAI_API_VERSION') or '2023-05-15'
+                    url = f"{AZURE_OPENAI_ENDPOINT}/openai/deployments/{AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version={api_version}"
                     try:
                         response = requests.post(url, headers=headers, json=data)
                         response.raise_for_status()

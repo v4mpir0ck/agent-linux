@@ -14,6 +14,20 @@ def guardar_llm_config(endpoint, deployment, api_version, key):
 def cargar_llm_config():
     env_path = get_env_path()
     config = {}
+    # Preferir .env junto al script/ejecutable que lanza el agente
+    if getattr(sys, 'frozen', False):
+        run_dir = os.path.dirname(sys.executable)
+    else:
+        run_dir = os.path.dirname(os.path.abspath(sys.argv[0])) or os.path.dirname(__file__)
+    local_env = os.path.join(run_dir, '.env')
+    # Cargar .env del run_dir si existe
+    if os.path.isfile(local_env):
+        with open(local_env) as f:
+            for line in f:
+                if '=' in line:
+                    k, v = line.strip().split('=', 1)
+                    config[k] = v
+    # Si existe el env central (get_env_path()), este sobrescribe valores
     if os.path.isfile(env_path):
         with open(env_path) as f:
             for line in f:
@@ -350,12 +364,15 @@ if __name__ == "__main__":
     print("Escribe 'salir' para terminar.\n")
     # Mostrar info de LLM
     try:
-        from llm_client import AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT
+        # Importar también LOADED_ENV_PATH para saber qué fichero .env se cargó
+        from llm_client import AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT, LOADED_ENV_PATH
         llm_endpoint = AZURE_OPENAI_ENDPOINT
         llm_model = AZURE_OPENAI_DEPLOYMENT
         llm_status = "\033[92mOK\033[0m" if llm_endpoint and llm_model else "\033[91mNO CONFIGURADO\033[0m"
         print(f"\033[94m[LLM] Endpoint: {llm_endpoint if llm_endpoint else 'NO CONFIGURADO'}\033[0m")
         print(f"\033[94m[LLM] Modelo: {llm_model if llm_model else 'NO CONFIGURADO'}\033[0m")
+        loaded = LOADED_ENV_PATH if LOADED_ENV_PATH else 'ninguno (variables de entorno)'
+        print(f"\033[94m[LLM] Config cargada desde: {loaded}\033[0m")
         print(f"\033[94m[LLM] Estado: {llm_status}\033[0m\n")
     except Exception as e:
         print(f"\033[91m[LLM] No se pudo obtener la configuración del modelo: {e}\033[0m\n")
