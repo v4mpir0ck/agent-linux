@@ -117,6 +117,23 @@ Puedes pasar estos valores como variables de entorno, en un archivo `.env`, o di
 
 Sin estos datos, el agente no podrá conectarse al modelo y no funcionará correctamente.
 
+## Ejemplo de uso
+
+Puedes interactuar con el agente IA para realizar consultas sobre tu sistema de forma natural, como si estuvieras hablando con un asistente. Al hacerle preguntas, el agente analizará tu petición, ejecutará los comandos necesarios en el sistema y te devolverá una respuesta clara y estructurada, normalmente acompañada de explicaciones o tablas según corresponda.
+
+Por ejemplo, puedes preguntarle:
+
+- **¿Qué discos tengo?**
+- **¿Qué DNS tengo configurados?**
+
+El agente responderá mostrando la información relevante, como una lista de discos detectados, particiones, espacio disponible, o los servidores DNS configurados en tu sistema, todo presentado de manera fácil de entender.
+
+Puedes añadir aquí una captura de pantalla de ejemplo de la respuesta del agente:
+
+![Ejemplo de respuesta del agente](image.png)
+
+---
+
 ## Autor y licencia
 - Javier Lazaro
 - GPL
